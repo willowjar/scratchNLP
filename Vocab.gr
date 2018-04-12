@@ -1,24 +1,137 @@
-# Sound
-
+# Verb
 play
-the
-sound
 stop
-all
-sounds
 clear
-sound effects
+repeat
+start
+happens
+
+add
+adds
+added
+
+make
+makes
+made
+
+subtracted
+subract
+subtracts
+
+multiplied
+multiply
+multiplies
+
+divided
+divide
+divides
+
+joined
+join
+joins
+
+deleted
+delete
+deletes
+
+set
+sets
+
+changed
 change
+changes
+
+switch
+switches
+switched
+
+contain
+contains
+
+replaced
+replace
+replaces
+
+pressed
+press
+presses
+
+clicked
+clicks
+click
+
+receive
+receives
+received
+
+broadcast
+
+wait
+
+create
+creates
+created
+
+# Noun
+end
+event
+sound
+sounds
+sound effects
 volume
-by
 pitch
 pitch effect
+second
+seconds
+steps
+step
+clone
+clones
+time
+response
+number
+numbers
+letter
+letters
+variable
+variables
+list
+lists
+sprite
+sprites
+item
+items
+element
+elements
+backdrop
+backdrops
+timer
+timers
+
+message
+messages
+
+# Adj
+all
+following
+same
+new
+single
+random
+
+# Command Adjectives
 softer
 louder
 slower
 faster
-set
+
+# Prep
+by
 to
+until
+of
+after
+at
 
 # Sound Names (should pull from Scratch Sound Library)
 a bass
@@ -27,36 +140,39 @@ meow
 bark
 baa
 
-# Conditionals
+# Conjuction
+and
+between
+with
+also
 if
 then
 otherwise
-,
-wait
-second
-seconds
-until
-repeat
-the
-following
-steps
-that's
-all
-it
 when
-I
-start
-as
-a
-clone
-clones
-create
-of
-myself
-delete
-this
 
-# Sequences
+# Punctuation
+,
+
+# Contraction (might want to just split this up)
+that's
+
+# Pronoun
+it
+I
+this
+myself
+
+# Adverb
+as
+then
+finally
+simultaneously
+in parallel
+too
+at the end
+at the same time
+
+# Sequences (Adjectives and Adverbs)
 first
 second
 third
@@ -72,25 +188,35 @@ twelfth
 thirteenth
 fourteenth
 fifteenth
-then
-after
-finally
 
+# Numbers
 # print(' | '.join(["'"+str(i) + "'" for i in xrange(0,100)]))
 Number[NUM=sg] ->  '1'
 Number[NUM=pl] -> '0' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26' | '27' | '28' | '29' | '30' | '31' | '32' | '33' | '34' | '35' | '36' | '37' | '38' | '39' | '40' | '41' | '42' | '43' | '44' | '45' | '46' | '47' | '48' | '49' | '50' | '51' | '52' | '53' | '54' | '55' | '56' | '57' | '58' | '59' | '60' | '61' | '62' | '63' | '64' | '65' | '66' | '67' | '68' | '69' | '70' | '71' | '72' | '73' | '74' | '75' | '76' | '77' | '78' | '79' | '80' | '81' | '82' | '83' | '84' | '85' | '86' | '87' | '88' | '89' | '90' | '91' | '92' | '93' | '94' | '95' | '96' | '97' | '98' | '99'
 
-# Parallelism
-at
-same
-time
-simultaneously
-too
+## Operators
+greater than
+less than
+equal to
+equals
+less than or equal to
+greater than or equal to
+
+## Det
+to
+from
+by
+of
+the
 in
-parallel
-response
-event
-when
-happens
+for
+this
+the
+a
+
+# Verb Past Participle
+called
+
+
 
 
