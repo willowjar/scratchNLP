@@ -1,3 +1,4 @@
+
 Verb repeat
 Verb move
 Verb wait
@@ -11,3 +12,139 @@ Noun[Plur] degrees
 Noun[Plur] seconds
 Det that
 Adv forever
+
+## Operators
+> 
+<
+=
+<=
+>= 
+
+add 
+adds
+added
+
+make 
+makes
+made
+
+subtracted
+subract 
+subtracts
+
+multiplied
+multiply
+multiplies
+
+joined
+join 
+joins
+
+deleted
+delete
+deletes
+
+set 
+sets
+
+changed
+change 
+changes
+
+switch
+switches
+switched
+
+contain
+contains
+
+replaced
+replace
+replaces
+
+pressed
+press
+presses
+
+clicked 
+clicks
+click
+
+receive
+receives
+received
+
+broadcast
+
+wait 
+
+create 
+creates
+created
+
+## 
+called (name)
+
+
+
+number
+numbers
+letter
+letters
+variable
+variables
+list
+lists
+sprite 
+sprites
+item 
+items
+element 
+elements
+backdrop
+backdrops
+timer
+timers
+
+message
+messages
+
+
+## Det 
+to 
+from 
+by
+of
+the
+in
+for 
+this
+
+## Conjunction  
+and
+between 
+with
+also
+
+
+## count
+a 
+single 
+all
+random 
+
+##
+when 
+at the end
+at the same time
+called (when sth is called)
+too
+
+# User
+I
+
+# adj
+new
+
+
+
