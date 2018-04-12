@@ -2,9 +2,19 @@
 play
 stop
 clear
-repeat
 start
+
+add
+move
+say
+
+happen
 happens
+happens
+
+repeat
+repeated
+repeat
 
 add
 adds
@@ -73,6 +83,11 @@ creates
 created
 
 # Noun
+Noun following
+Noun[Plur] steps
+Noun[Plur] times
+Noun[Plur] degrees
+Noun[Plur] seconds
 end
 event
 sound
@@ -151,7 +166,9 @@ otherwise
 when
 
 # Punctuation
-,
+Comma ,
+Quote "
+
 
 # Contraction (might want to just split this up)
 that's
@@ -163,6 +180,7 @@ this
 myself
 
 # Adverb
+forever
 as
 then
 finally
@@ -203,6 +221,7 @@ less than or equal to
 greater than or equal to
 
 ## Det
+that
 to
 from
 by
