@@ -1,0 +1,135 @@
+# Sentence
+S -> AL
+
+# AL = Action List
+AL -> AP . AL
+AL -> AP
+AL -> AP and AP
+
+# AP = Action Phrase
+AP -> OrderedCommand
+AP -> SoundCommand
+AP -> ConditionalCommand
+AP -> EventCommand
+AP -> DataCommand
+AP -> LoopCommand
+AP -> OperatorCommand
+AP -> TimerCommand
+
+# Sequence
+OrderedCommand -> OrderAdverb AP
+
+# Loops
+LoopCommand -> repeat LoopCommand’
+LoopCommand -> LoopCommand’
+LoopCommand -> AL. That should be repeated Duration
+LoopCommand -> AL. Repeat that Duration
+
+LoopCommand’ -> AP Duration
+LoopCommand’ -> the following Duration. AL. That’s it
+LoopCommand’ -> the following steps Duration. AL. That’s it
+
+# Duration
+Duration -> forever
+Duration -> NP times
+
+# Operators
+
+# NP = Number Phrase
+NP -> add NP to NP
+NP -> subtract NP from NP
+NP -> multiply NP by NP
+NP -> NP divided by NP
+NP -> divide NP by NP
+NP -> NP times NP
+NP -> NP add NP
+NP -> NP times NP
+NP -> NP minus NP
+NP -> NP subtracted by NP
+NP -> random number between NP and NP
+NP -> random number between NP to NP
+NP -> NUMBER
+
+# BP = Boolean Phrase
+BP -> item NP in list LIST_NAME
+BP -> LIST_NAME contains ITEM
+BP -> Boolean
+Boolean -> true
+Boolean -> false
+BP -> BP and BP
+BP -> BP or BP
+BP -> if VARIABLE_NAME is BP’ NP
+BP -> if NP is BP’ NP
+BP -> if VARIABLE_NAME is BP’ VARIABLE_NAME
+
+BP’ -> equal to
+BP’ -> greater than
+BP’ -> less than
+BP’ -> greater than or equal to
+BP’ -> less than or equal to
+BP’ -> not BP’
+
+SoundCommand -> play the NAME_OF_SOUND sound
+SoundCommand -> set volume to NP
+SoundCommand -> change volume by NP
+SoundCommand -> change pitch effect by NP
+SoundCommand -> softer
+SoundCommand -> louder
+SoundCommand -> slower
+SoundCommand -> faster
+SoundCommand -> stop all sounds
+
+# Control
+ConditionalCommand -> if BP then AL
+ConditionalCommand -> if BP then AL otherwise AL
+ConditionalCommand -> if BP then AL else AL
+ControlCommand -> wait NUMBER seconds
+ControlCommand -> wait until BP
+ControlCommand -> repeat AL until BP
+ControlCommand -> repeat AL forever
+ControlCommand -> repeat AL NP times
+ControlCommand -> delete this clone
+ControlCommand -> create a clone of myself
+
+# Sequences
+# TODO(quacht): fill this out more
+OrderAdverb ->  'first' | 'second' | 'third' | 'firstly' | 'secondly' | 'thirdly' | 'then' | 'after' | 'finally'
+
+
+EventCommand -> broadcast MESSAGE_NAME
+EventCommand -> broadcast MESSAGE_NAME and wait
+EventCommand -> create a new message called MESSAGE_NAME
+SimpleEventHandler -> when EVENT , AL
+EventHandler -> SimpleEventHandler
+EventHandler -> SimpleEventHandler at the same time
+EventHandler -> SimpleEventHandler too
+EventHandler -> SimpleEventHandler simultaneously
+EventHandler -> SimpleEventHandler at the same time too
+
+EVENT -> when the green flag is clicked
+EVENT -> when the program starts
+EVENT -> when the KEY_NAME key is pressed
+EVENT -> when this sprite clicked
+EVENT -> when backdrop switches to BACKDROP_NAME
+EVENT -> when the timer is greater than NP
+EVENT -> when backdrop switches to the NP
+EVENT -> when I receive MESSAGE_NAME
+
+
+DataCommand -> make a variable called VARIABLE_NAME
+DataCommand -> delete variable VARIABLE_NAME
+DataCommand -> set VARIABLE_NAME to NP
+DataCommand -> change VARIABLE_NAME by NP
+DataCommand -> make a list called LIST_NAME for a single sprite.
+DataCommand -> make a list called LIST_NAME for all the sprites.
+DataCommand -> add ITEM to list LIST_NAME
+DataCommand -> delete element NP of list LIST_NAME
+DataCommand -> replace element NP of list LIST_NAME with ITEM
+# The type depends on what’s inside the list
+DataReporter -> the first item in list LIST_NAME
+
+TimerCommand -> Reset the timer
+
+
+
+
