@@ -1,0 +1,204 @@
+
+1 START S
+# Sentence
+1 S AL
+# AL = Action List
+1 AL   AP dot AL
+1 AL   AP
+1 AL   AP and AP
+
+# punctuations
+1 dot   .
+1 comma   ,
+
+# AP = Action Phrase
+1 AP   OrderedCommand
+1 AP   SoundCommand
+1 AP   ConditionalCommand
+1 AP   EventCommand
+1 AP   DataCommand
+1 AP   LoopCommand
+1 AP   OperatorCommand
+1 AP   TimerCommand
+
+# Sequence
+1 OrderedCommand   OrderAdverb AP
+
+# Loops
+1 LoopCommand   repeat LoopCommandP
+1 LoopCommand   LoopCommandP
+1 LoopCommand   AL dot That should be repeated Duration
+1 LoopCommand   AL dot Repeat that Duration
+
+1 LoopCommandP   AP Duration
+1 LoopCommandP   the following Duration dot AL dot That’s it
+1 LoopCommandP   the following steps Duration dot AL dot That’s it
+
+# Duration
+1 Duration   forever
+1 Duration   NP times
+
+# Operators
+
+# NP = Number Phrase
+1 NP   add NP to NP
+1 NP   subtract NP from NP
+1 NP   multiply NP by NP
+1 NP   NP divided by NP
+1 NP   divide NP by NP
+1 NP   NP times NP
+1 NP   NP add NP
+1 NP   NP minus NP
+1 NP   NP subtracted by NP
+1 NP   random number between NP and NP
+1 NP   random number between NP to NP
+1 NP   NUMBER
+
+# BP = Boolean Phrase
+1 BP   item NP in list LIST_NAME
+1 BP   LIST_NAME contains ITEM
+1 BP   Boolean
+1 Boolean   true
+1 Boolean   false
+1 BP   BP and BP
+1 BP   BP or BP
+1 BP   if VARIABLE_NAME is BPP NP
+1 BP   if NP is BPP NP
+1 BP   if VARIABLE_NAME is BPP VARIABLE_NAME
+
+1 BPP   equal to
+1 BPP   greater than
+1 BPP   less than
+1 BPP   greater than or equal to
+1 BPP   less than or equal to
+1 BPP   not BPP
+
+1 SoundCommand   play the NAME_OF_SOUND sound
+1 SoundCommand   set volume to NP
+1 SoundCommand   change volume by NP
+1 SoundCommand   change pitch effect by NP
+1 SoundCommand   softer
+1 SoundCommand   louder
+1 SoundCommand   slower
+1 SoundCommand   faster
+1 SoundCommand   stop all sounds
+
+# Control
+1 ConditionalCommand   if BP then AL
+1 ConditionalCommand   if BP then AL otherwise AL
+1 ConditionalCommand   if BP then AL else AL
+1 ControlCommand   wait NUMBER seconds
+1 ControlCommand   wait until BP
+1 ControlCommand   repeat AL until BP
+1 ControlCommand   repeat AL forever
+1 ControlCommand   repeat AL NP times
+1 ControlCommand   delete this clone
+1 ControlCommand   create a clone of myself
+
+# Sequences
+# TODO(quacht): fill this out more
+1 OrderAdverb    first | second | third | firstly | secondly | thirdly | then | after | finally
+
+
+1 EventCommand   broadcast MESSAGE_NAME
+1 EventCommand   broadcast MESSAGE_NAME and wait
+1 EventCommand   create a new message called MESSAGE_NAME
+1 SimpleEventHandler   when EVENT comma AL
+1 EventHandler   SimpleEventHandler
+1 EventHandler   SimpleEventHandler at the same time
+1 EventHandler   SimpleEventHandler too
+1 EventHandler   SimpleEventHandler simultaneously
+1 EventHandler   SimpleEventHandler at the same time too
+
+1 EVENT   when the green flag is clicked
+1 EVENT   when the program starts
+1 EVENT   when the KEY_NAME key is pressed
+1 EVENT   when this sprite clicked
+1 EVENT   when backdrop switches to BACKDROP_NAME
+1 EVENT   when the timer is greater than NP
+1 EVENT   when backdrop switches to the NP
+1 EVENT   when I receive MESSAGE_NAME
+
+
+1 DataCommand   make a variable called VARIABLE_NAME
+1 DataCommand   delete variable VARIABLE_NAME
+1 DataCommand   set VARIABLE_NAME to NP
+1 DataCommand   change VARIABLE_NAME by NP
+1 DataCommand   make a list called LIST_NAME for a single sprite dot
+1 DataCommand   make a list called LIST_NAME for all the sprites dot
+1 DataCommand   add ITEM to list LIST_NAME
+1 DataCommand   delete element NP of list LIST_NAME
+1 DataCommand   replace element NP of list LIST_NAME with ITEM
+# The type depends on what’s inside the list
+1 DataReporter   the first item in list LIST_NAME
+
+1 TimerCommand   Reset the timer
+
+
+# below are part of new_vocab, copied over 
+1 VARIABLE_NAME   x
+1 VARIABLE_NAME   z
+1 VARIABLE_NAME   y
+1 KEY_NAME   space
+1 KEY_NAME   left arrow
+1 KEY_NAME   right arrow
+1 KEY_NAME   down arrow
+1 KEY_NAME   up arrow
+1 KEY_NAME   any
+1 KEY_NAME   a
+1 KEY_NAME   b
+1 KEY_NAME   c
+1 KEY_NAME   d
+1 KEY_NAME   e
+1 KEY_NAME   f
+1 KEY_NAME   g
+1 KEY_NAME   h
+1 KEY_NAME   i
+1 KEY_NAME   j
+1 KEY_NAME   k
+1 KEY_NAME   l
+1 KEY_NAME   m
+1 KEY_NAME   n
+1 KEY_NAME   o
+1 KEY_NAME   p
+1 KEY_NAME   q
+1 KEY_NAME   r
+1 KEY_NAME   s
+1 KEY_NAME   t
+1 KEY_NAME   u
+1 KEY_NAME   v
+1 KEY_NAME   w
+1 KEY_NAME   x
+1 KEY_NAME   y
+1 KEY_NAME   z
+1 KEY_NAME   0
+1 KEY_NAME   1
+1 KEY_NAME   2
+1 KEY_NAME   3
+1 KEY_NAME   4
+1 KEY_NAME   5
+1 KEY_NAME   6
+1 KEY_NAME   7
+1 KEY_NAME   8
+1 KEY_NAME   9
+1 LIST_NAME   name
+1 NAME_OF_SOUND   sound of music
+1 BACKDROP_NAME   Party
+1 BACKDROP_NAME   Basketball
+1 BACKDROP_NAME   Blue Sky
+1 BACKDROP_NAME   Blue Sky 2
+1 BACKDROP_NAME   Jurassic
+1 BACKDROP_NAME   Light
+1 BACKDROP_NAME   Rays
+1 BACKDROP_NAME   Refrigerator
+1 BACKDROP_NAME   Space
+
+1 NUMBER    1
+1 NUMBER    2
+1 NUMBER    3
+1 NUMBER    4
+1 NUMBER    5
+1 NUMBER    6
+1 NUMBER   0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 | 98 | 99
+
+
