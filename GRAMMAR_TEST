@@ -1,5 +1,5 @@
 1 START S
-# Sentence 
+# Sentence
 1 S   AL
 
 # AL = Action List
@@ -71,17 +71,17 @@
 1 BP   BP and BP
 1 BP   BP or BP
 
-1 CBP   equal to 
+1 CBP   equal to
 1 CBP   greater than
 1 CBP   less than
-1 CBP   greater than or equal to 
+1 CBP   greater than or equal to
 1 CBP   less than or equal to
-1 CBP   LMOD CBP 
+1 CBP   LMOD CBP
 
 1 NEG	 is not
 1 NEG	 isn’t
 1 NEG	 not
-1 POS 	 is 
+1 POS 	 is
 
 1 LMOD POS
 1 LMOD NEG
@@ -125,7 +125,7 @@
 
 # Sequences
 # TODO(quacht): fill this out more
-1 OrderAdverb    first 
+1 OrderAdverb    first
 1 OrderAdverb    second
 1 OrderAdverb    third
 1 OrderAdverb    firstly
@@ -151,8 +151,8 @@
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
-1 EVENT   when backdrop switches to the 
-1 EVENT   when I receive MESSAGE_NAME 
+1 EVENT   when backdrop switches to the
+1 EVENT   when I receive MESSAGE_NAME
 
 1 Tim	timer
 1 Tim	Det timer
@@ -274,7 +274,7 @@
 1 Unk     four
 1 Unk     five
 1 Unk     six
-1 Unk     ten 
+1 Unk     ten
 1 Unk     twenty
 
 1 Det the
@@ -287,7 +287,13 @@
 1 Lis	list
 1 Lis	Det Lis
 
+1 Det the
+1 Det a
 
+1 Var	variable
+1 Var 	Det variable
+1 Lis	list
+1 Lis	Det Lis
 
 1 NAME_OF_SOUND bang
 
