@@ -80,7 +80,7 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append):
 				myfile.write("1\t" + key + "\t" + instance + "\n")
 
 def generate_vocab_list(example_sentences_file_path, vocabulary_file_path):
-	with open(example_sentences_file) as f:
+	with open(example_sentences_file_path) as f:
 		content = f.readlines()
 	sentences = [x.strip() for x in content]
 
