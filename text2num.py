@@ -31,21 +31,19 @@ def text2int(textnum, numwords={}):
 
     return result + current
 
-print text2int('one thousand')
-
-
-blah = """add (.*) to (.*)
-subtract (.*) from (.*)
-multiply (.*) by (.*)
-(.*) divided by (.*)
-divide (.*) by (.*)
-(.*) times (.*)
-(.*) add (.*)
-(.*) times (.*)
-(.*) minus (.*)
-(.*) subtracted by (.*)
-a random number between (.*) and (.*)"""
-blahd = {}
-for thing in ["r'" + exp +"'" for exp in blah.split('\n')]:
-  blahd[thing] = ['NUMBER']
-print(blahd)
+def example_generateExpressionMap():
+  blah = """add (.*) to (.*)
+  subtract (.*) from (.*)
+  multiply (.*) by (.*)
+  (.*) divided by (.*)
+  divide (.*) by (.*)
+  (.*) times (.*)
+  (.*) add (.*)
+  (.*) times (.*)
+  (.*) minus (.*)
+  (.*) subtracted by (.*)
+  a random number between (.*) and (.*)"""
+  blahd = {}
+  for thing in ["r'" + exp +"'" for exp in blah.split('\n')]:
+    blahd[thing] = ['NUMBER']
+  print(blahd)

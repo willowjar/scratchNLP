@@ -28,29 +28,19 @@ expressionMap = {
   r'the first item in list (.*)': ['LIST_NAME'],
 }
 
-numberExpressionMap = {
-	r'subtract (.*) from (.*)': ['NUMBER','NUMBER'],
-	r'(.*) subtracted by (.*)': ['NUMBER','NUMBER'],
-	r'(.*) minus (.*)': ['NUMBER','NUMBER'],
-	r'divide (.*) by (.*)': ['NUMBER','NUMBER'],
-	r'multiply (.*) by (.*)': ['NUMBER','NUMBER'],
-	r'(.*) divided by (.*)': ['NUMBER','NUMBER'],
-	r'(.*) times (.*)': ['NUMBER','NUMBER'],
-	r'a random number between (.*) and (.*)': ['NUMBER','NUMBER'],
-	r'(.*) add (.*)': ['NUMBER','NUMBER'],
-	r'add (.*) to (.*)': ['NUMBER','NUMBER']
- }
-
 def extractVocab(expressionMapList, sentences):
 	result = {}
 	for sentence in sentences:
 		for expressionMap in expressionMapList:
-			for expression in expressionMap:
-				regex = expression[0]
-				variables = expression[1]
+			for regex in expressionMap:
+				variables = expressionMap[regex]
 				matchObj = re.match(regex, sentence, re.M|re.I)
-				if matchObj:
+				if matchObj and matchObj.group():
 					for i in range(1, len(variables)+1):
+						print regex
+						print variables[i-1]
+						print matchObj.group(i)
+						print ''
 						if variables[i-1] in result:
 							result[variables[i-1]].add(matchObj.group(i));
 						else:
@@ -63,7 +53,7 @@ with open(example_sentences_file) as f:
     content = f.readlines()
 sentences = [x.strip() for x in content]
 
-expressionMapList = [expressionMap, numberExpressionMap]
+expressionMapList = [expressionMap]
 new_vocab = extractVocab(expressionMapList, sentences)
 
 # Define the kinds of keys that may be pressed and responded to.
@@ -80,10 +70,8 @@ new_vocab['BACKDROP_NAME'] = backdrops
 
 # Given a vocab dictionary and vocabulary file, generate the vocab.
 def add_to_vocabulary_file(vocab, vocabulary_file):
-	with open(vocabulary_file, "a+") as myfile:
+	with open(vocabulary_file, "w+") as myfile:
 		for key in vocab:
-			print(key)
-			print(vocab[key])
 			for instance in vocab[key]:
 				myfile.write(key + " -> " + instance + "\n")
 
