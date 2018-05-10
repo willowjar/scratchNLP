@@ -11,7 +11,7 @@
 1 AP   OrderedCommand
 1 AP   SoundCommand
 1 AP   ConditionalCommand
-1 AP   EventCommand
+1 AP   EventHandler
 1 AP   DataCommand
 1 AP   LoopCommand
 1 AP   OperatorCommand
@@ -23,32 +23,36 @@
 # Operators
 
 # NP = Number Phrase
-1 NP   add NP to NP
-1 NP   NP plus NP
-1 NP   the sum of NP and NP
-1 NP   NP added to NP
+1 NP	NPP
+1 NP	Det NPP
+1 NP 	VARIABLE_NAME
 
-1 NP   subtract NP from NP
+#1 NP   add NP to NP
+1 NP   NP plus NP
+1 NP   NP added to NP
+1 NPP   sum of NP and NP
+
+#1 NP   subtract NP from NP
 1 NP   NP minus NP 
 1 NP   NP subtracted by NP
 
-1 NP   multiply NP by NP
+#1 NP   multiply NP by NP
 1 NP   NP times NP
 1 NP	NP multiplied by NP
-1 NP 	the product of NP and NP
+1 NPP 	product of NP and NP
 
 
 1 NP   NP divided by NP 
-1 NP   divide NP by NP 
+#1 NP   divide NP by NP 
 
-1 NP   a random number between NP and NP
+1 NPP   random number between NP and NP
 1 NP   NUMBER
 1 NP   negative NUMBER
 
 
 # BP = Boolean Phrase
-1 BP   item NP in list LIST_NAME
-1 BP   item NP MOD in list LIST_NAME
+1 BP   item NP in Lis LIST_NAME
+1 BP   item NP MOD in Lis LIST_NAME
 
 1 BP   if VARIABLE_NAME BPP NP 
 1 BP   if VARIABLE_NAME MOD BPP NP 
@@ -60,26 +64,26 @@
 
 1 Boolean   true
 1 Boolean   false
-1 Boolean   MOD true
-1 Boolean   MOD false
+1 Boolean   LMOD true
+1 Boolean   LMOD false
 
 1 BP   BP and BP
 1 BP   BP or BP
 
-1 BPP   equal to 
-1 BPP   greater than
-1 BPP   less than
-1 BPP   greater than or equal to 
-1 BPP   less than or equal to
-1 BPP   MOD BPP 
+1 CBP   equal to 
+1 CBP   greater than
+1 CBP   less than
+1 CBP   greater than or equal to 
+1 CBP   less than or equal to
+1 CBP   LMOD CBP 
 
 1 NEG	 is not
 1 NEG	 isn’t
 1 NEG	 not
 1 POS 	 is 
 
-1 MOD POS
-1 MOD NEG
+1 LMOD POS
+1 LMOD NEG
 
 1 SoundCommand   play the NAME_OF_SOUND sound
 1 SoundCommand   set volume to NP
@@ -133,7 +137,7 @@
 1 EventCommand   broadcast MESSAGE_NAME
 1 EventCommand   broadcast MESSAGE_NAME and wait
 1 EventCommand   create a new message called MESSAGE_NAME
-1 SimpleEventHandler   when EVENT AL
+1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler
 1 EventHandler   SimpleEventHandler at the same time
 1 EventHandler   SimpleEventHandler too
@@ -150,8 +154,8 @@
 1 EVENT   when I receive MESSAGE_NAME 
 
 
-1 DataCommand   make a variable VARIABLE_LIST
-1 DataCommand   delete variable VARIABLE_NAME
+1 DataCommand   make Var VARIABLE_LIST
+1 DataCommand   delete Var VARIABLE_NAME
 
 
 1 DataCommand   set VARIABLE_NAME to NP
@@ -168,13 +172,13 @@
 1 DataCommand  divide VARIABLE_NAME by NP
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
-1 DataCommand   make a list called LIST_NAME for a single sprite
-1 DataCommand   make a list called LIST_NAME for all the sprites
-1 DataCommand   add ITEM to list LIST_NAME
-1 DataCommand   delete element NP of list LIST_NAME
-1 DataCommand   replace element NP of list LIST_NAME with ITEM
-# The type depends on whatPs inside the list
-1 DataReporter   the first item in list LIST_NAME
+1 DataCommand   make Lis called LIST_NAME for a single sprite
+1 DataCommand   make Lis called LIST_NAME for all the sprites
+1 DataCommand   add ITEM to Lis LIST_NAME
+1 DataCommand   delete element NP of Lis LIST_NAME
+1 DataCommand   replace element NP of Lis LIST_NAME with ITEM
+# The type depends on what's inside the list
+1 DataReporter   the first item in Lis LIST_NAME
 
 1 VARIABLE_LIST   VARIABLE_NAME
 1 VARIABLE_LIST   VARIABLE_NAME and VARIABLE_NAME
@@ -261,6 +265,16 @@
 1 NUMBER     six
 1 NUMBER     ten 
 1 NUMBER     twenty
+
+1 Det the
+1 Det a
+
+1 Var	variable
+1 Var 	Det variable
+1 Lis	list
+1 Lis	Det Lis
+
+
 
 1 NAME_OF_SOUND bang
 

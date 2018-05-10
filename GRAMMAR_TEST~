@@ -18,46 +18,48 @@
 1 AP   TimerCommand
 
 # Sequence
-1 OrderedCommand   OrderAdverb AP
+1 OrderedCommand   OrderAdverb AL
 
 # Operators
 
 # NP = Number Phrase
+1 Unk	NP
 1 NP	NPP
 1 NP	Det NPP
 1 NP 	VARIABLE_NAME
 
-#1 NP   add NP to NP
-1 NP   NP plus NP
-1 NP   NP added to NP
-1 NPP   sum of NP and NP
+#1 NP   add Unk to Unk
+1 NP   	Unk plus Unk
+1 NP   Unk added to Unk
+1 NPP   sum of Unk and Unk
 
-#1 NP   subtract NP from NP
-1 NP   NP minus NP 
-1 NP   NP subtracted by NP
+#1 NP   subtract Unk from Unk
+1 NP   Unk minus Unk
+1 NP   Unk subtracted by Unk
 
-#1 NP   multiply NP by NP
-1 NP   NP times NP
-1 NP	NP multiplied by NP
-1 NPP 	product of NP and NP
+#1 NP   multiply Unk by Unk
+1 NP  	Unk times Unk
+1 NP	Unk multiplied by Unk
+1 NPP 	product of Unk and Unk
 
 
-1 NP   NP divided by NP 
-#1 NP   divide NP by NP 
+1 NP   Unk divided by Unk
+#1 NP   divide Unk by Unk
 
-1 NPP   random number between NP and NP
+1 NPP   random number between Unk and Unk
 1 NP   NUMBER
 1 NP   negative NUMBER
 
 
 # BP = Boolean Phrase
-1 BP   item NP in Lis LIST_NAME
-1 BP   item NP MOD in Lis LIST_NAME
+1 BP   item Unk in Lis LIST_NAME
+1 BP   item Unk MOD in Lis LIST_NAME
 
-1 BP   if VARIABLE_NAME BPP NP 
-1 BP   if VARIABLE_NAME MOD BPP NP 
-1 BP   if NP BPP NP 
-1 BP   if VARIABLE_NAME BPP VARIABLE_NAME
+1 BP   VARIABLE_NAME CBP Unk
+1 BP   VARIABLE_NAME MOD CBP Unk
+1 BP   Unk CBP Unk
+1 BP   VARIABLE_NAME CBP VARIABLE_NAME
+1 BP   Tim CBP Unk
 
 1 BP   LIST_NAME contains ITEM
 1 BP   Boolean
@@ -86,9 +88,9 @@
 1 LMOD NEG
 
 1 SoundCommand   play the NAME_OF_SOUND sound
-1 SoundCommand   set volume to NP
-1 SoundCommand   change volume by NP
-1 SoundCommand   change pitch effect by NP
+1 SoundCommand   set volume to Unk
+1 SoundCommand   change volume by Unk
+1 SoundCommand   change pitch effect by Unk
 1 SoundCommand   softer
 1 SoundCommand   louder
 1 SoundCommand   slower
@@ -104,7 +106,7 @@
 1 ControlCommand   wait until BP
 1 ControlCommand   repeat AL until BP
 1 ControlCommand   repeat AL forever
-1 ControlCommand   repeat AL NP times
+1 ControlCommand   repeat AL Unk times
 1 ControlCommand   delete this clone
 1 ControlCommand   create a clone of myself
 
@@ -120,7 +122,7 @@
 
 # Duration
 1 Duration   forever
-1 Duration   NP times
+1 Duration   Unk times
 
 # Sequences
 # TODO(quacht): fill this out more
@@ -136,7 +138,7 @@
 
 1 EventCommand   broadcast MESSAGE_NAME
 1 EventCommand   broadcast MESSAGE_NAME and wait
-1 EventCommand   create a new message called MESSAGE_NAME
+1 EventCommand   a new message called MESSAGE_NAME
 1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler
 1 EventHandler   SimpleEventHandler at the same time
@@ -149,8 +151,8 @@
 1 EVENT   when KEY_NAME key is pressed
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
-1 EVENT   when the timer is greater than NP
-1 EVENT   when backdrop switches to the NP
+1 EVENT   when Tim CBP Unk
+1 EVENT   when backdrop switches to the 
 1 EVENT   when I receive MESSAGE_NAME 
 
 1 Tim	timer
@@ -162,33 +164,35 @@
 1 DataCommand   delete Var VARIABLE_NAME
 
 
-1 DataCommand   set VARIABLE_NAME to NP
-1 DataCommand   change VARIABLE_NAME by NP
+1 DataCommand   set VARIABLE_NAME to Unk
+1 DataCommand   set VARIABLE_NAME to BP
+1 DataCommand   change VARIABLE_NAME by Unk
 
-1 DataCommand  add NP to VARIABLE_NAME
-1 DataCommand  increment VARIABLE_NAME by NP
+1 DataCommand  add Unk to VARIABLE_NAME
+1 DataCommand  increment VARIABLE_NAME by Unk
 1 DataCommand  add VARIABLE_NAME to VARIABLE_NAME
-1 DataCommand  subtract NP from VARIABLE_NAME
-1 DataCommand  decrement VARIABLE_NAME by NP
+1 DataCommand  subtract Unk from VARIABLE_NAME
+1 DataCommand  decrement VARIABLE_NAME by Unk
 1 DataCommand  subtract VARIABLE_NAME from VARIABLE_NAME
-1 DataCommand  multiply VARIABLE_NAME by NP
+1 DataCommand  multiply VARIABLE_NAME by Unk
 1 DataCommand  multiply VARIABLE_NAME by VARIABLE_NAME
-1 DataCommand  divide VARIABLE_NAME by NP
+1 DataCommand  divide VARIABLE_NAME by Unk
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
 1 DataCommand   make Lis called LIST_NAME for a single sprite
 1 DataCommand   make Lis called LIST_NAME for all the sprites
 1 DataCommand   add ITEM to Lis LIST_NAME
-1 DataCommand   delete element NP of Lis LIST_NAME
-1 DataCommand   replace element NP of Lis LIST_NAME with ITEM
+1 DataCommand   delete element Unk of Lis LIST_NAME
+1 DataCommand   replace element Unk of Lis LIST_NAME with ITEM
 # The type depends on what's inside the list
 1 DataReporter   the first item in Lis LIST_NAME
 
 1 VARIABLE_LIST   VARIABLE_NAME
-1 VARIABLE_LIST   VARIABLE_NAME and VARIABLE_NAME
-1 VARIABLE_NAME   called VARIABLE_NAME
+1 VARIABLE_LIST   VARIABLE_NAME and VARIABLE_LIST
+1 VARIABLE_NAME   Var VARIABLE_NAME
 
-1 TimerCommand   Reset the timer
+
+1 TimerCommand   reset Tim
 
 
 # Vocab
@@ -196,6 +200,7 @@
 1 VARIABLE_NAME    x
 1 VARIABLE_NAME    z
 1 VARIABLE_NAME    y
+1 VARIABLE_NAME    count
 
 1 KEY_NAME 	Det KEY_NAME
 1 KEY_NAME    space
@@ -253,30 +258,32 @@
 1 BACKDROP_NAME    Refrigerator
 1 BACKDROP_NAME    Space
 
-1 NUMBER     1
-1 NUMBER     2
-1 NUMBER     3
-1 NUMBER     4
-1 NUMBER     5
-1 NUMBER     6
-1 NUMBER     10
-1 NUMBER     20
+1 Unk     1
+1 Unk     2
+1 Unk     3
+1 Unk     4
+1 Unk     5
+1 Unk     6
+1 Unk     10
+1 Unk     20
 
 
-1 NUMBER     one
-1 NUMBER     two
-1 NUMBER     three
-1 NUMBER     four
-1 NUMBER     five
-1 NUMBER     six
-1 NUMBER     ten 
-1 NUMBER     twenty
+1 Unk     one
+1 Unk     two
+1 Unk     three
+1 Unk     four
+1 Unk     five
+1 Unk     six
+1 Unk     ten 
+1 Unk     twenty
 
 1 Det the
 1 Det a
 
 1 Var	variable
+1 Var 	variable called
 1 Var 	Det variable
+1 Var 	Det variable called
 1 Lis	list
 1 Lis	Det Lis
 
