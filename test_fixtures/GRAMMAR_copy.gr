@@ -263,12 +263,43 @@
 1	BACKDROP_NAME	Rays
 1	BACKDROP_NAME	Refrigerator
 1	BACKDROP_NAME	Space
+1	VARIABLE_NAME	x
+1	VARIABLE_NAME	x
+1	VARIABLE_NAME	y
+1	VARIABLE_NAME	x
+1	Unk	10
+1	Unk	20
+1	VARIABLE_NAME	y
+1	Unk	six
+1	VARIABLE_NAME	y
 1	NAME_OF_SOUND	bang
 1	NAME_OF_SOUND	bang 
 1	LIST_NAME	list
 1	MESSAGE_NAME	alas the world is still in tact
+1	MESSAGE_NAME	and down we go
+1	MESSAGE_NAME	I am done
+1	MESSAGE_NAME	hello world 3 times then create a new variable called count
+1	VARIABLE_NAME	count
+1	Unk	do
 1	NAME_OF_SOUND	bing
 1	NAME_OF_SOUND	bing 
 1	VARIABLE_NAME	volume
-1	Unk	count
 1	Unk	zero
+1	Unk	say
+1	LIST_NAME	name
+1	VARIABLE_NAME	name
+1	VARIABLE_NAME	it
+1	Unk	three
+1	VARIABLE_NAME	y
+1	Unk	two
+1	Unk	2.2
+1	Unk	1.8
+1	Unk	numbers
+1	VARIABLE_NAME	i
+1	Unk	ten
+1	MESSAGE_NAME	i am having an identity crisis that
+1	NAME_OF_SOUND	sound of music 
+1	VARIABLE_NAME	volume
+1	VARIABLE_NAME	y
+1	VARIABLE_NAME	x
+1	VARIABLE_NAME	z

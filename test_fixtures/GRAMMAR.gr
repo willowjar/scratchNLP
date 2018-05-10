@@ -48,6 +48,7 @@
 
 1 NPP   random number between Unk and Unk
 1 NP   negative NP
+1 NP   negative Unk
 
 
 # BP = Boolean Phrase
@@ -243,6 +244,16 @@
 1	KEY_NAME	7
 1	KEY_NAME	8
 1	KEY_NAME	9
+1	Unk	0
+1	Unk	1
+1	Unk	2
+1	Unk	3
+1	Unk	4
+1	Unk	5
+1	Unk	6
+1	Unk	7
+1	Unk	8
+1	Unk	9
 1	BACKDROP_NAME	Party
 1	BACKDROP_NAME	Basketball
 1	BACKDROP_NAME	Blue Sky
