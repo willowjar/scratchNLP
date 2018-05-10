@@ -187,3 +187,4 @@ if __name__ == "__main__":
 		generate_vocab_list(example_sentences_file, vocabulary_file)
 	else:
 		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')
+
