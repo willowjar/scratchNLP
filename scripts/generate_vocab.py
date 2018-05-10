@@ -26,7 +26,8 @@ expression_map = {
   r'play the (\w*) sound': ['NAME_OF_SOUND'],
   r'play the ((?:\w+\s)+)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['NUMBER'],
-  r'broadcast ((?:\w| )*)': ['MESSAGE_NAME'],
+  # Require that the user ends the braodcast message name with a period.
+  r'broadcast ((?:\w| )*.)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   r'delete variable (\w*)': ['VARIABLE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
