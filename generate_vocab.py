@@ -59,7 +59,7 @@ def extract_names(sentences):
 							result[variables[i-1]] = set([matchObj.group(i)])
 	return result
 
-def add_to_vocabulary_file(vocab, vocabulary_file, opt_append):
+def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
 	Given a vocab dictionary and vocabulary file, generate the vocab and put it
 	into the given file.
@@ -79,12 +79,8 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append):
 			for instance in vocab[key]:
 				myfile.write("1\t" + key + "\t" + instance + "\n")
 
-def generate_vocab_list(example_sentences_file_path, vocabulary_file_path):
-	with open(example_sentences_file_path) as f:
-		content = f.readlines()
-	sentences = [x.strip() for x in content]
-
-	new_vocab = extract_names(sentences)
+def get_core_vocab():
+	new_vocab = {}
 
 	# Define the kinds of keys that may be pressed and responded to.
 	keynames = ['space','left arrow', 'right arrow', 'down arrow', 'up arrow', 'any']
@@ -98,7 +94,24 @@ def generate_vocab_list(example_sentences_file_path, vocabulary_file_path):
 	backdrops = ['Party','Basketball', 'Blue Sky', 'Blue Sky 2', 'Jurassic', 'Light', 'Rays', 'Refrigerator', 'Space']
 	new_vocab['BACKDROP_NAME'] = backdrops
 
-	add_to_vocabulary_file(new_vocab, vocabulary_file)
+	return new_vocab
+
+def generate_vocab_list(vocabulary_file_path):
+	new_vocab = get_core_vocab()
+	add_to_vocabulary_file(new_vocab, vocabulary_file_path)
+
+def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_file_path):
+	with open(example_sentences_file_path) as f:
+		content = f.readlines()
+	sentences = [x.strip() for x in content]
+
+	new_vocab = extract_names(sentences)
+	core_vocab = get_core_vocab()
+
+	final_vocab = core_vocab.copy()
+	final_vocab.update(new_vocab)
+
+	add_to_vocabulary_file(final_vocab, vocabulary_file)
 
 def replace_unknowns(utterance, grammar_file_path):
 	""" Get list of unknown words and the utterance with all unknowns replaced
@@ -114,7 +127,7 @@ def replace_unknowns(utterance, grammar_file_path):
 	with open(grammar_file_path) as f:
 		content = f.read() + '\n'
 
-	pattern = re.compile(r'1	Unk	(.*)')
+	pattern = re.compile(r'1    Unk (.*)')
 	logged_unknowns = set(re.findall(pattern, content))
 
 	# Known words must come from the right hand side of rules
@@ -174,4 +187,3 @@ if __name__ == "__main__":
 		generate_vocab_list(example_sentences_file, vocabulary_file)
 	else:
 		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')
-
