@@ -25,6 +25,9 @@ print 'generated GRAMMAR_copy.gr...'
 with open("../test_fixtures/test_sentences", "r") as test_sentences:
 	with open("../test_fixtures/processed_test_sentences", "w+") as processed:
 		for sentence in test_sentences.readlines():
-			print 'read sentence:' + sentence
+			print 'read sentence: ' + sentence
 			new_sentence = add_unknowns_to_grammar(sentence, grammar_copy_path)
+			processed.write(new_sentence + '\n')
+			print 'new sentence: ' + sentence
+			print ''
 			processed.write(new_sentence + '\n')

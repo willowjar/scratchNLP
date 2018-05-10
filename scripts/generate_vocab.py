@@ -10,7 +10,7 @@ from text2num import text2int
 # It's useful to test a regular expression using https://pythex.org/
 regexMap = {
 	'single word': r'(\w*)',
-	'phrase': r'([\w\s]+)+',
+	'phrase': r'((?:\w+\s)+)',
 	'anything': r'(?:.*)'
 }
 
@@ -23,7 +23,8 @@ expression_map = {
   r'(?:.*) list called (\w*) for': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
   r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
-  r'play the ([\w\s]+)+ sound': ['NAME_OF_SOUND'],
+  r'play the (\w*) sound': ['NAME_OF_SOUND'],
+  r'play the ((?:\w+\s)+)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['NUMBER'],
   r'broadcast ((?:\w| )*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
@@ -49,23 +50,24 @@ def extract_names(sentences):
 		dict: map of each nonterminal to a list of terminals.
 	"""
 	result = {}
+	#print len(sentences)
 	for sentence in sentences:
+		#print 'sentence'
+		#print sentence
 		for expression_map in expression_map_list:
+			#print expression_map
 			for regex in expression_map:
+				#print '\t' + regex
 				variables = expression_map[regex]
 				matches = re.findall(regex, sentence, re.M|re.I)
-
+				#print matches
 				for i in range(0, len(matches)):
+					#print '\t\t' + str(i) + matches[i]
 					if variables[i] in result:
 						result[variables[i]].add(matches[i])
 					else:
 						result[variables[i]] = set([matches[i]])
 	return result
-
-print(extract_names(['if x is equal to 1 broadcast alas the world is still in tact',
-'when the down arrow is pressed broadcast and down we go',
-'finally broadcast I am done']))
-
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
@@ -84,9 +86,9 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 		mode="a+"
 	with open(vocabulary_file, mode) as myfile:
 		for key in vocab:
-			# print key
+			# #print key
 			for instance in vocab[key]:
-				# print '\t' + instance
+				# #print '\t' + instance
 				myfile.write("1\t" + key + "\t" + instance + "\n")
 	myfile.close()
 
@@ -177,11 +179,13 @@ def add_unknowns_to_grammar(utterance, grammar_file_path):
 	"""
 
 	# Add unknown names from utterance to the grammar
+	#print 'extracting names'
 	utterance_vocab = extract_names([utterance])
+	#print 'done extracting names'
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
-	print 'utterance_vocab'
-	print utterance_vocab
-	# print 'utterance_vocab'
+	#print 'utterance_vocab'
+	#print utterance_vocab
+	# #print 'utterance_vocab'
 
 	# Find all unknown words in the input, save them in the grammar, and replace
 	#  them with 'Unk' which represents that they are unknown.
