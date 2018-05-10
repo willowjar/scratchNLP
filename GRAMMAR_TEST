@@ -47,8 +47,7 @@
 #1 NP   divide Unk by Unk
 
 1 NPP   random number between Unk and Unk
-1 NP   NUMBER
-1 NP   negative NUMBER
+1 NP   negative NP
 
 
 # BP = Boolean Phrase
@@ -247,6 +246,7 @@
  1 KEY_NAME    9
 
 1 LIST_NAME    name
+1 LIST_NAME    list
 1 NAME_OF_SOUND    sound of music
 1 BACKDROP_NAME    Party
 1 BACKDROP_NAME    Basketball

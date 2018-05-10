@@ -47,8 +47,8 @@
 #1 NP   divide Unk by Unk
 
 1 NPP   random number between Unk and Unk
-1 NP   NUMBER
-1 NP   negative NUMBER
+1 NP   Unk
+1 NP   negative NP
 
 
 # BP = Boolean Phrase
