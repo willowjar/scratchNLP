@@ -6,28 +6,35 @@ from text2num import text2int
 # TODO(quacht): add argument validation
 # TODO(quacht): specify which vocabulary file to append generate rules to.
 
+# Reference explaining the regexs seen in the expression map.
+# It's useful to test a regular expression using https://pythex.org/
+regexMap = {
+	'single word': r'(\w*)',
+	'phrase': r'([\w\s]+)+',
+	'anything': r'(?:.*)'
+}
 
 # Use regex to match specific Scratch commands and do simple error
 # checking to validate arguments
 # global
 expression_map = {
-  r'message called (.*)': ['MESSAGE_NAME'],
-  r'variable called (.*)': ['VARIABLE_NAME'],
-  r'list called (.*) for': ['LIST_NAME'],
-  r'item (.*) is in list (.*)': ['ITEM', 'LIST_NAME'],
-  r'(.*) contains (.*)': ['LIST_NAME', 'ITEM'],
-  r'play the (.*) sound': ['NAME_OF_SOUND'],
-  r'wait (.*) seconds': ['NUMBER'],
-  r'broadcast (.*)': ['MESSAGE_NAME'],
-  r'when I receive (.*)': ['MESSAGE_NAME'],
-  r'delete variable (.*)': ['VARIABLE_NAME'],
-  r'set (.*) to .*': ['VARIABLE_NAME'],
-  r'change (.*) by .*': ['VARIABLE_NAME'],
-  r'make a list called (.*) for': ['LIST_NAME'],
-  r'add (.*) to list (.*)': ['ITEM','LIST_NAME'],
-  r'delete element .* of list (.*)': ['LIST_NAME'],
-  r'replace element .* of list (.*) with .*': ['LIST_NAME'],
-  r'the first item in list (.*)': ['LIST_NAME'],
+  r'(?:.*) message called (\w*)': ['MESSAGE_NAME'],
+  r'(?:.*) variable called (\w*)': ['VARIABLE_NAME'],
+  r'(?:.*) list called (\w*) for': ['LIST_NAME'],
+  r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
+  r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
+  r'play the ([\w\s]+)+ sound': ['NAME_OF_SOUND'],
+  r'wait (\w*) seconds': ['NUMBER'],
+  r'broadcast ((?:\w| )*)': ['MESSAGE_NAME'],
+  r'when I receive (\w*)': ['MESSAGE_NAME'],
+  r'delete variable (\w*)': ['VARIABLE_NAME'],
+  r'set (\w*) to .*': ['VARIABLE_NAME'],
+  r'change (\w*) by .*': ['VARIABLE_NAME'],
+  r'make a list called (\w*) for': ['LIST_NAME'],
+  r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
+  r'delete element .* of list (\w*)': ['LIST_NAME'],
+  r'replace element .* of list (\w*) with .*': ['LIST_NAME'],
+  r'the first item in list (\w*)': ['LIST_NAME'],
 }
 
 # global
@@ -46,18 +53,19 @@ def extract_names(sentences):
 		for expression_map in expression_map_list:
 			for regex in expression_map:
 				variables = expression_map[regex]
-				matchObj = re.match(regex, sentence, re.M|re.I)
-				if matchObj and matchObj.group():
-					for i in range(1, len(variables)+1):
-						print regex
-						print variables[i-1]
-						print matchObj.group(i)
-						print ''
-						if variables[i-1] in result:
-							result[variables[i-1]].add(matchObj.group(i));
-						else:
-							result[variables[i-1]] = set([matchObj.group(i)])
+				matches = re.findall(regex, sentence, re.M|re.I)
+
+				for i in range(0, len(matches)):
+					if variables[i] in result:
+						result[variables[i]].add(matches[i])
+					else:
+						result[variables[i]] = set([matches[i]])
 	return result
+
+print(extract_names(['if x is equal to 1 broadcast alas the world is still in tact',
+'when the down arrow is pressed broadcast and down we go',
+'finally broadcast I am done']))
+
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
@@ -76,8 +84,11 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 		mode="a+"
 	with open(vocabulary_file, mode) as myfile:
 		for key in vocab:
+			# print key
 			for instance in vocab[key]:
+				# print '\t' + instance
 				myfile.write("1\t" + key + "\t" + instance + "\n")
+	myfile.close()
 
 def get_core_vocab():
 	new_vocab = {}
@@ -89,6 +100,9 @@ def get_core_vocab():
 	# Include all digits
 	keynames = keynames + [str(num) for num in range(0,10)]
 	new_vocab['KEY_NAME'] = keynames
+
+	# Include same numbers digits
+	new_vocab['Unk'] = [str(num) for num in range(0,10)]
 
 	# Add the names of Scratch backdrops.
 	backdrops = ['Party','Basketball', 'Blue Sky', 'Blue Sky 2', 'Jurassic', 'Light', 'Rays', 'Refrigerator', 'Space']
@@ -127,11 +141,11 @@ def replace_unknowns(utterance, grammar_file_path):
 	with open(grammar_file_path) as f:
 		content = f.read() + '\n'
 
-	pattern = re.compile(r'1    Unk (.*)')
+	pattern = re.compile(r'1\tUnk\t(.*)')
 	logged_unknowns = set(re.findall(pattern, content))
 
 	# Known words must come from the right hand side of rules
-	pattern = re.compile(r' (.*)')
+	pattern = re.compile(r'(?: |\t)(.*)')
 	flatten = lambda l: [item for sublist in l for item in sublist]
 	known_words = set(flatten([phrase.split() for phrase in re.findall(pattern, content)]))
 
@@ -164,12 +178,15 @@ def add_unknowns_to_grammar(utterance, grammar_file_path):
 
 	# Add unknown names from utterance to the grammar
 	utterance_vocab = extract_names([utterance])
-	print utterance_vocab
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
+	print 'utterance_vocab'
+	print utterance_vocab
+	# print 'utterance_vocab'
 
 	# Find all unknown words in the input, save them in the grammar, and replace
 	#  them with 'Unk' which represents that they are unknown.
 	new_utterance, unk_list = replace_unknowns(utterance, grammar_file_path)
+
 	vocab_map = {'Unk': unk_list}
 	add_to_vocabulary_file(vocab_map, grammar_file_path, 'append')
 	return new_utterance
@@ -187,4 +204,3 @@ if __name__ == "__main__":
 		generate_vocab_list(example_sentences_file, vocabulary_file)
 	else:
 		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')
-

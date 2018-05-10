@@ -1,5 +1,5 @@
 1 START S
-# Sentence 
+# Sentence
 1 S   AL
 
 # AL = Action List
@@ -47,8 +47,8 @@
 #1 NP   divide Unk by Unk
 
 1 NPP   random number between Unk and Unk
-1 NP   Unk
 1 NP   negative NP
+1 NP   negative Unk
 
 
 # BP = Boolean Phrase
@@ -72,17 +72,17 @@
 1 BP   BP and BP
 1 BP   BP or BP
 
-1 CBP   equal to 
+1 CBP   equal to
 1 CBP   greater than
 1 CBP   less than
-1 CBP   greater than or equal to 
+1 CBP   greater than or equal to
 1 CBP   less than or equal to
-1 CBP   LMOD CBP 
+1 CBP   LMOD CBP
 
 1 NEG	 is not
 1 NEG	 isn’t
 1 NEG	 not
-1 POS 	 is 
+1 POS 	 is
 
 1 LMOD POS
 1 LMOD NEG
@@ -126,7 +126,7 @@
 
 # Sequences
 # TODO(quacht): fill this out more
-1 OrderAdverb    first 
+1 OrderAdverb    first
 1 OrderAdverb    second
 1 OrderAdverb    third
 1 OrderAdverb    firstly
@@ -152,13 +152,11 @@
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
-1 EVENT   when backdrop switches to the 
-1 EVENT   when I receive MESSAGE_NAME 
+1 EVENT   when backdrop switches to the
+1 EVENT   when I receive MESSAGE_NAME
 
 1 Tim	timer
 1 Tim	Det timer
-
-
 
 1 DataCommand   make Var VARIABLE_LIST
 1 DataCommand   delete Var VARIABLE_NAME
@@ -194,89 +192,6 @@
 
 1 TimerCommand   reset Tim
 
-
-# Vocab
-
-1 VARIABLE_NAME    x
-1 VARIABLE_NAME    z
-1 VARIABLE_NAME    y
-1 VARIABLE_NAME    count
-
-1 KEY_NAME 	Det KEY_NAME
-1 KEY_NAME    space
-1 KEY_NAME    left arrow
-1 KEY_NAME    right arrow
-1 KEY_NAME    down arrow
-1 KEY_NAME    up arrow
-1 KEY_NAME    any
-1 KEY_NAME    a
-1 KEY_NAME    b
- 1 KEY_NAME    c
- 1 KEY_NAME    d
- 1 KEY_NAME    e
- 1 KEY_NAME    f
- 1 KEY_NAME    g
- 1 KEY_NAME    h
- 1 KEY_NAME    i
- 1 KEY_NAME    j
- 1 KEY_NAME    k
- 1 KEY_NAME    l
- 1 KEY_NAME    m
- 1 KEY_NAME    n
- 1 KEY_NAME    o
- 1 KEY_NAME    p
- 1 KEY_NAME    q
- 1 KEY_NAME    r
- 1 KEY_NAME    s
- 1 KEY_NAME    t
- 1 KEY_NAME    u
- 1 KEY_NAME    v
- 1 KEY_NAME    w
- 1 KEY_NAME    x
- 1 KEY_NAME    y
- 1 KEY_NAME    z
- 1 KEY_NAME    0
- 1 KEY_NAME    1
- 1 KEY_NAME    2
- 1 KEY_NAME    3
- 1 KEY_NAME    4
- 1 KEY_NAME    5
- 1 KEY_NAME    6
- 1 KEY_NAME    7
- 1 KEY_NAME    8
- 1 KEY_NAME    9
-
-1 LIST_NAME    name
-1 NAME_OF_SOUND    sound of music
-1 BACKDROP_NAME    Party
-1 BACKDROP_NAME    Basketball
-1 BACKDROP_NAME    Blue Sky
-1 BACKDROP_NAME    Blue Sky 2
-1 BACKDROP_NAME    Jurassic
-1 BACKDROP_NAME    Light
-1 BACKDROP_NAME    Rays
-1 BACKDROP_NAME    Refrigerator
-1 BACKDROP_NAME    Space
-
-1 Unk     1
-1 Unk     2
-1 Unk     3
-1 Unk     4
-1 Unk     5
-1 Unk     6
-1 Unk     10
-1 Unk     20
-
-
-1 Unk     one
-1 Unk     two
-1 Unk     three
-1 Unk     four
-1 Unk     five
-1 Unk     six
-1 Unk     ten 
-1 Unk     twenty
-
 1 Det the
 1 Det a
 
@@ -287,7 +202,67 @@
 1 Lis	list
 1 Lis	Det Lis
 
-
-
-1 NAME_OF_SOUND bang
-
+1	KEY_NAME	space
+1	KEY_NAME	left arrow
+1	KEY_NAME	right arrow
+1	KEY_NAME	down arrow
+1	KEY_NAME	up arrow
+1	KEY_NAME	any
+1	KEY_NAME	a
+1	KEY_NAME	b
+1	KEY_NAME	c
+1	KEY_NAME	d
+1	KEY_NAME	e
+1	KEY_NAME	f
+1	KEY_NAME	g
+1	KEY_NAME	h
+1	KEY_NAME	i
+1	KEY_NAME	j
+1	KEY_NAME	k
+1	KEY_NAME	l
+1	KEY_NAME	m
+1	KEY_NAME	n
+1	KEY_NAME	o
+1	KEY_NAME	p
+1	KEY_NAME	q
+1	KEY_NAME	r
+1	KEY_NAME	s
+1	KEY_NAME	t
+1	KEY_NAME	u
+1	KEY_NAME	v
+1	KEY_NAME	w
+1	KEY_NAME	x
+1	KEY_NAME	y
+1	KEY_NAME	z
+1	KEY_NAME	0
+1	KEY_NAME	1
+1	KEY_NAME	2
+1	KEY_NAME	3
+1	KEY_NAME	4
+1	KEY_NAME	5
+1	KEY_NAME	6
+1	KEY_NAME	7
+1	KEY_NAME	8
+1	KEY_NAME	9
+1	Unk	0
+1	Unk	1
+1	Unk	2
+1	Unk	3
+1	Unk	4
+1	Unk	5
+1	Unk	6
+1	Unk	7
+1	Unk	8
+1	Unk	9
+1	BACKDROP_NAME	Party
+1	BACKDROP_NAME	Basketball
+1	BACKDROP_NAME	Blue Sky
+1	BACKDROP_NAME	Blue Sky 2
+1	BACKDROP_NAME	Jurassic
+1	BACKDROP_NAME	Light
+1	BACKDROP_NAME	Rays
+1	BACKDROP_NAME	Refrigerator
+1	BACKDROP_NAME	Space
+1	MESSAGE_NAME	alas the world is still in tact
+1	MESSAGE_NAME	and down we go
+1	MESSAGE_NAME	I am done

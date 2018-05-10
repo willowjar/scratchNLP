@@ -48,6 +48,7 @@
 
 1 NPP   random number between Unk and Unk
 1 NP   negative NP
+1 NP   negative Unk
 
 
 # BP = Boolean Phrase
