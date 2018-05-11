@@ -136,8 +136,8 @@
 1 OrderAdverb    after
 1 OrderAdverb    finally
 
-1 EventCommand   broadcast MESSAGE_NAME
-1 EventCommand   broadcast MESSAGE_NAME and wait
+1 EventCommand   broadcast MESSAGE_NAME . 
+1 EventCommand   broadcast MESSAGE_NAME . and wait
 1 EventCommand   a new message called MESSAGE_NAME
 1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler

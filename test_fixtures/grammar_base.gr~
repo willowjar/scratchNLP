@@ -16,6 +16,7 @@
 1 AP   LoopCommand
 1 AP   OperatorCommand
 1 AP   TimerCommand
+1 AP   BroadcastCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
@@ -113,8 +114,8 @@
 # Loops
 1 LoopCommand   repeat LoopCommandP
 1 LoopCommand   LoopCommandP
-1 LoopCommand   AL That should be repeated Duration
-1 LoopCommand   AL Repeat that Duration
+1 LoopCommand   AL that should be repeated Duration
+1 LoopCommand   AL repeat that Duration
 
 1 LoopCommandP   AP Duration
 1 LoopCommandP   the following Duration AL that's it
@@ -136,9 +137,9 @@
 1 OrderAdverb    after
 1 OrderAdverb    finally
 
-1 EventCommand   broadcast MESSAGE_NAME .
-1 EventCommand   broadcast MESSAGE_NAME . and wait
-1 EventCommand   a new message called MESSAGE_NAME
+1 BroadcastCommand   broadcast MESSAGE_NAME
+1 BroadcastCommand   broadcast MESSAGE_NAME and wait
+1 BroadcastCommand   broadcast a new message called MESSAGE_NAME
 1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler
 1 EventHandler   SimpleEventHandler at the same time
@@ -148,7 +149,7 @@
 
 1 EVENT   when the green flag is clicked
 1 EVENT   when the program starts
-1 EVENT   when KEY_NAME key is pressed
+1 EVENT   when KEY_NAME is pressed
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
@@ -178,10 +179,12 @@
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
 1 DataCommand   make Lis called LIST_NAME for a single sprite
+1 DataCommand   make Lis called LIST_NAME
 1 DataCommand   make Lis called LIST_NAME for all the sprites
 1 DataCommand   add ITEM to Lis LIST_NAME
-1 DataCommand   delete element Unk of Lis LIST_NAME
-1 DataCommand   replace element Unk of Lis LIST_NAME with ITEM
+1 DataCommand   delete Ele NP of Lis LIST_NAME
+1 DataCommand   replace Ele NP of Lis LIST_NAME with ITEM
+1 DataCommand   set Ele NP of Lis LIST_NAME to ITEM
 # The type depends on what's inside the list
 1 DataReporter   the first item in Lis LIST_NAME
 
@@ -194,6 +197,8 @@
 
 1 Det the
 1 Det a
+1 Ele element
+1 Ele Det element
 
 1 Var	variable
 1 Var 	variable called
@@ -201,4 +206,11 @@
 1 Var 	Det variable called
 1 Lis	list
 1 Lis	Det Lis
+
+1 KEY_NAME Det KEY_NAME key
+1 KEY_NAME KEY_NAME key
+
+1 ITEM NP
+1 ITEM MESSAGE_NAME
+1 ITEM Unk
 
