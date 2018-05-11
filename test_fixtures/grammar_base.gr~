@@ -17,6 +17,7 @@
 1 AP   OperatorCommand
 1 AP   TimerCommand
 1 AP   BroadcastCommand
+1 AP   ControlCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
@@ -209,6 +210,7 @@
 
 1 KEY_NAME Det KEY_NAME key
 1 KEY_NAME KEY_NAME key
+1 KEY_NAME Det KEY_NAME
 
 1 ITEM NP
 1 ITEM MESSAGE_NAME

@@ -32,7 +32,7 @@ expression_map = {
   r'delete variable (\w*)': ['VARIABLE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'change (\w*) by .*': ['VARIABLE_NAME'],
-  r'make a list called (\w*) for': ['LIST_NAME'],
+  r'make a list called (\w*)': ['LIST_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
   r'delete element .* of list (\w*)': ['LIST_NAME'],
   r'replace element .* of list (\w*) with .*': ['LIST_NAME'],
@@ -202,8 +202,8 @@ if __name__ == "__main__":
 		example_sentences_file = sys.argv[2]
 
 		# Read sentences to extract variable and list names.
-		example_sentences_file = "example_sentences.text"
-		vocabulary_file = "new_vocab_file.txt"
+		#example_sentences_file = "example_sentences.text"
+		#vocabulary_file = "new_vocab_file.txt"
 
 		# Generate vocab file
 		#generate_vocab_list(example_sentences_file, vocabulary_file)
