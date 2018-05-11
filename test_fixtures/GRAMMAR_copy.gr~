@@ -149,7 +149,7 @@
 
 1 EVENT   when the green flag is clicked
 1 EVENT   when the program starts
-1 EVENT   when KEY_NAME key is pressed
+1 EVENT   when KEY_NAME is pressed
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
@@ -179,10 +179,12 @@
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
 1 DataCommand   make Lis called LIST_NAME for a single sprite
+1 DataCommand   make Lis called LIST_NAME
 1 DataCommand   make Lis called LIST_NAME for all the sprites
 1 DataCommand   add ITEM to Lis LIST_NAME
-1 DataCommand   delete element Unk of Lis LIST_NAME
-1 DataCommand   replace element Unk of Lis LIST_NAME with ITEM
+1 DataCommand   delete Ele NP of Lis LIST_NAME
+1 DataCommand   replace Ele NP of Lis LIST_NAME with ITEM
+1 DataCommand   set Ele NP of Lis LIST_NAME to ITEM
 # The type depends on what's inside the list
 1 DataReporter   the first item in Lis LIST_NAME
 
@@ -195,6 +197,8 @@
 
 1 Det the
 1 Det a
+1 Ele element
+1 Ele Det element
 
 1 Var	variable
 1 Var 	variable called
@@ -203,7 +207,13 @@
 1 Lis	list
 1 Lis	Det Lis
 
+1 KEY_NAME Det KEY_NAME key
+1 KEY_NAME KEY_NAME key
 1 KEY_NAME Det KEY_NAME
+
+1 ITEM NP
+1 ITEM MESSAGE_NAME
+1 ITEM Unk
 
 1	KEY_NAME	space
 1	KEY_NAME	left arrow
@@ -296,7 +306,7 @@
 1	Unk	two
 1	Unk	2.2
 1	Unk	1.8
-1	Unk	numbers
+1	LIST_NAME	numbers
 1	VARIABLE_NAME	i
 1	Unk	ten
 1	MESSAGE_NAME	i am having an identity crisis .

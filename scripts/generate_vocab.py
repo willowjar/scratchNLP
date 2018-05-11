@@ -32,7 +32,7 @@ expression_map = {
   r'delete variable (\w*)': ['VARIABLE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'change (\w*) by .*': ['VARIABLE_NAME'],
-  r'make a list called (\w*) for': ['LIST_NAME'],
+  r'make a list called (\w*)': ['LIST_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
   r'delete element .* of list (\w*)': ['LIST_NAME'],
   r'replace element .* of list (\w*) with .*': ['LIST_NAME'],

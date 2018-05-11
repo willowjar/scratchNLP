@@ -17,6 +17,7 @@
 1 AP   OperatorCommand
 1 AP   TimerCommand
 1 AP   BroadcastCommand
+1 AP   ControlCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
@@ -116,6 +117,7 @@
 1 LoopCommand   LoopCommandP
 1 LoopCommand   AL that should be repeated Duration
 1 LoopCommand   AL repeat that Duration
+1 LoopCommand   AL repeat this Duration
 
 1 LoopCommandP   AP Duration
 1 LoopCommandP   the following Duration AL that's it

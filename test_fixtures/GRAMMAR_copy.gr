@@ -17,6 +17,7 @@
 1 AP   OperatorCommand
 1 AP   TimerCommand
 1 AP   BroadcastCommand
+1 AP   ControlCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
@@ -116,6 +117,7 @@
 1 LoopCommand   LoopCommandP
 1 LoopCommand   AL that should be repeated Duration
 1 LoopCommand   AL repeat that Duration
+1 LoopCommand   AL repeat this Duration
 
 1 LoopCommandP   AP Duration
 1 LoopCommandP   the following Duration AL that's it
@@ -300,13 +302,12 @@
 1	MESSAGE_NAME	hello world .
 1	LIST_NAME	name
 1	VARIABLE_NAME	name
-1	VARIABLE_NAME	it
 1	Unk	three
 1	VARIABLE_NAME	y
 1	Unk	two
 1	Unk	2.2
 1	Unk	1.8
-1	Unk	numbers
+1	LIST_NAME	numbers
 1	VARIABLE_NAME	i
 1	Unk	ten
 1	MESSAGE_NAME	i am having an identity crisis .
