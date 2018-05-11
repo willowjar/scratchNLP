@@ -6,9 +6,9 @@ set y to 4 times six
 change y by negative 3
 
 when the green flag is clicked make a list called list for a single sprite and repeat play the bang sound 5 times and if x is equal to 1 broadcast alas the world is still in tact
-when the down arrow is pressed broadcast and down we go
-finally broadcast I am done
-when the space key is pressed broadcast hello world 3 times then create a new variable called count
+when the down arrow is pressed broadcast and down we go .
+finally broadcast I am done .
+when the space key is pressed broadcast hello world . 3 times then create a new variable called count
 add 1 to count do that 5 times
 if count is greater than zero play the bing sound and change volume by 3 that's it
 
@@ -19,7 +19,7 @@ if x is three first add two to name then make a variable called y then set y to 
 make a list called numbers
 make a variable called i and set i to 0
 add 1 to i then set the element i of list numbers to i repeat this ten times
-first create a clone of myself then create a clone of it then delete the clone of it finally broadcast i am having an identity crisis that's it
+first create a clone of myself then create a clone of it then delete the clone of it finally broadcast i am having an identity crisis . that's it
 
 play the sound of music sound
 if the timer is greater than 3 then firstly reset the timer secondly change volume by 10 thirdly change pitch effect by negative 5 that's it
