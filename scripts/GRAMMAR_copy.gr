@@ -136,8 +136,8 @@
 1 OrderAdverb    after
 1 OrderAdverb    finally
 
-1 EventCommand   broadcast MESSAGE_NAME
-1 EventCommand   broadcast MESSAGE_NAME and wait
+1 EventCommand   broadcast MESSAGE_NAME . 
+1 EventCommand   broadcast MESSAGE_NAME . and wait
 1 EventCommand   a new message called MESSAGE_NAME
 1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler
@@ -263,6 +263,12 @@
 1	BACKDROP_NAME	Rays
 1	BACKDROP_NAME	Refrigerator
 1	BACKDROP_NAME	Space
+1	NAME_OF_SOUND	bang
+1	NAME_OF_SOUND	bang 
+1	LIST_NAME	list
 1	MESSAGE_NAME	alas the world is still in tact
-1	MESSAGE_NAME	and down we go
-1	MESSAGE_NAME	I am done
+1	NAME_OF_SOUND	bing
+1	NAME_OF_SOUND	bing 
+1	VARIABLE_NAME	volume
+1	Unk	count
+1	Unk	zero

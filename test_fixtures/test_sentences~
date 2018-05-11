@@ -15,11 +15,11 @@ make a list called name for all the sprites
 
 make a variable called name and set it to three then add this to the list name
 if x is three first add two to name then make a variable called y then set y to 2.2 plus 1.8 finally add y to name that's it
-
 make a list called numbers
 
 make a variable called i and set i to 0
 
+make a list called numbers
 add 1 to i then set the element i of list numbers to i repeat this ten times
 first create a clone of myself then create a clone of it then delete the clone of it finally broadcast i am having an identity crisis . 
 
