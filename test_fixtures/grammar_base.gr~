@@ -117,6 +117,7 @@
 1 LoopCommand   LoopCommandP
 1 LoopCommand   AL that should be repeated Duration
 1 LoopCommand   AL repeat that Duration
+1 LoopCommand   AL repeat this Duration
 
 1 LoopCommandP   AP Duration
 1 LoopCommandP   the following Duration AL that's it

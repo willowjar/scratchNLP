@@ -27,12 +27,12 @@ def processSentence(data):
 def soundCommand(name):
     print("soudncomannd called")
     return [["playSound:", name]]
+
 def ynQuestion(data):
     if sem.learned.yesno_query(data):
         return "Yes."
     else:
         return "No."
-
 
 def whQuestion(data):
     results = sem.learned.wh_query(data)
