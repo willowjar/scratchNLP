@@ -18,6 +18,7 @@
 1 AP   TimerCommand
 1 AP   BroadcastCommand
 1 AP   ControlCommand
+1 AP   CreateCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
@@ -110,7 +111,7 @@
 1 ControlCommand   repeat AL forever
 1 ControlCommand   repeat AL Unk times
 1 ControlCommand   delete this clone
-1 ControlCommand   create a clone of myself
+1 CreateCommand   create a clone of myself
 
 # Loops
 1 LoopCommand   repeat LoopCommandP
@@ -161,7 +162,7 @@
 1 Tim	timer
 1 Tim	Det timer
 
-1 DataCommand   make Var VARIABLE_LIST
+1 CreateCommand   make Var VARIABLE_LIST
 1 DataCommand   delete Var VARIABLE_NAME
 
 
@@ -180,9 +181,9 @@
 1 DataCommand  divide VARIABLE_NAME by Unk
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
-1 DataCommand   make Lis called LIST_NAME for a single sprite
-1 DataCommand   make Lis called LIST_NAME
-1 DataCommand   make Lis called LIST_NAME for all the sprites
+1 CreateCommand   make Lis called LIST_NAME for a single sprite
+1 CreateCommand   make Lis called LIST_NAME
+1 CreateCommand   make Lis called LIST_NAME for all the sprites
 1 DataCommand   add ITEM to Lis LIST_NAME
 1 DataCommand   delete Ele NP of Lis LIST_NAME
 1 DataCommand   replace Ele NP of Lis LIST_NAME with ITEM

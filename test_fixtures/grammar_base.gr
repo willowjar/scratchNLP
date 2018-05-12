@@ -128,6 +128,7 @@
 1 Duration   forever
 1 Duration   Unk times
 
+##done
 # Sequences
 # TODO(quacht): fill this out more
 1 OrderAdverb    first
@@ -139,6 +140,7 @@
 1 OrderAdverb    then
 1 OrderAdverb    after
 1 OrderAdverb    finally
+##
 
 1 BroadcastCommand   broadcast MESSAGE_NAME
 1 BroadcastCommand   broadcast MESSAGE_NAME and wait
@@ -156,7 +158,7 @@
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
-1 EVENT   when backdrop switches to the
+1 EVENT   when backdrop switches to the BACKDROP_NAME
 1 EVENT   when I receive MESSAGE_NAME
 
 1 Tim	timer
@@ -191,10 +193,12 @@
 # The type depends on what's inside the list
 1 DataReporter   the first item in Lis LIST_NAME
 
+
+## done
 1 VARIABLE_LIST   VARIABLE_NAME
 1 VARIABLE_LIST   VARIABLE_NAME and VARIABLE_LIST
 1 VARIABLE_NAME   Var VARIABLE_NAME
-
+##
 
 1 TimerCommand   reset Tim
 
@@ -208,7 +212,7 @@
 1 Var 	Det variable
 1 Var 	Det variable called
 1 Lis	list
-1 Lis	Det Lis
+1 Lis	Det list
 
 1 KEY_NAME Det KEY_NAME key
 1 KEY_NAME KEY_NAME key

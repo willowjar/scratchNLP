@@ -24,7 +24,7 @@ sem = SemanticRuleSet()
 def processSentence(data):
     print('data is')
     print(data)
-    return {"scripts": [[111, 146, data]]}
+    return {"scripts": [[111, 146, data ]]}
 
 def soundCommand(name):
     print("soudncomannd called")
