@@ -1,3 +1,4 @@
+## DONE
 1 START S
 # Sentence
 1 S   AL
@@ -9,24 +10,32 @@
 
 # AP = Action Phrase
 1 AP   OrderedCommand
+1 AP   SequentialCommand
+
 1 AP   SoundCommand
+
 1 AP   ConditionalCommand
 1 AP   EventHandler
 1 AP   DataCommand
+
 1 AP   LoopCommand
 1 AP   OperatorCommand
 1 AP   TimerCommand
 1 AP   BroadcastCommand
 1 AP   ControlCommand
+
 1 AP   CreateCommand
 
 # Sequence
 1 OrderedCommand   OrderAdverb AL
+1 SequentialCommand   SequenceAdverb AL
+
 
 # Operators
 
 # NP = Number Phrase
 1 Unk	NP
+1 NP    Unk
 1 NP	NPP
 1 NP	Det NPP
 1 NP 	VARIABLE_NAME
@@ -52,7 +61,6 @@
 1 NPP   random number between Unk and Unk
 1 NP   negative NP
 1 NP   negative Unk
-
 
 # BP = Boolean Phrase
 1 BP   item Unk in Lis LIST_NAME
@@ -90,8 +98,10 @@
 1 LMOD POS
 1 LMOD NEG
 
+
 1 SoundCommand   play the NAME_OF_SOUND sound
-1 SoundCommand   set volume to Unk
+1 SoundCommand   set volume to Unk 
+1 SoundCommand   set volume to Unk percent
 1 SoundCommand   change volume by Unk
 1 SoundCommand   change pitch effect by Unk
 1 SoundCommand   softer
@@ -99,13 +109,15 @@
 1 SoundCommand   slower
 1 SoundCommand   faster
 1 SoundCommand   stop all sounds
+1 SoundCommand   stop
+##
 
-# Control
-1 ConditionalCommand   if BP then AL that's it
-1 ConditionalCommand   if BP then AL that's it otherwise AL that's it
-1 ConditionalCommand   if BP then AL that's it else AL that's it
+# Control(Willow in progress)
+1 ConditionalCommand   if BP then AL Thatsit
+1 ConditionalCommand   if BP then AL Thatsit otherwise AL Thatsit
+1 ConditionalCommand   if BP then AL Thatsit else AL Thatsit
 
-1 ControlCommand   wait NUMBER seconds
+1 ControlCommand   wait Unk seconds
 1 ControlCommand   wait until BP
 1 ControlCommand   repeat AL until BP
 1 ControlCommand   repeat AL forever
@@ -121,28 +133,39 @@
 1 LoopCommand   AL repeat this Duration
 
 1 LoopCommandP   AP Duration
-1 LoopCommandP   the following Duration AL that's it
-1 LoopCommandP   the following steps Duration AL that's it
+1 LoopCommandP   the following Duration AL Thatsit
+1 LoopCommandP   the following steps Duration AL Thatsit
 
 # Duration
 1 Duration   forever
 1 Duration   Unk times
+
 
 # Sequences
 # TODO(quacht): fill this out more
 1 OrderAdverb    first
 1 OrderAdverb    second
 1 OrderAdverb    third
+1 OrderAdverb    fourth
+1 OrderAdverb    fifth
+1 OrderAdverb    sixth
+1 OrderAdverb    seventh
 1 OrderAdverb    firstly
 1 OrderAdverb    secondly
 1 OrderAdverb    thirdly
-1 OrderAdverb    then
-1 OrderAdverb    after
-1 OrderAdverb    finally
+1 OrderAdverb    fourthly
+1 OrderAdverb    fifthly
+1 OrderAdverb    sixthly
+1 SequenceAdverb    then
+1 SequenceAdverb    after
+1 SequenceAdverb    finally
+##
 
 1 BroadcastCommand   broadcast MESSAGE_NAME
 1 BroadcastCommand   broadcast MESSAGE_NAME and wait
 1 BroadcastCommand   broadcast a new message called MESSAGE_NAME
+
+##done
 1 SimpleEventHandler   EVENT AL
 1 EventHandler   SimpleEventHandler
 1 EventHandler   SimpleEventHandler at the same time
@@ -156,13 +179,14 @@
 1 EVENT   when this sprite clicked
 1 EVENT   when backdrop switches to BACKDROP_NAME
 1 EVENT   when Tim CBP Unk
-1 EVENT   when backdrop switches to the
+1 EVENT   when backdrop switches to the BACKDROP_NAME
 1 EVENT   when I receive MESSAGE_NAME
 
 1 Tim	timer
 1 Tim	Det timer
 
 1 CreateCommand   make Var VARIABLE_LIST
+##
 1 DataCommand   delete Var VARIABLE_NAME
 
 
@@ -181,22 +205,28 @@
 1 DataCommand  divide VARIABLE_NAME by Unk
 1 DataCommand  divide VARIABLE_NAME by VARIABLE_NAME
 
+
 1 CreateCommand   make Lis called LIST_NAME for a single sprite
 1 CreateCommand   make Lis called LIST_NAME
 1 CreateCommand   make Lis called LIST_NAME for all the sprites
+
 1 DataCommand   add ITEM to Lis LIST_NAME
 1 DataCommand   delete Ele NP of Lis LIST_NAME
 1 DataCommand   replace Ele NP of Lis LIST_NAME with ITEM
 1 DataCommand   set Ele NP of Lis LIST_NAME to ITEM
 # The type depends on what's inside the list
-1 DataReporter   the first item in Lis LIST_NAME
+1 DataReporter   the OrderAdverb item in Lis LIST_NAME
 
+
+## done
 1 VARIABLE_LIST   VARIABLE_NAME
 1 VARIABLE_LIST   VARIABLE_NAME and VARIABLE_LIST
 1 VARIABLE_NAME   Var VARIABLE_NAME
 
-
 1 TimerCommand   reset Tim
+
+# Thatsit
+1 Thatsit that's it
 
 1 Det the
 1 Det a
@@ -208,13 +238,15 @@
 1 Var 	Det variable
 1 Var 	Det variable called
 1 Lis	list
-1 Lis	Det Lis
+1 Lis	Det list
 
 1 KEY_NAME Det KEY_NAME key
 1 KEY_NAME KEY_NAME key
 1 KEY_NAME Det KEY_NAME
 
+
 1 ITEM NP
 1 ITEM MESSAGE_NAME
 1 ITEM Unk
+##
 

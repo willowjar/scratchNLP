@@ -26,12 +26,9 @@ def processSentence(data):
     print(data)
     return {"scripts": [[111, 146, data ]]}
 
-def soundCommand(name):
-    print("soudncomannd called")
-    print('name is')
-    print(name)
-    return [["playSound:", name]]
-    
+def singleCommand(commandName, value):
+    print("commandName, value",commandName, value)
+    return [[commandName, value]]
 def setVariable(var_name, value):
     return [["setVar:to:", value]]
     
@@ -102,10 +99,9 @@ sem.add_rule("Var -> Det Var", lambda det, var: var)
 sem.add_rule("Duration -> Unk 'times'", lambda np, times: Dur(times))
 
 # Sound Commands
-sem.add_rule("SoundCommand -> 'play' 'the' NAME_OF_SOUND 'sound'", lambda play, the, name, sound: soundCommand(name))
-sem.add_rule("SoundCommand -> 'set' 'volume' 'to' NP", lambda set, volume, to, np: np)
-sem.add_rule("SoundCommand -> 'change' 'volume' 'by' NP", lambda set, volume, to, np: np)
-
+sem.add_rule("SoundCommand -> 'play' 'the' NAME_OF_SOUND 'sound' ", lambda play, the, name, sound: singleCommand("playSound:", name))
+# sem.add_rule("SoundCommand -> 'set' 'volume' 'to' NP", lambda sett, volume, too, np: singleCommand("setVolumeTo:", np))
+# sem.add_rule("SoundCommand -> 'change' 'volume' 'by' NP", lambda change, volume, by, np: singleCommand("changeVolumeBy:", np))
 
 # Data Command (incomplete)
 sem.add_rule("DataCommand -> 'delete' Var VARIABLE_NAME", lambda delete, var, var_name: deleteVariable(var_name))
@@ -116,7 +112,6 @@ sem.add_rule("DataCommand -> 'set' VARIABLE_NAME 'to' Unk", lambda s, var_name, 
 
 # Number Phrase
 sem.add_rule("Unk -> NP", identity)
-sem.add_rule("NP -> Unk", identity)
 sem.add_rule("NP -> NPP", identity)
 sem.add_rule("NP -> Det NPP", lambda det, npp: ' '.join([det,npp]))
 sem.add_rule("NP -> VARIABLE_NAME", identity)
@@ -174,7 +169,7 @@ sem.add_lexicon_rule("Duration",
                        
 sem.add_lexicon_rule("Unk",
                        ['0','1','2','3','4','5','6','7','8','9'],
-                       identity)                      
+                       identity)                           
 
 
 ##############################################################################
