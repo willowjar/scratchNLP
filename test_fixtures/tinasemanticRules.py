@@ -1,3 +1,9 @@
+# blue - tina
+# red - Willow
+# green - Kara
+
+
+
 # -*- coding: utf-8 -*-
 
 import lab3.cfg
@@ -24,8 +30,7 @@ program = []
 # Speech Actions
 def processSentence(data):
     return {"scripts": [[111, 146, data ]]}
-def soundCommand(name):
-    return ["playSound:", name]
+
 def singleCommand(commandName, value):
     print("commandName, value",commandName, value)
     return [commandName, value]
@@ -55,7 +60,7 @@ def waitUntil(until_condition):
     return ["doWaitUntil", until_condition]
 
 def setVariable(var_name, value):
-    return ["setVar:to:", var_name, value]
+    return ["setVar:to:", value]
 
 def deleteVariable(variable_name):
     # TODO: modify project.json to delete variable from sprite
@@ -82,6 +87,11 @@ def itemInList(unk, name):
 
 def resetTimer():
     return ["timerReset"]
+
+def Dur(np):
+    if np == -1:
+        return [["doForever"]]
+    return [["doRepeat:", np]]
 
 # OPERATORS
 def add(n1, n2):
@@ -113,10 +123,9 @@ def equalTo(a,b):
 
 def GEQ(a,b):
     return ["|", [">", a, b], ["=", a, b]]
-    ## CHECK BRACKETS
+
 def LEQ(a,b):
     return ["|", ["<", a, b], ["=", a, b]]
-    ## CHECK BRACKETS
 
 def logicOr(b1, b2):
     return ["|", b1, b2]
@@ -129,7 +138,7 @@ def waitTillTimer(x):
 
 def changeVarBy(var_name, unk, opt_negate=False):
     if opt_negate:
-        return ["changeVar:by:", var_name, ["*", unk, -1]]
+        return ["changeVar:by:", var1, ["*", unk, -1]]
     return ["changeVar:by:",var_name, unk]
 
 def changeVarbyVar(var1, var2,opt_negate=False):
@@ -221,14 +230,11 @@ def get_duration(durationPhrase):
     if durationPhrase == 'forever':
         return durationPhrase
     else:
-        desiredIterations = text2num(durationPhrase.split()[0])
-        print('desiredIterations')
-        print(desiredIterations)
-        return desiredIterations
+        # TODO: unsure about this
+        return (text2num(durationPhrase.split()[0]))
 
 # Sequential commands
 def appendToProgram(action_list):
-    # TODO: figure out when we append to the program
     program.append(action_list)
     return action_list
 
@@ -241,9 +247,9 @@ sem.add_rule("Start -> S", lambda s: processSentence(s))
 
 # All Command
 sem.add_rule("S -> AL", identity)
-sem.add_rule("AL -> AP", identity)
-sem.add_rule("AL -> AP AL", lambda p, l: [p]+ [l]) # CHECK IF RIGHT WAY TO CREATE LIST OF ACTIONS
-sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+[l]) # CHECK IF RIGHT WAY TO CREATE LIST OF ACTIONS
+sem.add_rule("AL -> AP", lambda p: [p])
+sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
+sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
 sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
@@ -276,7 +282,6 @@ sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME", lambda vl: [vl])
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn,a, vl: [vn]+vl)
 
 
-sem.add_rule("LIST_NAME -> List LIST_NAME", lambda l, name: name)
 sem.add_rule("VARIABLE_NAME -> Variable VARIABLE_NAME", lambda l, name: name)
 sem.add_rule("Variable -> Det Variable", lambda det, var: var)
 sem.add_rule("Variable -> Variable Called", lambda v, c: v)
@@ -286,6 +291,7 @@ sem.add_rule("List -> List Called", lambda liss, c: liss)
 sem.add_rule("KEY_NAME -> Keyname KEY_NAME", lambda k, n: n)
 sem.add_rule("Keyname -> Key", lambda k: None)
 sem.add_rule("Keyname -> Det Key", lambda d, k: None)
+sem.add_rule("Keyname -> Det Key Called", lambda d, k, c: None)
 sem.add_rule("Keyname -> Key Called", lambda k, c: None)
 sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
 sem.add_rule("KEY_NAME -> KEY_NAME Key", lambda name, key: name)
@@ -299,67 +305,71 @@ sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 
 
 # Duration
-sem.add_rule("Duration -> Unk 'times'", lambda np, times: get_duration(times))
+sem.add_rule("Duration -> Unk 'times'", lambda np, times: Dur(times))
 
 # Sound Command
-sem.add_rule("SoundCommand -> 'play' 'the' NAME_OF_SOUND 'sound'", lambda play, the, name, sound: singleCommand("playSound:", name))
+sem.add_rule("SoundCommand -> Play Det NAME_OF_SOUND Sound", lambda play, the, name, sound: singleCommand("playSound:", name))
 
-sem.add_rule("SoundCommand -> 'set' 'volume' 'to' Unk", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
+sem.add_rule("SoundCommand -> Set Volume To Unk", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 
-sem.add_rule("SoundCommand -> 'set' 'volume' 'to' Unk 'percent'", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
+sem.add_rule("SoundCommand -> Set Volume To Unk Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
 
-sem.add_rule("SoundCommand -> 'change' 'volume' 'by' Unk", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+sem.add_rule("SoundCommand -> Change Volume By Unk", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
 
-sem.add_rule("SoundCommand -> 'stop' 'all' 'sounds'", lambda stop, all, sounds: singleCommandNoValue("stopAllSounds"))
+sem.add_rule("SoundCommand -> Change Pitch Effect By Unk", lambda change, pitch, effect, by, Unk: singleCommand("changeTempoBy:", Unk))
 
-sem.add_rule("SoundCommand -> 'stop'", lambda stop: singleCommandNoValue("stopAllSounds"))
+sem.add_rule("SoundCommand -> Stop All Sounds", lambda stop, all, sounds: singleCommandNoValue("stopAllSounds"))
 
-sem.add_rule("SoundCommand -> 'change' 'pitch' 'effect' 'by' Unk", lambda change, pitch, effect, by, Unk: singleCommand("changeTempoBy:", Unk))
+sem.add_rule("SoundCommand -> Stop", lambda stop: singleCommandNoValue("stopAllSounds"))
 
-sem.add_rule("SoundCommand -> 'softer'", lambda softer: singleCommand("changeVolumeBy:", -10))
+sem.add_rule("SoundCommand -> Softer", lambda softer: singleCommand("changeVolumeBy:", -10))
 
-sem.add_rule("SoundCommand -> 'louder'", lambda louder: singleCommand("changeVolumeBy:", 10))
+sem.add_rule("SoundCommand -> Louder", lambda louder: singleCommand("changeVolumeBy:", 10))
 
-sem.add_rule("SoundCommand -> 'slower'", lambda slower: singleCommand("changeTempoBy:", -10))
+sem.add_rule("SoundCommand -> Slower", lambda slower: singleCommand("changeTempoBy:", -10))
 
-sem.add_rule("SoundCommand -> 'faster'", lambda faster: singleCommand("changeTempoBy:", 10))
+sem.add_rule("SoundCommand -> Faster", lambda faster: singleCommand("changeTempoBy:", 10))
 
 
-## Data Command
+# Data Command
+sem.add_rule("DataCommand -> 'delete' Var VARIABLE_NAME", lambda delete, var, var_name: deleteVariable(var_name))
 
-# todo: fix
-sem.add_rule("DataCommand -> Delete Var VARIABLE_NAME", lambda delete, var, var_name: deleteVariable(var_name))
-sem.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
-sem.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np: setVariable(var_name, np))
-sem.add_rule("DataCommand -> Add NP To VARIABLE_NAME", lambda a, num, t, var_name:
+sem.add_rule("DataCommand -> 'set' VARIABLE_NAME 'to' BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
+
+sem.add_rule("DataCommand -> 'set' VARIABLE_NAME 'to' Unk", lambda s, var_name, to, unk: setVariable(var_name, unk))
+sem.add_rule("DataCommand -> 'add' Unk 'to' VARIABLE_NAME", lambda a, num, t, var_name:
 changeVarBy(var_name, num))
-sem.add_rule("DataCommand -> Increment VARIABLE_NAME By NP", lambda i, var_name, b, num: changeVarBy(var_name, num))
-sem.add_rule("DataCommand -> Add VARIABLE_NAME To VARIABLE_NAME", lambda i, var1, b, var2: changeVarByVar(var2, getValue(var1)))
-sem.add_rule("DataCommand -> Subtract NP From VARIABLE_NAME", lambda a, np, t, var_name: changeVarBy(var_name, np, 'negate'))
-sem.add_rule("DataCommand -> Decrement VARIABLE_NAME By NP", lambda a, var_name, t, np: changeVarBy(var_name, np, 'negate'))
-sem.add_rule("DataCommand -> Subtract VARIABLE_NAME From VARIABLE_NAME", lambda a, var1, t, var2: changeVarByVar(getValue(var2), var1, 'negate'))
-sem.add_rule("DataCommand -> Multiply VARIABLE_NAME By NP", lambda m, var_name, b, np: setVariable(var_name, getProduct(getValue(var_name), np)))
-sem.add_rule("DataCommand -> Multiply VARIABLE_NAME By VARIABLE_NAME", lambda m, var1, b, var2: setVariable(var1, getProduct(getValue(var1), getValue(var2))))
-sem.add_rule("DataCommand -> Divide VARIABLE_NAME By NP", lambda d, var_name, b, np: setVariable(var_name, getQuotient(getValue(var_name), np)))
-sem.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, var1, b, var2: setVariable(var1, getQuotient(getValue(var1), getValue(var2))))
+sem.add_rule("DataCommand -> 'increment' VARIABLE_NAME 'by' Unk", lambda i, var_name, b, unk: changeVarBy(var_name, num))
+# Increment variable 2 by the value in variable 1
+sem.add_rule("DataCommand -> 'add' VARIABLE_NAME 'to' VARIABLE_NAME", lambda i, var1, b, var2: changeVarByVar(var2, var1))
+sem.add_rule("DataCommand -> 'subtract' Unk 'from' VARIABLE_NAME", lambda a, unk, t, var_name: changeVarBy(var_name, unk, 'negate'))
+sem.add_rule("DataCommand -> 'decrement' VARIABLE_NAME 'by' Unk", lambda a, unk, t, var_name: changeVarBy(var_name, unk, 'negate'))
+sem.add_rule("DataCommand -> 'subtract' VARIABLE_NAME 'from' VARIABLE_NAME", lambda a, var1, t, var2: changeVarByVar(var2, var1, 'negate'))
+sem.add_rule("DataCommand -> 'multiply' VARIABLE_NAME 'by' Unk", lambda m, var_name, unk: setVariable(var_name, getProduct(getValue(var_name), unk)))
+# var1 = var1*var2
+sem.add_rule("DataCommand -> 'multiply' VARIABLE_NAME 'by' VARIABLE_NAME", lambda m, var1, b, var2: setVariable(var1, getProduct(getValue(var1), getValue(var2))))
+sem.add_rule("DataCommand -> 'divide' VARIABLE_NAME 'by' Unk", lambda d, var_name, b, unk: setVariable(var_name, getQuotient(getValue(var_name), unk)))
+sem.add_rule("DataCommand -> 'divide' VARIABLE_NAME 'by' VARIABLE_NAME", lambda d, var1, b, var2: setVariable(var1, getQuotient(getValue(var1), getValue(var1))))
 
-
-# todo: fix commands working w/ lists
-sem.add_rule("DataCommand -> Add ITEM To Lis LIST_NAME", lambda a, item, t, l, list_name: appendToList(list_name, item))
-sem.add_rule("DataCommand -> Delete Ele NP Of Lis LIST_NAME", lambda d, el, ind,o, l, list_name: deleteFromList(ind, list_name))
-sem.add_rule("DataCommand -> Replace Ele NP Of Lis LIST_NAME 'with' ITEM", lambda r, e, ind, o,l,list_name,w, item: setItemInList(ind, list_name, item))
-sem.add_rule("DataCommand -> Set Ele NP Of Lis LIST_NAME To ITEM", lambda s, e, ind, o,l, list_name, t,
+sem.add_rule("DataCommand -> 'add' ITEM 'to' Lis LIST_NAME", lambda a, item, t, list_name: appendToList(list_name, item))
+sem.add_rule("DataCommand -> 'delete' Ele NP 'of' Lis LIST_NAME", lambda d, el, ind,o, l, list_name: deleteFromList(ind, list_name))
+sem.add_rule("DataCommand -> 'replace' Ele NP 'of' Lis LIST_NAME 'with' ITEM", lambda r, e, ind, o,l,list_name,w, item: setItemInList(ind, list_name, item))
+sem.add_rule("DataCommand -> 'set' Ele NP 'of' Lis LIST_NAME 'to' ITEM", lambda s, e, ind, o,l, list_name, t,
 item: setItemInList(ind, list_name, item))
+
 # Data Reporter
-sem.add_rule("DataReporter -> The OrderAdverb Item In Lis LIST_NAME", lambda t, order_adverb, i, inn, l, list_name: getItem(mapWordToNum(order_adverb), list_name))
+sem.add_rule("DataReporter -> 'the' OrderAdverb 'item' 'in' Lis LIST_NAME", lambda t, order_adverb, i, inn, l, list_name: getItem(mapWordToNum(order_adverb), list_name))
 
 # Number Phrase
+sem.add_rule("NP -> Unk", identity)
+
 sem.add_rule("NP -> Unk", identity)
 
 sem.add_rule("NP -> NPP", identity)
 
 sem.add_rule("NP -> Det NPP", lambda det, npp: npp)
-sem.add_rule("NP -> VARIABLE_NAME", lambda var_name: getValue(var_name))
+
+sem.add_rule("NP -> VARIABLE_NAME", lambda v: getValue(v))
 
 sem.add_rule("NP -> NP Plus NP", lambda unk1, plus, unk2: add(unk1, unk2))
 sem.add_rule("NP -> NP Added To NP", lambda unk1, added, to, unk2: add(unk1, unk2))
@@ -367,6 +377,8 @@ sem.add_rule("NPP -> Sum Of NP And NP", lambda s, of, unk1, a, unk2: add(unk1, u
 
 sem.add_rule("NP -> NP Minus NP", lambda unk1, minus, unk2: subtract(unk1, unk2))
 sem.add_rule("NP -> NP Subtracted By NP", lambda unk1, subtracted, by, unk2: subtract(unk1,unk2))
+
+sem.add_rule("NP -> NP Subtracted From NP", lambda unk1, subtracted, by, unk2: subtract(unk2,unk1))
 
 sem.add_rule("NP -> NP Times NP", lambda unk1, times, unk2: getProduct(unk1,unk2))
 sem.add_rule("NP -> NP Multiplied By NP", lambda unk1, multiplied, by, unk2: getProduct(unk1,unk2))
@@ -378,9 +390,14 @@ sem.add_rule("NP -> Negative NP", lambda n, np: getProduct(-1,np))
 
 
 
+
 sem.add_rule("EVENT -> When Det Green Flag Is Clicked", lambda w, t, g, f, i, c: whenGreenFlag())
 
 sem.add_rule("EVENT -> When Det Program Starts", lambda w, t, p, s: whenGreenFlag())
+
+sem.add_rule("EVENT -> When Green Flag Is Clicked", lambda w, g, f, i, c: whenGreenFlag())
+
+sem.add_rule("EVENT -> When Program Starts", lambda w, p, s: whenGreenFlag())
 
 sem.add_rule("EVENT -> When KEY_NAME Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name))
 
@@ -395,7 +412,8 @@ sem.add_rule("EVENT -> When I Receive MESSAGE_NAME", lambda w, i, r, message: wh
 sem.add_rule("Timer -> Det Timer", lambda d, tim: tim)
 
 
-sem.add_rule("EVENT -> When Timer CBP Unk", lambda w, t, c, n: waitTillTimer(c(t, n)))
+sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c(t, n)))
+
 
 sem.add_rule("CBP -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
 sem.add_rule("CBP -> Greater Than", lambda g, t: lambda a, b: greaterThan(a, b))
@@ -410,11 +428,12 @@ sem.add_rule("LMOD -> NEG", lambda neg: lambda x: not_identity(x))
 
 
 
-sem.add_rule("SimpleEventHandler -> EVENT AL", lambda e, a: SimpleEvent(e, a))
-sem.add_rule("EventHandler ->  SimpleEventHandler", identity)
-sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time", lambda e, a, t, s, ti: e)
-sem.add_rule("EventHandler -> SimpleEventHandler Too", lambda e, t: e)
-sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too", lambda e, a, t, s, ti, to: e)
+sem.add_rule("SimpleEventHandler -> EVENT AL ", lambda e, a: SimpleEvent(e, a))
+sem.add_rule("EventHandler ->  SimpleEventHandler Thats It", lambda e, thats, it: e)
+sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Thats It", lambda e, a, t, s, ti, thats, it: e)
+sem.add_rule("EventHandler -> SimpleEventHandler Too Thats It", lambda e, t,thats, it: e)
+sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It", lambda e, a, t, s, ti, to, thats, it: e)
+
 
 
 ## TimerCommand
@@ -454,54 +473,37 @@ sem.add_rule("Message -> Message Called", lambda d, name: name)
 
 
 
-## ConditionalCommands
-sem.add_rule("ConditionalCommand -> 'if' BP 'then' AL Thatsit", lambda i, bp, then, al, thatsit: ifCommand(bp,al))
+# Conditional Command
+sem.add_rule("ConditionalCommand -> If BP Then AL It", lambda i, bp, then, al, thats, it: ifCommand(bp,al))
+sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", lambda i, bp, then, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 
-sem.add_rule("ConditionalCommand -> 'if' BP 'then' AL Thatsit otherwise AL Thatsit", lambda i, bp, then, al1, thatsit1, ow, al2, thatsit2: ifElseCommand(bp,al1,al2))
+# Control Command
 
-sem.add_rule("ConditionalCommand -> 'if' BP 'then' AL Thatsit else AL Thatsit", lambda i, bp, then, al1, thatsit1, ow, al2, thatsit2: ifElseCommand(bp,al1,al2))
+sem.add_rule("ControlCommand -> Wait Unk Seconds", lambda waitt, unk, seconds: wait(unk))
 
-sem.add_rule("ControlCommand -> 'wait' Unk 'seconds'", lambda wait, unk, seconds: wait(unk))
+sem.add_rule("ControlCommand -> Wait Until BP", lambda wait, until, bp: waitUntil(bp))
 
-sem.add_rule("ControlCommand -> 'wait' 'until' BP", lambda wait, until, bp: waitUntil(bp))
+sem.add_rule("ControlCommand -> Repeat AL Until BP", lambda repeat, al, untill, bp: until(bp, al))
 
-sem.add_rule("ControlCommand -> 'repeat' AL 'until' BP", lambda repeat, al, until, bp: until(bp, al))
+sem.add_rule("ControlCommand -> Repeat AL Forever", lambda repeat, al, forever: doForever(al))
 
-sem.add_rule("ControlCommand -> 'repeat' AL 'forever'", lambda repeat, al, forever: doForever(al))
+sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, times: repeat(unk, al))
 
-sem.add_rule("ControlCommand -> 'repeat' AL Unk 'times'", lambda repeat, al, unk, times: repeat(unk, al))
+sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
 
-sem.add_rule("ControlCommand -> 'delete' 'this' 'clone'", lambda delete, this, clone: deleteClone())
 
 
 #LoopCommand
-sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
+sem.add_rule("LoopCommand -> 'repeat' LoopCommandP", lambda r, lcp: lcp)
 sem.add_rule("LoopCommand -> LoopCommandP", identity)
-sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommand -> AL 'that' 'should' 'be' 'repeated' Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
 sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_list([ap], duration))
-sem.add_rule("LoopCommandP -> The Following Duration AL Thatsit", lambda t, f, duration, action_list, tt: repeat_action_list(action_list, duration))
-sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thatsit", lambda t, f, s, duration, action_list, tt: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommandP -> 'the' 'following' Duration AL Thatsit", lambda t, f, duration, action_list, tt: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommandP -> 'the' 'following' 'steps' Duration AL Thatsit", lambda t, f, s, duration, action_list, tt: repeat_action_list(action_list, duration))
 
 
 #####################################################################
 ## Lexicon
-
-# Data Command Keywords
-sem.add_lexicon_rule("Add", ["add"], identity)
-sem.add_lexicon_rule("Increment", ["increment"], identity)
-sem.add_lexicon_rule("Decrement", ["decrement"], identity)
-sem.add_lexicon_rule("Subtract", ["subtract"], identity)
-sem.add_lexicon_rule("From", ["from"], identity)
-
-
-# Loop Command Keywords
-sem.add_lexicon_rule("That", ["that"], identity)
-sem.add_lexicon_rule("Be", ["be"], identity)
-sem.add_lexicon_rule("Repeated", ["repeated"], identity)
-sem.add_lexicon_rule("The", ["the"], identity)
-sem.add_lexicon_rule("That", ["that"], identity)
-sem.add_lexicon_rule("This", ["this"], identity)
-
 
 # Names
 sem.add_lexicon_rule("NAME_OF_SOUND",
@@ -525,7 +527,8 @@ sem.add_lexicon_rule("Delete", ['delete'], identity)
 sem.add_lexicon_rule("If", ['if'], identity)
 sem.add_lexicon_rule("Then", ['then'], identity)
 sem.add_lexicon_rule("Else", ['else', 'otherwise'], identity)
-sem.add_lexicon_rule("Thatsit", ["that's it"], identity)
+sem.add_lexicon_rule("Thats", ["thats"], identity)
+sem.add_lexicon_rule("It", ["it"], identity)
 sem.add_lexicon_rule("Until", ['until', 'till'], identity)
 
 # Nouns
@@ -656,6 +659,7 @@ sem.add_lexicon_rule("Negative",['negative'],identity)
 sem.add_lexicon_rule("Between",['between'],identity)
 sem.add_lexicon_rule("Random",['random'],identity)
 sem.add_lexicon_rule("Number",['number'],identity)
+sem.add_lexicon_rule("From",['from'],identity)
 
 ##############################################################################
 # Now we will run the rules you are adding to solve problems in this lab.
