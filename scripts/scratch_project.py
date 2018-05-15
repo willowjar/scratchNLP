@@ -12,6 +12,8 @@ class ScratchProject(ScratchProjectBase):
 		self.lists = {}
 		self.stacks = []
 		self.scripts = []
+		self.project_dir_path = ''
+
 
 	def add_variable(self,name, opt_value=0):
 		"""Create a variable initialized to 0"""
@@ -66,14 +68,14 @@ class ScratchProject(ScratchProjectBase):
 		self.json["children"][0] = sprite1
 		return json.dumps(self.json)
 
-	def save_project(self, path_to_project_directory):
+	def save_project(self, path_to_output_dir):
+		raw_project_path = '/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_asset'
 		# write the project.json into a file
 		with open(os.path.join(path_to_project_directory, 'project.json'), 'w+') as f:
 			f.write(self.to_json())
 		# zip and rename the file
-		raw_project_path = '/Users/quacht/Downloads/generate_sb2_fixture_with_assets'
-
-		zipfile_path = raw_project_path + '.zip'
-		sb2_path = raw_project_path + '.sb2'
+		project_name = 'scratchNLPdemo'
+		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
+		sb2_path = os.path.join(path_to_output_dir, project_name + '.sb2')
 		os.system('zip -r ' + zipfile_path + ' ' + raw_project_path)
 		os.system('mv ' + zipfile_path + ' ' + sb2_path)

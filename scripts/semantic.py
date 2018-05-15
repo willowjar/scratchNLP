@@ -124,7 +124,8 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 			print scratch.to_json()
 			continue
 		elif input_str in 'make sb2':
-			print scratch.save_project(path_to_base_project_dir)
+			path_to_result = '/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/'
+			print scratch.save_project(path_to_result)
 			continue
 		elif input_str == None:
 			if batch_mode:
@@ -263,12 +264,11 @@ def main():
 
 
 if __name__=='__main__':
-	if len(sys.argv) > 1:
-		path_to_base_project_dir = sys.argv[1]
-		path_to_result = sys.argv[2]
-	else:
-		#default path to base_project_dir
-		path_to_base_project_dir = '/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_asset'
+	# if len(sys.argv) > 1:
+	# 	path_to_base_project_dir = sys.argv[1]
+	# 	path_to_result = sys.argv[2]
+	# else:
+	#default path to base_project_dir
 	args = parse_cli_args()
 	main()
 
