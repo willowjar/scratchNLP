@@ -1,6 +1,8 @@
 import json
 import os
-import zipfile
+from zipfile import ZipFile
+import sys
+import json
 from scratch_project_base import ScratchProjectBase
 
 class ScratchProject(ScratchProjectBase):
@@ -11,14 +13,9 @@ class ScratchProject(ScratchProjectBase):
 		self.stacks = []
 		self.scripts = []
 
-	def add_variable(self,name, opt_value = 0):
+	def add_variable(self,name, opt_value=0):
 		"""Create a variable initialized to 0"""
-		#if opt_value:
 		self.variables[name] = opt_value
-		#else:
-				#if name in self.variables:
-					#raise Exception('A variable called ' + name + 'has already been created')
-				#self.variables[name] = 0
 
 
 	def add_list(self, name, opt_contents):
@@ -41,7 +38,7 @@ class ScratchProject(ScratchProjectBase):
 					self.add_stack(self.scripts)
 				# create a new stack for event handler
 				self.add_stack(script)
-			else:	
+			else:
 				self.scripts.append(script)
 
 	def add_stack(self, script_list):
@@ -74,4 +71,9 @@ class ScratchProject(ScratchProjectBase):
 		with open(os.path.join(path_to_project_directory, 'project.json'), 'w+') as f:
 			f.write(self.to_json())
 		# zip and rename the file
-		
+		raw_project_path = '/Users/quacht/Downloads/generate_sb2_fixture_with_assets'
+
+		zipfile_path = raw_project_path + '.zip'
+		sb2_path = raw_project_path + '.sb2'
+		os.system('zip -r ' + zipfile_path + ' ' + raw_project_path)
+		os.system('mv ' + zipfile_path + ' ' + sb2_path)
