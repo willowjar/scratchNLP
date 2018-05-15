@@ -19,16 +19,16 @@ regexMap = {
 # checking to validate arguments
 # global
 expression_map = {
-  r'(?:.*) message called (\w*)': ['MESSAGE_NAME'],
-  r'(?:.*) variable called (\w*)': ['VARIABLE_NAME'],
-  r'(?:.*) variable named (\w*)': ['VARIABLE_NAME'],
+  r'message called (\w*)': ['MESSAGE_NAME'],
+  r'variable called (\w*)': ['VARIABLE_NAME'],
+  r'variable named (\w*)': ['VARIABLE_NAME'],
   #r'(?:.*) new variable (\w*)': ['VARIABLE_NAME'],
-  r'(?:.*) list called (\w*)': ['LIST_NAME'],
-  r'(?:.*) list named (\w*)': ['LIST_NAME'],
+  r'list called (\w*)': ['LIST_NAME'],
+  r'list named (\w*)': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
   r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
   r'play the (\w*) sound': ['NAME_OF_SOUND'],
-  r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
+  #r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['Unk'],
   # Require that the user ends the braodcast message name with a period.
   #r'broadcast ((?:\w| )*.)': ['MESSAGE_NAME'],
@@ -125,7 +125,6 @@ def extract_names(sentences):
 									result[this_variable].add(match.strip())
 								else:
 									result[this_variable] = set([match.strip()])
-	print("result", result)
 	return result
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
@@ -288,8 +287,9 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	print utterance_vocab
 	
 	# Add variables to the scratch project object.
-	if 'VARIABlE_NAME' in utterance_vocab:
-		for var in utterance_vocab['VARIABlE_NAME']:
+	if 'VARIABLE_NAME' in utterance_vocab:
+		print("AHHHH")
+		for var in utterance_vocab['VARIABLE_NAME']:
 			print("###", var)
 			scratch_project.add_variable(var)	
 	
