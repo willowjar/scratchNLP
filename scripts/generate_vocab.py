@@ -35,7 +35,7 @@ expression_map = {
   r'broadcast (\w*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   #r'delete variable (\w*)': ['VARIABLE_NAME'],
-  #r'set (\w*) to .*': ['VARIABLE_NAME'],
+  r'set (\w*) to .*': ['VARIABLE_NAME'],
   #r'change (\w*) by .*': ['VARIABLE_NAME'],
   #r'make a list called (\w*)': ['LIST_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],

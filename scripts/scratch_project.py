@@ -1,3 +1,4 @@
+import json
 import os
 import zipfile
 from scratch_project_base import ScratchProjectBase
@@ -10,14 +11,14 @@ class ScratchProject(ScratchProjectBase):
 		self.stacks = []
 		self.scripts = []
 
-	def add_variable(self,name, opt_value):
+	def add_variable(self,name, opt_value = 0):
 		"""Create a variable initialized to 0"""
-		if opt_value:
-			self.variables[name] = opt_value
-		else:
+		#if opt_value:
+		self.variables[name] = opt_value
+		#else:
 				#if name in self.variables:
 					#raise Exception('A variable called ' + name + 'has already been created')
-				self.variables[name] = 0
+				#self.variables[name] = 0
 
 
 	def add_list(self, name, opt_contents):
@@ -70,7 +71,7 @@ class ScratchProject(ScratchProjectBase):
 
 	def save_project(self, path_to_project_directory):
 		# write the project.json into a file
-		with open(os.path.join(path_to_project_directory, 'project.json', 'w+') as f:
+		with open(os.path.join(path_to_project_directory, 'project.json'), 'w+') as f:
 			f.write(self.to_json())
 		# zip and rename the file
 		

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import sys
+sys.path.insert(0,'/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/software')
 import lab3.cfg
 from lab3.category import Category, GrammarCategory, Variable, C, StarCategory
 from lab3.semantic_rule_set import SemanticRuleSet
 from lab3.semantic_db import pretty_print_entry
+
 from nltk.corpus import wordnet as wn
-import sys
-sys.path.insert(0,'/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/scripts')
 from text2num import text2int
 
 ############################synonym helpers #########################
