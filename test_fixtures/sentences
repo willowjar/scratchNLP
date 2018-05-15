@@ -1,0 +1,11 @@
+when the green flag starts play the meow sound thats it
+make a variable called x
+set x to 1
+make a variable called y
+set y to 1
+make a list called z
+add x to z
+add y to z
+add 1 to x 5 times
+decrement y by 3 5 times
+
