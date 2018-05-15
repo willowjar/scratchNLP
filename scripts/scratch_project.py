@@ -69,13 +69,20 @@ class ScratchProject(ScratchProjectBase):
 		return json.dumps(self.json)
 
 	def save_project(self, path_to_output_dir):
-		raw_project_path = '/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_asset'
+		raw_project_path = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_assets'
 		# write the project.json into a file
-		with open(os.path.join(path_to_project_directory, 'project.json'), 'w+') as f:
+		with open(os.path.join(raw_project_path, 'project.json'), 'w+') as f:
 			f.write(self.to_json())
 		# zip and rename the file
 		project_name = 'scratchNLPdemo'
+		current_dir = os.getcwd()
+		os.chdir(raw_project_path)
+
 		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
+		os.system('zip -r ' + zipfile_path + ' ./*')
+
 		sb2_path = os.path.join(path_to_output_dir, project_name + '.sb2')
-		os.system('zip -r ' + zipfile_path + ' ' + raw_project_path)
+		print('sb2_path is ' + sb2_path)
+
 		os.system('mv ' + zipfile_path + ' ' + sb2_path)
+		os.chdir(current_dir)

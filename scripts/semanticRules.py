@@ -304,7 +304,7 @@ sem.add_rule("CreateCommand -> Make VARIABLE_LIST", lambda make, vl: createVaria
 
 
 #sem.add_rule("CreateCommand -> Make List LIST_NAME For Det Single Sprite", lambda make, lis, name, fr, a, single, sprite: createSingleList(name))
-sem.add_rule("CreateCommand -> Make List LIST_NAME", lambda make,l, name: createSingleList(name))
+sem.add_rule("CreateCommand -> Make LIST_NAME", lambda make, name: createSingleList(name))
 #sem.add_rule("CreateCommand -> Make List LIST_NAME For All Det Sprites", lambda make, lis, name, fr, al, the, sprites: createAllList(name))
 
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME", lambda vl: [vl])
@@ -312,6 +312,7 @@ sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn,a, vl
 
 
 sem.add_rule("VARIABLE_NAME -> Variable VARIABLE_NAME", lambda l, name: name)
+sem.add_rule("LIST_NAME -> List LIST_NAME", lambda l, name: name)
 sem.add_rule("Variable -> Det Variable", lambda det, var: None)
 sem.add_rule("Variable -> Variable Called", lambda v, c: None)
 sem.add_rule("Variable -> New Variable", lambda v, c: None)
@@ -319,13 +320,13 @@ sem.add_rule("List -> Det List", lambda det, liss: None)
 sem.add_rule("List -> New List", lambda det, liss: None)
 sem.add_rule("List -> List Called", lambda liss, c: None)
 
-sem.add_rule("KEY_NAME -> Keyname KEY_NAME", lambda k, n: n)
-sem.add_rule("Keyname -> Key", lambda k: None)
-sem.add_rule("Keyname -> Det Key", lambda d, k: None)
-sem.add_rule("Keyname -> Det Key Called", lambda d, k, c: None)
-sem.add_rule("Keyname -> Key Called", lambda k, c: None)
-sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
+#sem.add_rule("KEY_NAME -> Keyname KEY_NAME", lambda k, n: n)
 sem.add_rule("KEY_NAME -> KEY_NAME Key", lambda name, key: name)
+sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
+#sem.add_rule("Keyname -> Det Key", lambda d, k: None)
+#sem.add_rule("Keyname -> Det Key Called", lambda d, k, c: None)
+#sem.add_rule("Keyname -> Key Called", lambda k, c: None)
+
 
 
 sem.add_rule("ITEM -> NP", lambda i:i)
@@ -392,7 +393,7 @@ sem.add_rule("DataCommand -> Add ITEM To LIST_NAME", lambda a, item, t, list_nam
 sem.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name: deleteFromList(ind, list_name))
 sem.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o, list_name,w, item: setItemInList(ind, list_name, item))
 sem.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,item: setItemInList(ind, list_name, item))
-sem.add_rule("LIST_NAME -> List LIST_NAME", lambda l, name: name)
+
 
 # Data Reporter
 sem.add_rule("DataReporter -> The OrderAdverb Item In LIST_NAME", lambda t, order_adverb, i, inn, list_name: getItem(wordMap(order_adverb), list_name))

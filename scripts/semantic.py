@@ -101,6 +101,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 	output_validation_mode = len(valid_output) != 0
 
 	scratch = ScratchProject()
+	
 	evaluation_history = []
 	while True:
 		# Read in a sentence.
@@ -114,24 +115,24 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 				break
 		# you should be able to use the repl to query the value of lists and
 		# variables if they exist.
+		elif input_str == None:
+			if batch_mode:
+				break
+			else:
+				continue
 		elif input_str in scratch.variables:
 			print scratch.variables[input_str]
 			continue
 		elif input_str in scratch.lists:
 			print scratch.lists[input_str]
 			continue
-		elif input_str in 'json':
+		elif input_str == 'json':
 			print scratch.to_json()
 			continue
-		elif input_str in 'make sb2':
-			path_to_result = '/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/'
+		elif input_str == 'make scratch project' or input_str in 'make sb2':
+			path_to_result = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/'
 			print scratch.save_project(path_to_result)
 			continue
-		elif input_str == None:
-			if batch_mode:
-				break
-			else:
-				continue
 
 		# Parse the sentence.
 		output = None
