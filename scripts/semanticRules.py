@@ -290,7 +290,7 @@ sem.add_rule("AP -> LoopCommand", identity)
 sem.add_rule("AP -> TimerCommand", identity)
 sem.add_rule("AP -> BroadcastCommand", identity)
 sem.add_rule("AP -> ControlCommand", identity)
-sem.add_rule("AP -> KEY_NAME", identity)
+
 
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
 
