@@ -102,8 +102,8 @@ def extract_names(sentences):
 				if len(variables) == 1:
 					#print("single",variables,matches)
 					#could have multiple matches but only 1 var
-					# using set cuz we only care to add the vocab once even if 
-					# the same word appears twice 
+					# using set cuz we only care to add the vocab once even if
+					# the same word appears twice
 					this_variable = variables[0]
 					matches_set = set(matches)
 					for match in matches_set:
@@ -253,7 +253,7 @@ def get_unknowns_given_productions(utterance, semantic_rule_set):
 			the unknown words
 	"""
 	logged_unknowns = [production.rhs() for production in semantic_rule_set.productions if production.lhs() == 'Unk']
-	#print('logged_unknowns')	
+	#print('logged_unknowns')
 	#print(logged_unknowns)
 
 	# Known words must come from the right hand side of rules
@@ -286,13 +286,13 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	utterance_vocab = extract_names([utterance])
 	print 'utterance_vocab'
 	print utterance_vocab
-	
+
 	# Add variables to the scratch project object.
 	if 'VARIABlE_NAME' in utterance_vocab:
 		for var in utterance_vocab['VARIABlE_NAME']:
 			print("###", var)
-			scratch_project.add_variable(var)	
-	
+			scratch_project.add_variable(var)
+
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
 	print 'last production in semantic rule set should be based on utterance vocab'
