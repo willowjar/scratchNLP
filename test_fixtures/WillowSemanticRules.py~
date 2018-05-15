@@ -365,10 +365,6 @@ sem.add_lexicon_rule("NAME_OF_SOUND",
                      lambda name: name)
 sem.add_lexicon_rule("Test",
                      ['hello_hi'], identity)
-sem.add_lexicon_rule("Test",
-                     ['hello_hi'], identity)
-sem.add_lexicon_rule("Test",
-                     ['hello_lo'], identity)
 # Command Keywords
 sem.add_lexicon_rule("Play", ['play'], identity)
 sem.add_lexicon_rule("Set", ['set'], identity)

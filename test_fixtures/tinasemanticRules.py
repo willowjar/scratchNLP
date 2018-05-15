@@ -6,34 +6,6 @@ from lab3.category import Category, GrammarCategory, Variable, C, StarCategory
 from lab3.semantic_rule_set import SemanticRuleSet
 from lab3.semantic_db import pretty_print_entry
 
-
-############################synonym helpers #########################
-pos = [wn.VERB,wn.NOUN,wn.ADJ]
-
-def getWordsInSynset(synset):
-	words = set()
-	lemmas = synset.lemmas()
-	for lemma in lemmas:
-		this_synonym = lemma.name()
-		# athena parser won't be able to parse multi-word words
-		# they are identified by having _ in the name here
-		words.add(this_synonym)
-	return words
-def findSynoyms(word, part_of_speech):
-	synonyms = set()
-	synsets_found = wn.synsets(word, part_of_speech)
-	for synset in synsets_found:
-		#print("synset",synset)
-		current_synset_synonyms = getWordsInSynset(synset)
-		hypernyms = synset.hypernyms()
-		directHypernym = hypernyms[0]
-		synonyms.update(current_synset_synonyms)
-		hypernym_synonyms = getWordsInSynset(directHypernym)
-		#synonyms.update(hypernym_synonyms)
-		#print("hypernyms",hypernyms)
-	#convert to array form to be added in semanticRules
-	synonyms = list(synonyms)
-	return synonyms
 ####################################################################
 
 def translate(data):
@@ -47,28 +19,31 @@ def translateModifier(data):
 identity = lambda x: x
 
 sem = SemanticRuleSet()
-program = []
+global_variables = {}
+global_lists = {}
 
 ####################################################################
 # Speech Actions
 def processSentence(data):
-    return {"scripts": [[111, 146, data ]]}
+    if len(data) > 0:
+        data = [thing for thing in data if thing != None]
+        return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
 
 def singleCommand(commandName, value):
-    print("commandName, value",commandName, value)
+    print("commandName, value", commandName, value)
     return [commandName, value]
 
 def singleCommandNoValue(commandName):
     return [commandName]
 
 def ifCommand(if_cond, if_body):
-    return [["doIf", if_cond, [if_body]]]
+    return ["doIf", if_cond, [if_body]]
 
 def ifElseCommand(if_cond, if_body, else_body):
-    return [["doIfElse", if_cond, [if_body],[else_body]]]
+    return ["doIfElse", if_cond, [if_body],[else_body]]
 
 def repeat(num_times, repeat_body):
-    return ["doRepeat", num_times, [repeat_body]]
+    return ["doRepeat", int(num_times), [repeat_body]]
 def until(until_condition, repeat_body):
     return ["doUntil", until_condition, [repeat_body]]
 def doForever(forever_body):
@@ -83,24 +58,20 @@ def waitUntil(until_condition):
     return ["doWaitUntil", until_condition]
 
 def setVariable(var_name, value):
+    global_variables[var_name] = value
     return ["setVar:to:",var_name, value]
 
 def deleteVariable(variable_name):
-    # TODO: modify project.json to delete variable from sprite
-    # Should return nothing or empty string?
-    pass
+    del global_variables[variable_name]
 
-def createVariable(vl):
-    ## to do
-    return vl
+def createVariable(variable_list):
+    for var in variable_list:
+        global_variables[var] = 0
+        # TODO: somehow prevent returning the variable name in response of processSentence.
+        return None
 
 def createSingleList(name):
-    ## to do
-    pass
-
-def createAllList(name):
-    ## to do
-    pass
+    global_lists[name] = []
 
 def createClone():
     return ["createCloneOf:", "myself"]
@@ -110,11 +81,6 @@ def itemInList(unk, name):
 
 def resetTimer():
     return ["timerReset"]
-
-def Dur(np):
-    if np == -1:
-        return [["doForever"]]
-    return [["doRepeat:", np]]
 
 # OPERATORS
 def add(n1, n2):
@@ -200,7 +166,8 @@ def not_identity(x):
     return ["not", x]
 
 def SimpleEvent(e, a):
-    return [e,a]
+    # flatten the action list
+    return [e] + a
 
 def whQuestion(data):
     results = sem.learned.wh_query(data)
@@ -244,17 +211,17 @@ def setItemInList(ind, list_name, item):
 
 # Loop commands
 def repeat_action_list(action_list, duration):
+    print 'action_list'
+    print action_list
+    print 'duration'
+    print duration
     if duration == 'forever':
-        return [['doForever', action_list]]
+        return ['doForever', action_list]
     else:
-        return [['doRepeat', duration, action_list]]
+        return ['doRepeat', duration, action_list]
 
-def get_duration(durationPhrase):
-    if durationPhrase == 'forever':
-        return durationPhrase
-    else:
-        # TODO: unsure about this
-        return (text2num(durationPhrase.split()[0]))
+def get_duration(duration):
+        return duration
 
 # Sequential commands
 def appendToProgram(action_list):
@@ -272,8 +239,7 @@ sem.add_rule("Start -> S", lambda s: processSentence(s))
 sem.add_rule("S -> AL", identity)
 #testing specific non terminals, will delete later
 sem.add_rule("S -> BP", identity)
-##
-sem.add_rule("AL -> AP", lambda p: p)
+sem.add_rule("AL -> AP", lambda p: [p])
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
@@ -281,6 +247,7 @@ sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
 sem.add_rule("AP -> EventHandler", identity)
+# sem.add_rule("AP -> EventHandler", lambda eventHandler: [111,124, eventHandler])
 sem.add_rule("AP -> OrderedCommand", identity)
 sem.add_rule("AP -> SequentialCommand", identity)
 sem.add_rule("AP -> ConditionalCommand", identity)
@@ -300,9 +267,9 @@ sem.add_rule("CreateCommand -> Make Det Clone Of Myself", lambda m, det, c,o, my
 sem.add_rule("CreateCommand -> Make VARIABLE_LIST", lambda make, vl: createVariable(vl))
 
 
-sem.add_rule("CreateCommand -> Make List LIST_NAME For Det Single Sprite", lambda make, lis, name, fr, a, single, sprite: createSingleList(name))
+#sem.add_rule("CreateCommand -> Make List LIST_NAME For Det Single Sprite", lambda make, lis, name, fr, a, single, sprite: createSingleList(name))
 sem.add_rule("CreateCommand -> Make List LIST_NAME", lambda make,l, name: createSingleList(name))
-sem.add_rule("CreateCommand -> Make List LIST_NAME For All Det Sprites", lambda make, lis, name, fr, al, the, sprites: createAllList(name))
+#sem.add_rule("CreateCommand -> Make List LIST_NAME For All Det Sprites", lambda make, lis, name, fr, al, the, sprites: createAllList(name))
 
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME", lambda vl: [vl])
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn,a, vl: [vn]+vl)
@@ -331,10 +298,11 @@ sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 
 
 # Duration
-sem.add_rule("Duration -> Unk Times", lambda np, times: np)
+sem.add_rule("Duration -> Unk 'times'", lambda np, times: get_duration(np))
 
 # Sound Command
-sem.add_rule("SoundCommand -> Play Det NAME_OF_SOUND Sound", lambda play, the, name, sound: singleCommand("playSound:", name))
+# Use the halting version f the play sound block
+sem.add_rule("SoundCommand -> Play Det NAME_OF_SOUND Sound", lambda play, the, name, sound: singleCommand("doPlaySoundAndWait", name))
 
 sem.add_rule("SoundCommand -> Set Volume To Unk", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 
@@ -360,7 +328,7 @@ sem.add_rule("SoundCommand -> Faster", lambda faster: singleCommand("changeTempo
 ## Data Command
 
 # todo: fix
-sem.add_rule("DataCommand -> Delete Variable VARIABLE_NAME", lambda delete, var, var_name: deleteVariable(var_name))
+sem.add_rule("DataCommand -> Delete VARIABLE_NAME", lambda delete, var_name: deleteVariable(var_name))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np: setVariable(var_name, np))
 sem.add_rule("DataCommand -> Add NP To VARIABLE_NAME", lambda a, num, t, var_name:
@@ -379,14 +347,14 @@ sem.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, v
 # todo: fix commands working w/ lists
 sem.add_rule("DataCommand -> Add ITEM To Lis LIST_NAME", lambda a, item, t, l, list_name: appendToList(list_name, item))
 sem.add_rule("DataCommand -> Delete Ele NP Of Lis LIST_NAME", lambda d, el, ind,o, l, list_name: deleteFromList(ind, list_name))
-sem.add_rule("DataCommand -> Replace Ele NP Of Lis LIST_NAME With ITEM", lambda r, e, ind, o,l,list_name,w, item: setItemInList(ind, list_name, item))
+sem.add_rule("DataCommand -> Replace Ele NP Of Lis LIST_NAME 'with' ITEM", lambda r, e, ind, o,l,list_name,w, item: setItemInList(ind, list_name, item))
 sem.add_rule("DataCommand -> Set Ele NP Of Lis LIST_NAME To ITEM", lambda s, e, ind, o,l, list_name, t,
 item: setItemInList(ind, list_name, item))
 # Data Reporter
 sem.add_rule("DataReporter -> The OrderAdverb Item In Lis LIST_NAME", lambda t, order_adverb, i, inn, l, list_name: getItem(mapWordToNum(order_adverb), list_name))
 
 # Number Phrase
-sem.add_rule("NP -> Unk", identity)
+sem.add_rule("NP -> Unk", lambda unk: int(unk))
 
 sem.add_rule("NP -> NPP", identity)
 
@@ -460,7 +428,7 @@ sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It",
 
 
 ## TimerCommand
-sem.add_rule("TimerCommand -> Reset Timer", lambda r, t: resetTimer())
+sem.add_rule("TimerCommand -> 'reset' Tim", lambda r, t: resetTimer())
 sem.add_lexicon_rule("Ele",['element'],identity)
 
 ## Boolean Phrases
@@ -468,18 +436,18 @@ sem.add_rule("BP -> Item Unk In LIST_NAME", lambda i, unk, inn, name:itemInList(
 sem.add_rule("BP -> Item Unk LMOD In LIST_NAME", lambda i, unk, mod, inn, name: mod(itemInList(unk, name)))
 sem.add_rule("BP -> VARIABLE_NAME CBP Unk", lambda var, cbp, unk: cbp(getValue(var), unk))
 
-sem.add_rule("BP -> NP CBP NP", lambda unk1, cbp, unk2: cbp(unk1, unk2))
-sem.add_rule("BP -> Timer CBP NP", lambda tim, comp, Unk: comp(tim, Unk))
+sem.add_rule("BP -> Unk CBP Unk", lambda unk1, cbp, unk2: cbp(unk1, unk2))
+sem.add_rule("BP -> Timer CBP Unk", lambda tim, comp, Unk: comp(tim, Unk))
 
-#sem.add_rule("BP -> VARIABLE_NAME CBP VARIABLE_NAME", lambda var1, cbp, var2: cbp(getValue(var1), getValue(var2)))
+sem.add_rule("BP -> VARIABLE_NAME CBP VARIABLE_NAME", lambda var1, cbp, var2: cbp(getValue(var1), getValue(var2)))
 
 sem.add_rule("BP -> LIST_NAME Contains ITEM", lambda name, con, it: itemInList(it, name))
 
 sem.add_rule("BP -> Boolean" , identity)
-sem.add_rule("Boolean -> True" , lambda t: 1) # Scenario?
-sem.add_rule("Boolean -> False" , lambda t: 0) # Scenario?
-sem.add_rule("Boolean -> LMOD True ", lambda l, t: l(1))
-sem.add_rule("Boolean -> LMOD False" , lambda l, t: l(0))
+sem.add_rule("Boolean -> 'true'" , lambda t: 1) # Scenario?
+sem.add_rule("Boolean -> 'false'" , lambda t: 0) # Scenario?
+sem.add_rule("Boolean -> LMOD 'true' ", lambda l, t: l(1))
+sem.add_rule("Boolean -> LMOD 'false'" , lambda l, t: l(0))
 
 sem.add_rule("BP -> BP And BP", lambda b1,andd, b2: logicAnd(b1, b2))
 sem.add_rule("BP -> BP Or BP", lambda b1, orr, b2: logicOr(b1, b2))
@@ -510,7 +478,7 @@ sem.add_rule("ControlCommand -> Repeat AL Until BP", lambda repeat, al, untill, 
 
 sem.add_rule("ControlCommand -> Repeat AL Forever", lambda repeat, al, forever: doForever(al))
 
-sem.add_rule("ControlCommand -> Repeat AL NP Times", lambda repeatt, al, unk, times: repeat(unk, al))
+sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, times: repeat(unk, al))
 
 sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
 
@@ -519,10 +487,11 @@ sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: d
 #LoopCommand
 sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
 sem.add_rule("LoopCommand -> LoopCommandP", identity)
-sem.add_rule("LoopCommand -> AP Should Be Repeated Duration", lambda action_list,s,b,r, duration: repeat_action_list(action_list, duration))
-sem.add_rule("LoopCommandP -> AP Thats It Duration", lambda ap, t, i, duration: repeat_action_list([ap], duration))
-sem.add_rule("LoopCommandP -> Det Following Duration AL Thats It", lambda t, f, duration, action_list, tt, it: repeat_action_list(action_list, duration))
-sem.add_rule("LoopCommandP -> Det Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, it: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_list([ap], duration))
+sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
+
 
 #####################################################################
 ## Lexicon
@@ -546,6 +515,8 @@ sem.add_lexicon_rule("This", ["this"], identity)
 # Names
 sem.add_lexicon_rule("NAME_OF_SOUND",
                      ['meow'],
+                     # TODO: the semantic rule for NAME_OF_SOUND could involve
+                     # searching
                      lambda name: name)
 sem.add_lexicon_rule("I", ["i"], identity)
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
@@ -577,6 +548,7 @@ sem.add_lexicon_rule("Pitch", ['pitch'], identity)
 sem.add_lexicon_rule("Effect", ['effect'], identity)
 sem.add_lexicon_rule("Percent", ['percent'], identity)
 sem.add_lexicon_rule("Seconds", ['seconds'], identity)
+sem.add_lexicon_rule("Times", ['times'], identity)
 sem.add_lexicon_rule("Clone", ['clone'], identity)
 sem.add_lexicon_rule("Steps", ['steps'], identity)
 
@@ -607,8 +579,6 @@ sem.add_lexicon_rule("Det",
                       lambda word: lambda: None)
 
 
-sem.add_lexicon_rule("With", ['with'], identity)
-
 
 sem.add_lexicon_rule("OrderAdverb",
                        ['secondly', 'fourthly', 'fifthly', 'seventh', 'second', 'fifth', 'sixthly', 'third', 'thirdly', 'fourth', 'sixth', 'firstly', 'first'],
@@ -621,7 +591,7 @@ sem.add_lexicon_rule("SequenceAdverb",
 
 sem.add_lexicon_rule("Duration",
                        ['forever'],
-                       identity)
+                       lambda word: Dur(-1))
 
 sem.add_lexicon_rule("Unk",
                        ['0','1','2','3','4','5','6','7','8','9'],
@@ -659,11 +629,9 @@ sem.add_lexicon_rule("Than", ["than"], identity)
 sem.add_lexicon_rule("Or", ["or"], identity)
 sem.add_lexicon_rule("And", ["and"], identity)
 sem.add_lexicon_rule("NEG", ["not"], identity)
-#sem.add_lexicon_rule("NEG", ["isn't"], identity)# not working
+sem.add_lexicon_rule("NEG", ["isn't"], identity)# not working
 sem.add_lexicon_rule("POS", ["is"], identity)
 sem.add_rule("NEG -> Is NEG", lambda x, y: y)
-sem.add_lexicon_rule("True", ["true"], identity)
-sem.add_lexicon_rule("False", ["false"], identity)
 
 sem.add_lexicon_rule("In", ["in"], identity)
 sem.add_lexicon_rule("List", ["list"], identity)
@@ -701,8 +669,6 @@ sem.add_lexicon_rule("Between",['between'],identity)
 sem.add_lexicon_rule("Random",['random'],identity)
 sem.add_lexicon_rule("Number",['number'],identity)
 sem.add_lexicon_rule("From",['from'],identity)
-
-sem.add_lexicon_rule("Unk",['5'],identity)
 
 ##############################################################################
 # Now we will run the rules you are adding to solve problems in this lab.
