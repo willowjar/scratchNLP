@@ -5,6 +5,9 @@ import lab3.cfg
 from lab3.category import Category, GrammarCategory, Variable, C, StarCategory
 from lab3.semantic_rule_set import SemanticRuleSet
 from lab3.semantic_db import pretty_print_entry
+import sys
+sys.path.insert(0,'/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/scripts')
+from text2num import text2int
 
 ####################################################################
 
@@ -51,11 +54,17 @@ def doForever(forever_body):
 def deleteClone():
     return ["deleteClone"]
 
-
 def wait(wait_time):
     return ["wait:elapsed:from:", wait_time]
 def waitUntil(until_condition):
     return ["doWaitUntil", until_condition]
+
+def getNumber(unk):
+	try:
+		num = int(unk)
+	except:
+		num = text2int(unk)
+	return num
 
 def setVariable(var_name, value):
     global_variables[var_name] = value
@@ -203,7 +212,7 @@ def wordMap(order_adverb):
 def addToList(list_name, item):
     return [['append:toList:', item, list_name]]
 
-def deleteListItem(list_name, ind):
+def deleteItemFromList(list_name, ind):
     return [['deleteLine:ofList:', ind, list_name]]
 
 def setItemInList(ind, list_name, item):
@@ -247,7 +256,6 @@ sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
 sem.add_rule("AP -> EventHandler", identity)
-# sem.add_rule("AP -> EventHandler", lambda eventHandler: [111,124, eventHandler])
 sem.add_rule("AP -> OrderedCommand", identity)
 sem.add_rule("AP -> SequentialCommand", identity)
 sem.add_rule("AP -> ConditionalCommand", identity)
@@ -294,8 +302,7 @@ sem.add_rule("ITEM -> NP", lambda i:i)
 sem.add_rule("ITEM -> MESSAGE_NAME", lambda name: name)
 sem.add_rule("ITEM -> Unk", lambda name: name)
 sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
-
-
+sem.add_rule("ITEM -> DATA_REPORTER", identity)
 
 # Duration
 sem.add_rule("Duration -> Unk 'times'", lambda np, times: get_duration(np))
@@ -331,6 +338,7 @@ sem.add_rule("SoundCommand -> Faster", lambda faster: singleCommand("changeTempo
 sem.add_rule("DataCommand -> Delete VARIABLE_NAME", lambda delete, var_name: deleteVariable(var_name))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np: setVariable(var_name, np))
+sem.add_rule("DataCommand -> Set VARIABLE_NAME To ITEM", lambda s, var_name, to, item: setVariable(var_name, item))
 sem.add_rule("DataCommand -> Add NP To VARIABLE_NAME", lambda a, num, t, var_name:
 changeVarBy(var_name, num))
 sem.add_rule("DataCommand -> Increment VARIABLE_NAME By NP", lambda i, var_name, b, num: changeVarBy(var_name, num))
@@ -345,16 +353,16 @@ sem.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, v
 
 
 # todo: fix commands working w/ lists
-sem.add_rule("DataCommand -> Add ITEM To Lis LIST_NAME", lambda a, item, t, l, list_name: appendToList(list_name, item))
-sem.add_rule("DataCommand -> Delete Ele NP Of Lis LIST_NAME", lambda d, el, ind,o, l, list_name: deleteFromList(ind, list_name))
-sem.add_rule("DataCommand -> Replace Ele NP Of Lis LIST_NAME 'with' ITEM", lambda r, e, ind, o,l,list_name,w, item: setItemInList(ind, list_name, item))
-sem.add_rule("DataCommand -> Set Ele NP Of Lis LIST_NAME To ITEM", lambda s, e, ind, o,l, list_name, t,
+sem.add_rule("DataCommand -> Add ITEM To LIST_NAME", lambda a, item, t, list_name: addToList(list_name, item))
+sem.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name: deleteItemFromList(ind, list_name))
+sem.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o,list_name,w, item: setItemInList(ind, list_name, item))
+sem.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,
 item: setItemInList(ind, list_name, item))
 # Data Reporter
-sem.add_rule("DataReporter -> The OrderAdverb Item In Lis LIST_NAME", lambda t, order_adverb, i, inn, l, list_name: getItem(mapWordToNum(order_adverb), list_name))
+sem.add_rule("DataReporter -> The OrderAdverb Item In LIST_NAME", lambda t, order_adverb, i, inn, list_name: getItem(wordMap(order_adverb), list_name))
 
 # Number Phrase
-sem.add_rule("NP -> Unk", lambda unk: int(unk))
+sem.add_rule("NP -> Unk", lambda unk: getNumber(unk))
 
 sem.add_rule("NP -> NPP", identity)
 
@@ -403,7 +411,7 @@ sem.add_rule("EVENT -> When I Receive MESSAGE_NAME", lambda w, i, r, message: wh
 sem.add_rule("Timer -> Det Timer", lambda d, tim: tim)
 
 
-sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c(t, n)))
+sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t], n)))
 
 
 sem.add_rule("CBP -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
@@ -429,7 +437,7 @@ sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It",
 
 ## TimerCommand
 sem.add_rule("TimerCommand -> 'reset' Tim", lambda r, t: resetTimer())
-sem.add_lexicon_rule("Ele",['element'],identity)
+sem.add_lexicon_rule("Ele",['element', 'item'],identity)
 
 ## Boolean Phrases
 sem.add_rule("BP -> Item Unk In LIST_NAME", lambda i, unk, inn, name:itemInList(unk, name))
@@ -502,6 +510,7 @@ sem.add_lexicon_rule("Increment", ["increment"], identity)
 sem.add_lexicon_rule("Decrement", ["decrement"], identity)
 sem.add_lexicon_rule("Subtract", ["subtract"], identity)
 sem.add_lexicon_rule("From", ["from"], identity)
+sem.add_lexicon_rule("With", ["with"], identity)
 
 
 # Loop Command Keywords

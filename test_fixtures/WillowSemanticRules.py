@@ -4,7 +4,33 @@ import lab3.cfg
 from lab3.category import Category, GrammarCategory, Variable, C, StarCategory
 from lab3.semantic_rule_set import SemanticRuleSet
 from lab3.semantic_db import pretty_print_entry
+from nltk.corpus import wordnet as wn
 
+############################synonym helpers #########################
+def getWordsInSynset(synset):
+	words = set()
+	lemmas = synset.lemmas()
+	for lemma in lemmas:
+		this_synonym = str(lemma.name())
+		# athena parser won't be able to parse multi-word words
+		# they are identified by having _ in the name here
+		words.add(this_synonym)
+	return words
+def findSynoyms(word, part_of_speech):
+	synonyms = set()
+	synsets_found = wn.synsets(word, part_of_speech)
+	for synset in synsets_found:
+		#print("synset",synset)
+		current_synset_synonyms = getWordsInSynset(synset)
+		synonyms.update(current_synset_synonyms)
+        # hypernyms = synset.hypernyms()
+		# directHypernym = hypernyms[0]
+		# hypernym_synonyms = getWordsInSynset(directHypernym)
+		#synonyms.update(hypernym_synonyms)
+		#print("hypernyms",hypernyms)
+	#convert to array form to be added in semanticRules
+	synonyms = list(synonyms)
+	return synonyms
 ####################################################################
 
 def translate(data):
@@ -522,8 +548,52 @@ sem.add_lexicon_rule("Between",['between'],identity)
 sem.add_lexicon_rule("Random",['random'],identity) 
 sem.add_lexicon_rule("Number",['number'],identity) 
 
+## Synonyms
+pos = [wn.VERB,wn.NOUN,wn.ADJ]
+def addSynToLexiconRule(nonterminal, terminal, terminalType):
+    synonyms = findSynoyms(terminal, terminalType)
+    # add to lexicon iff length of synonym>=1 and synonyms don't only contain
+    # the word itself
+    if len(synonyms) > 0:
+        if len(synonyms) != 1:
+            print("synonyms",terminal,synonyms)
+            sem.add_lexicon_rule(nonterminal, synonyms, identity)
+        else:
+            if (synonyms[0] != terminal):
+                print("synonyms",terminal,synonyms)
+                sem.add_lexicon_rule(nonterminal, synonyms, identity)
 
-        
+eligibleWords = [
+    ["Increment", "increment", wn.VERB],
+    ["Decrement", "decrement", wn.VERB],
+    ["Subtract", "subtract", wn.VERB],
+    ["Sprite", "sprite", wn.NOUN],
+    ["Play", "play", wn.VERB],
+    ["Replace", "replace", wn.VERB],
+    ["Change", "change", wn.VERB],
+    ["Stop", "stop", wn.VERB],
+    ["Wait", "wait", wn.VERB],
+    ["Repeat", "repeat", wn.VERB],
+    ["Delete", "delete", wn.VERB],
+    ["Make", "create", wn.VERB],
+    ["Make", "generate", wn.VERB],
+    ["Reset", "reset", wn.VERB],
+    ["Timer", "timer", wn.NOUN],
+    ["Time", "time", wn.NOUN],
+    ["Sound", "sound", wn.NOUN],
+    ["Message", "message", wn.NOUN],
+    ["Forever", "forever", wn.ADV],
+    ["Flag", "flag", wn.NOUN],
+    ["Receive", "receive", wn.VERB],
+    ["Equal", "equal", wn.ADJ],
+    ["Greater", "greater", wn.ADJ],
+    ["Less", "less", wn.ADJ],
+    ["Broadcast", "broadcast", wn.VERB]
+]
+for e_word in eligibleWords:
+    addSynToLexiconRule(e_word[0],e_word[1], e_word[2])
+
+addSynToLexiconRule("greater_than","greater_than", wn.ADJ)       
                      
 ##############################################################################
 # Now we will run the rules you are adding to solve problems in this lab.

@@ -3,6 +3,7 @@ import sys
 import re
 from text2num import text2int
 
+
 # TODO(quacht): add argument validation
 # TODO(quacht): specify which vocabulary file to append generate rules to.
 
@@ -21,24 +22,27 @@ expression_map = {
   r'(?:.*) message called (\w*)': ['MESSAGE_NAME'],
   r'(?:.*) variable called (\w*)': ['VARIABLE_NAME'],
   r'(?:.*) variable named (\w*)': ['VARIABLE_NAME'],
-  r'(?:.*) list called (\w*) for': ['LIST_NAME'],
+  #r'(?:.*) new variable (\w*)': ['VARIABLE_NAME'],
+  r'(?:.*) list called (\w*)': ['LIST_NAME'],
+  r'(?:.*) list named (\w*)': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
   r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
   r'play the (\w*) sound': ['NAME_OF_SOUND'],
   r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
-  r'wait (\w*) seconds': ['NUMBER'],
+  r'wait (\w*) seconds': ['Unk'],
   # Require that the user ends the braodcast message name with a period.
   #r'broadcast ((?:\w| )*.)': ['MESSAGE_NAME'],
   r'broadcast (\w*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
-  r'delete variable (\w*)': ['VARIABLE_NAME'],
-  r'set (\w*) to .*': ['VARIABLE_NAME'],
-  r'change (\w*) by .*': ['VARIABLE_NAME'],
-  r'make a list called (\w*)': ['LIST_NAME'],
+  #r'delete variable (\w*)': ['VARIABLE_NAME'],
+  #r'set (\w*) to .*': ['VARIABLE_NAME'],
+  #r'change (\w*) by .*': ['VARIABLE_NAME'],
+  #r'make a list called (\w*)': ['LIST_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
   r'delete element .* of list (\w*)': ['LIST_NAME'],
-  r'replace element .* of list (\w*) with .*': ['LIST_NAME'],
-  r'the first item in list (\w*)': ['LIST_NAME'],
+  #r'replace element .* of list (\w*) with .*': ['LIST_NAME'],
+  #r'element .* of list (\w*) .*': ['LIST_NAME']
+  #r'the first item in list (\w*)': ['LIST_NAME'],
 }
 
 # global
@@ -93,8 +97,8 @@ def extract_names(sentences):
 				#print '\t' + regex
 				variables = expression_map[regex]
 				matches = re.findall(regex, sentence, re.M|re.I)
-				#print("variables",variables)
-				#print("matches",matches)
+				print("variables",variables)
+				print("*****matches",matches)
 				if len(variables) == 1:
 					#print("single",variables,matches)
 					#could have multiple matches but only 1 var
@@ -112,13 +116,16 @@ def extract_names(sentences):
 					#print("multiple",variables,matches)
 					for i in range(0, len(variables)):
 						this_variable = variables[i]
-						if len(matches)>0:
+						print("var", this_variable)
+						if len(matches)> 0 and i < len(matches):
+							print("matches", matches)
 							matches_for_this_var = matches[i]
 							for match in matches_for_this_var:
 								if this_variable in result:
 									result[this_variable].add(match.strip())
 								else:
 									result[this_variable] = set([match.strip()])
+	print("result", result)
 	return result
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
@@ -161,7 +168,7 @@ def get_core_vocab():
 	new_vocab = {}
 
 	# Define the kinds of keys that may be pressed and responded to.
-	keynames = ['space','left arrow', 'right arrow', 'down arrow', 'up arrow', 'any']
+	keynames = ['space','any']
 	# Include all lowercase letters
 	keynames = keynames + [chr(letter) for letter in range(97,123)]
 	# Include all digits
@@ -172,14 +179,15 @@ def get_core_vocab():
 	new_vocab['Unk'] = [str(num) for num in range(0,10)]
 
 	# Add the names of Scratch backdrops.
-	backdrops = ['Party','Basketball', 'Blue Sky', 'Blue Sky 2', 'Jurassic', 'Light', 'Rays', 'Refrigerator', 'Space']
+	backdrops = ['Party','Basketball', 'Jurassic', 'Light', 'Rays', 'Refrigerator', 'Space']
 	new_vocab['BACKDROP_NAME'] = backdrops
 
 	return new_vocab
 
-def generate_vocab_list(vocabulary_file_path):
+def generate_vocab_list(semantic_rule_set):
 	new_vocab = get_core_vocab()
-	add_to_vocabulary_file(new_vocab, vocabulary_file_path)
+	add_to_lexicon(new_vocab, semantic_rule_set)
+	#add_to_vocabulary_file(new_vocab, vocabulary_file_path)
 
 def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_file_path):
 	with open(example_sentences_file_path) as f:
@@ -282,6 +290,7 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	# Add variables to the scratch project object.
 	if 'VARIABlE_NAME' in utterance_vocab:
 		for var in utterance_vocab['VARIABlE_NAME']:
+			print("###", var)
 			scratch_project.add_variable(var)	
 	
 	# Add the names to the syntactic/semantic rules
@@ -323,6 +332,8 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	return new_utterance
 
 if __name__ == "__main__":
+	generate_vocab_list()
+'''
 	if len(sys.argv) == 3:
 		vocabulary_file = sys.argv[1]
 		example_sentences_file = sys.argv[2]
@@ -335,4 +346,5 @@ if __name__ == "__main__":
 		#generate_vocab_list(example_sentences_file, vocabulary_file)
 		generate_vocab_list_with_examples(example_sentences_file, vocabulary_file)
 	else:
-		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')
+		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')\
+'''
