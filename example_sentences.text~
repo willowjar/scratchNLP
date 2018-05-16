@@ -13,7 +13,7 @@ When the space key is pressed broadcast hello world 3 times then create a new va
 Add 1 to count do that 5 times
 If count is greater than zero, play the bing sound and change volume by 3
 
-repeat the following 5 times increment y by 20 then decrement it by 1 thats it
+repeat the following 5 times increment y by 20 then decrement it by 1
 Say hello world y times
 
 Make a list called name for all the sprites

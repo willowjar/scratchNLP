@@ -58,8 +58,10 @@ def parse_input_str(input_str, scratch):
 	# Before attempting to parse the sentence, update the grammar.
 	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, scratch)
 	trees = lab_rules.sem.parse_sentence(input_str)
+	#for tree in trees:
+		#print(tree)
 	if len(trees) > 1:
-		print_verbose("[WARNING] Obtained %d parses; selecting the first one."%(len(trees)))
+		print("[WARNING] Obtained %d parses; selecting the first one."%(len(trees)))
 	elif len(trees) == 0:
 		raise Exception("Failed to parse the sentence: " + input_str)
 	return trees[0]
@@ -107,6 +109,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 	while True:
 		# Read in a sentence.
 		input_str = read_sentence(batch_sentences if batch_mode else None)
+		input_str = input_str.lower().strip()
 		if input_str in ('', 'exit', 'quit'):
 			if batch_mode:
 				# We ignore these special commands in batch mode.
@@ -171,7 +174,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 		except Exception as e:
 			# The parser did not return any parse trees.
 			print_verbose("[WARNING] Could not parse input.")
-			traceback.print_exc() # Uncomment this line while debugging.
+			#traceback.print_exc() #TODO: Uncomment this line while debugging.
 			output = "I don't understand."
 
 		# Print the result of the speech act

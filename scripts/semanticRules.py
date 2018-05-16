@@ -65,10 +65,10 @@ def singleCommandNoValue(commandName):
     return [commandName]
 
 def ifCommand(if_cond, if_body):
-    return ["doIf", if_cond, [if_body]]
+    return ["doIf", if_cond, if_body]
 
 def ifElseCommand(if_cond, if_body, else_body):
-    return ["doIfElse", if_cond, [if_body],[else_body]]
+    return ["doIfElse", if_cond, if_body, else_body]
 
 def repeat(num_times, repeat_body):
     return ["doRepeat", int(num_times), [repeat_body]]
@@ -93,7 +93,7 @@ def getNumber(unk):
 		return num
 
 def setVariable(var_name, value):
-    global_variables[var_name] = value
+    #global_variables[var_name] = value
     return ["setVar:to:",var_name, value]
 
 def deleteVariable(variable_name):
@@ -102,11 +102,14 @@ def deleteVariable(variable_name):
 def createVariable(variable_list):
     for var in variable_list:
         global_variables[var] = 0
+    return wait(0.1)
         # TODO: somehow prevent returning the variable name in response of processSentence.
-        return None
+    #return None
 
 def createSingleList(name):
     global_lists[name] = []
+    return wait(0.1)
+
 
 def createClone():
     return ["createCloneOf:", "myself"]
@@ -239,20 +242,16 @@ def wordMap(order_adverb):
     return adverbToNumMap[order_adverb]
 
 def addToList(list_name, item):
-    return [['append:toList:', item, list_name]]
+    return ['append:toList:', item, list_name]
 
 def deleteListItem(list_name, ind):
-    return [['deleteLine:ofList:', ind, list_name]]
+    return ['deleteLine:ofList:', ind, list_name]
 
 def setItemInList(ind, list_name, item):
-    return [['setLine:ofList:to:', ind, list_name, item]]
+    return ['setLine:ofList:to:', ind, list_name, item]
 
 # Loop commands
 def repeat_action_list(action_list, duration):
-    print 'action_list'
-    print action_list
-    print 'duration'
-    print duration
     if duration == 'forever':
         return ['doForever', action_list]
     else:
@@ -275,8 +274,6 @@ sem.add_rule("Start -> S", lambda s: processSentence(s))
 
 # All Command
 sem.add_rule("S -> AL", identity)
-#testing specific non terminals, will delete later
-sem.add_rule("S -> BP", identity)
 sem.add_rule("AL -> AP", lambda p: [p])
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
@@ -287,18 +284,18 @@ sem.add_rule("AP -> DataCommand", identity)
 sem.add_rule("AP -> EventHandler", identity)
 # sem.add_rule("AP -> EventHandler", lambda eventHandler: [111,124, eventHandler])
 sem.add_rule("AP -> OrderedCommand", identity)
-sem.add_rule("AP -> SequentialCommand", identity)
+#sem.add_rule("AP -> SequentialCommand", identity)
 sem.add_rule("AP -> ConditionalCommand", identity)
 sem.add_rule("AP -> LoopCommand", identity)
 sem.add_rule("AP -> TimerCommand", identity)
 sem.add_rule("AP -> BroadcastCommand", identity)
 sem.add_rule("AP -> ControlCommand", identity)
+sem.add_rule("AL -> SequentialCommand", identity)
 
 
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
 
 # SequentialCommand
-#sem.add_rule("SequentialCommand -> SequenceAdverb AL", lambda seq_adv, action_list: appendToProgram(action_list))
 sem.add_rule("SequentialCommand -> SequenceAdverb AL", lambda seq_adv, action_list: action_list)
 
 # Create Command
@@ -306,14 +303,10 @@ sem.add_rule("CreateCommand -> Make Det Clone Of Myself", lambda m, det, c,o, my
 
 sem.add_rule("CreateCommand -> Make VARIABLE_LIST", lambda make, vl: createVariable(vl))
 
-
-#sem.add_rule("CreateCommand -> Make List LIST_NAME For Det Single Sprite", lambda make, lis, name, fr, a, single, sprite: createSingleList(name))
 sem.add_rule("CreateCommand -> Make LIST_NAME", lambda make, name: createSingleList(name))
-#sem.add_rule("CreateCommand -> Make List LIST_NAME For All Det Sprites", lambda make, lis, name, fr, al, the, sprites: createAllList(name))
 
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME", lambda vl: [vl])
-sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn,a, vl: [vn]+vl)
-
+sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn, a, vl: [vn]+vl)
 
 sem.add_rule("VARIABLE_NAME -> Variable VARIABLE_NAME", lambda l, name: name)
 sem.add_rule("LIST_NAME -> List LIST_NAME", lambda l, name: name)
@@ -324,19 +317,14 @@ sem.add_rule("List -> Det List", lambda det, liss: None)
 sem.add_rule("List -> New List", lambda det, liss: None)
 sem.add_rule("List -> List Called", lambda liss, c: None)
 
-#sem.add_rule("KEY_NAME -> Keyname KEY_NAME", lambda k, n: n)
 sem.add_rule("KEY_NAME -> KEY_NAME Key", lambda name, key: name)
 sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
-#sem.add_rule("Keyname -> Det Key", lambda d, k: None)
-#sem.add_rule("Keyname -> Det Key Called", lambda d, k, c: None)
-#sem.add_rule("Keyname -> Key Called", lambda k, c: None)
-
-
+sem.add_rule("KEY_NAME -> Direction Key", lambda name, key: name+" arrow")
 
 sem.add_rule("ITEM -> NP", lambda i:i)
 sem.add_rule("ITEM -> MESSAGE_NAME", lambda name: name)
 sem.add_rule("ITEM -> BP", lambda name: name)
-sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
+#sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 sem.add_rule("ITEM -> DATA_REPORTER", identity)
 
 
@@ -396,6 +384,7 @@ sem.add_rule("DataCommand -> Multiply VARIABLE_NAME By NP", lambda m, var_name, 
 sem.add_rule("DataCommand -> Multiply VARIABLE_NAME By VARIABLE_NAME", lambda m, var1, b, var2: setVariable(var1, getProduct(getValue(var1), getValue(var2))))
 sem.add_rule("DataCommand -> Divide VARIABLE_NAME By NP", lambda d, var_name, b, np: setVariable(var_name, getQuotient(getValue(var_name), np)))
 sem.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, var1, b, var2: setVariable(var1, getQuotient(getValue(var1), getValue(var2))))
+sem.add_rule("DataCommand -> Change VARIABLE_NAME By NP", lambda c, var1, b, np: changeVarBy(getValue(var1), np))
 
 
 # todo: fix commands working w/ lists
@@ -449,6 +438,8 @@ sem.add_rule("EVENT -> When Green Flag Is Clicked", lambda w, g, f, i, c: whenGr
 sem.add_rule("EVENT -> When Program Starts", lambda w, p, s: whenGreenFlag())
 
 sem.add_rule("EVENT -> When KEY_NAME Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name))
+
+sem.add_rule("EVENT -> When Direction Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name + " arrow"))
 
 sem.add_rule("EVENT -> When Det Sprite Is Clicked", lambda w, t, s, iss, cli: whenClicked())
 
@@ -528,7 +519,7 @@ sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, b
 
 # Control Command
 
-sem.add_rule("ControlCommand -> Wait Unk Seconds", lambda waitt, unk, seconds: wait(unk))
+sem.add_rule("ControlCommand -> Wait NP Seconds", lambda waitt, unk, seconds: wait(unk))
 
 sem.add_rule("ControlCommand -> Wait Until BP", lambda wait, until, bp: waitUntil(bp))
 
@@ -550,10 +541,14 @@ sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_l
 sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 
-
+sem.add_rule("Add -> TEST THIS", lambda test,this: "testthis")
+sem.add_rule("Add -> Testt Thiss", lambda test,this: "testthis")
 #####################################################################
 ## Lexicon
-
+sem.add_lexicon_rule("TEST", ["test"], identity)
+sem.add_lexicon_rule("THIS", ["this"], identity)
+sem.add_lexicon_rule("Testt", ["test"], identity)
+sem.add_lexicon_rule("Thiss", ["this"], identity)
 # Data Command Keywords
 sem.add_lexicon_rule("Add", ["add"], identity)
 sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
@@ -734,13 +729,43 @@ sem.add_lexicon_rule("From",['from'],identity)
 sem.add_lexicon_rule("With",['with'],identity)
 
 sem.add_lexicon_rule("Arrow",['arrow'],identity)
-sem.add_lexicon_rule("Direction",['up', 'leftt', 'right', 'down'],identity)
-sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: [d+" "+a])
-sem.add_rule("KEY_NAME -> Direction", lambda d: [d+" arrow"])
+sem.add_lexicon_rule("Direction",['up', 'left', 'right', 'down'],identity)
+sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: d+" "+a)
 
 ## Synonyms
-def addSynToLexiconRule(nonterminal, terminal, terminalType):
+def processSynonyms(synonyms):
+    single_word_synonyms = []
+    multi_word_synonyms = []
+    for syn in synonyms:
+        if '_' in syn:
+            #multi-word synonym
+            this_synonym =  syn.split('_')
+            if len(this_synonym) == 2:
+                #each multi word synonym is an array where each element is each word
+                multi_word_synonyms.append(this_synonym)
+        else:
+            single_word_synonyms.append(syn)
+    return single_word_synonyms, multi_word_synonyms
+def findAndAddSynonymToGrammar(nonterminal, terminal, terminalType):
     synonyms = findSynoyms(terminal, terminalType)
+    singleWordList, multiWordList = processSynonyms(synonyms)
+    # add singleword synonym list
+    addSynToLexiconRule(nonterminal, terminal, terminalType, singleWordList)
+    # add multi word synonym list
+    # if list is non empty
+    if multiWordList:
+        for multiWordSyn in multiWordList:
+            #currently only handle multiWordSyn that are 2 words(which should be 99% of the case)
+            parents = [word.upper() for word in multiWordSyn]
+            #create non terminal nodes representing each word in multiword synonym
+            syntacticRule = nonterminal+" -> " + parents[0] + " " + parents[1]
+	    #print("syntacticRule",syntacticRule,multiWordSyn[0],multiWordSyn[1])
+            #returning none since these words aren't important in the script generation
+            sem.add_rule(syntacticRule, lambda f, s: "none")
+            sem.add_lexicon_rule(parents[0], [multiWordSyn[0]], identity)
+            sem.add_lexicon_rule(parents[1], [multiWordSyn[1]], identity)
+
+def addSynToLexiconRule(nonterminal, terminal, terminalType, synonyms):
     # add to lexicon iff length of synonym>=1 and synonyms don't only contain
     # the word itself
     if len(synonyms) > 0:
@@ -751,7 +776,17 @@ def addSynToLexiconRule(nonterminal, terminal, terminalType):
             if (synonyms[0] != terminal):
                 #print("synonyms",terminal,synonyms)
                 sem.add_lexicon_rule(nonterminal, synonyms, identity)
-
+# res1,res2 = processSynonyms(["hello", "hell_one","hell_two","hell_three_four"])
+# print("res",res1,res2)
+# multiWordList = res2
+# nonterminal = "Test"
+# if multiWordList:
+#     for multiWordSyn in multiWordList:
+#         #currently only handle multiWordSyn that are 2 words(which should be 99% of the case)
+#         parents = [word.upper() for word in multiWordSyn]
+#         #create non terminal nodes representing each word in multiword synonym
+#         syntacticRule = nonterminal+" -> " + parents[0] + " " + parents[1]
+#         print("syntacticRule",syntacticRule)
 eligibleWords = [
     ["Increment", "increment", wn.VERB],
     ["Decrement", "decrement", wn.VERB],
@@ -780,14 +815,13 @@ eligibleWords = [
     ["Broadcast", "broadcast", wn.VERB]
 ]
 for e_word in eligibleWords:
-    addSynToLexiconRule(e_word[0],e_word[1], e_word[2])
-
-addSynToLexiconRule("greater_than","greater_than", wn.ADJ)
+    findAndAddSynonymToGrammar(e_word[0],e_word[1], e_word[2])
 
 ##############################################################################
 # Now we will run the rules you are adding to solve problems in this lab.
 import my_rules
 my_rules.add_my_rules(sem)
+
 
 
 
