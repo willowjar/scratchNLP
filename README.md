@@ -33,6 +33,29 @@ python semantic.py
 ```
 Running python semantic.py initiates a command line interface specifically for creating the Scratch programs with natural language. See the **Example of Creating a Project** Section for more on how to create a project.
 
+Use the ```-h``` option on  ```semantic.py``` to learn more about usage.
+```
+6.863$ python semantic.py -h
+usage: semantic.py [-h] [-v] [--spm] [--gui] [--batch_mode BATCH_FILE]
+                   [--show_database] [--validate_output VALIDATION_FILE]
+
+6.863 - Spring 2018 - Semantics Interpreter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         output evaluation traces.
+  --spm                 syntax parser mode (no semantic evaluation).
+  --gui                 display a graphical user interface for stepping
+                        through the trace of the last evaluation prior to the
+                        exiting of the program
+  --batch_mode BATCH_FILE
+                        evaluate each sentence listed in the specified file
+  --show_database       display the contents of the semantic database after
+                        each evaluation
+  --validate_output VALIDATION_FILE
+                        check the specified input against expected output.
+```
+
 ## Overview
 ```scripts/semantic.py``` is the entry point for the system. It launches the command line interface and manages the project creation process.  
 
