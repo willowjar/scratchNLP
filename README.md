@@ -93,7 +93,7 @@ You should have the following output
 {'variables': {'strawberries': 0, 'bananas': 0}, 'lists': {'fruit': []}, 'scripts': [[['whenKeyPressed', 'right arrow'], ['changeVar:by:', 'strawberries', 5]]]}
 ```
 
-You can request the project.json at any point in the process of creating a project, using the keyword "json"
+You can request the project.json at any point in the process of creating a project, using the keyword "json". Note: repetitive portions of the json have been omitted and replaced with '...'
 ```
 > json
 {
@@ -133,14 +133,7 @@ You can request the project.json at any point in the process of creating a proje
           "rotationCenterX": 47,
           "rotationCenterY": 55
         },
-        {
-          "baseLayerMD5": "6e8bd9ae68fdb02b7e1e3df656a75635.svg",
-          "bitmapResolution": 1,
-          "costumeName": "costume2",
-          "baseLayerID": 2,
-          "rotationCenterX": 47,
-          "rotationCenterY": 55
-        }
+        ...
       ],
       "currentCostumeIndex": 0,
       "visible": true,
@@ -171,54 +164,7 @@ You can request the project.json at any point in the process of creating a proje
           "rate": 22050,
           "md5": "83c36d806dc92327b9e7049a565c6bff.wav"
         },
-        {
-          "format": "adpcm",
-          "sampleCount": 163584,
-          "soundName": "cave",
-          "soundID": 1,
-          "rate": 22050,
-          "md5": "881f1bf5f301a36efcce4204a44af9ab.wav"
-        },
-        {
-          "format": "adpcm",
-          "sampleCount": 6804,
-          "soundName": "boing",
-          "soundID": 2,
-          "rate": 22050,
-          "md5": "53a3c2e27d1fb5fdb14aaf0cb41e7889.wav"
-        },
-        {
-          "format": "",
-          "sampleCount": 2912,
-          "soundName": "chomp",
-          "soundID": 3,
-          "rate": 11025,
-          "md5": "0b1e3033140d094563248e61de4039e5.wav"
-        },
-        {
-          "format": "adpcm",
-          "sampleCount": 107136,
-          "soundName": "drum",
-          "soundID": 4,
-          "rate": 22050,
-          "md5": "f730246174873cd4ae4127c83e475b50.wav"
-        },
-        {
-          "format": "adpcm",
-          "sampleCount": 76032,
-          "soundName": "jungle",
-          "soundID": 5,
-          "rate": 22050,
-          "md5": "b234a04cc3958437c43ed3d93f34a345.wav"
-        },
-        {
-          "format": "adpcm",
-          "sampleCount": 5414,
-          "soundName": "hey",
-          "soundID": 6,
-          "rate": 22050,
-          "md5": "ec7c272faa862c9f8f731792e686e3c9.wav"
-        }
+        ...
       ],
       "spriteInfo": {},
       "scale": 1,
