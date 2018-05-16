@@ -160,6 +160,9 @@ def logicAnd(b1, b2):
 def waitTillTimer(x):
     return ["doWaitUntil", x]
 
+def negate(unk):
+    return ["*", unk, -1]
+
 def changeVarBy(var_name, unk, opt_negate=False):
     if opt_negate:
         return ["changeVar:by:", var_name, ["*", unk, -1]]
@@ -347,13 +350,20 @@ sem.add_rule("SoundCommand -> Play NAME_OF_SOUND Sound", lambda play, name, soun
 
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name)
 
-sem.add_rule("SoundCommand -> Set Volume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
+sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 
-sem.add_rule("SoundCommand -> Set Volume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
+sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
 
-sem.add_rule("SoundCommand -> Change Volume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+sem.add_rule("SoundCommand -> Change TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+sem.add_rule("SoundCommand -> Decrease TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
 
-sem.add_rule("SoundCommand -> Change Pitch Effect By NP", lambda change, pitch, effect, by, Unk: singleCommand("changeTempoBy:", Unk))
+sem.add_rule("SoundCommand -> Increment TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+
+sem.add_rule("SoundCommand -> Change ThePitch Effect By NP", lambda change, pitch, effect, by, Unk: singleCommand("changeTempoBy:", Unk))
+sem.add_rule("TheVolume -> The Volume", lambda d, v: v)
+sem.add_rule("TheVolume -> Volume", identity)
+sem.add_rule("ThePitch -> The Pitch", lambda d, v: v)
+sem.add_rule("ThePitch -> Pitch", identity)
 
 sem.add_rule("SoundCommand -> Stop All Sounds", lambda stop, all, sounds: singleCommandNoValue("stopAllSounds"))
 
@@ -491,8 +501,8 @@ sem.add_rule("BP -> VARIABLE_NAME CBP VARIABLE_NAME", lambda var1, cbp, var2: cb
 sem.add_rule("BP -> LIST_NAME Contains ITEM", lambda name, con, it: itemInList(it, name))
 
 sem.add_rule("BP -> BP Boolean" , lambda b, boo: boo(b))
-sem.add_rule("Boolean -> TRUE" , lambda t: lambda x: x) 
-sem.add_rule("Boolean -> FALSE" , lambda t: lambda x: not_identity(x)) 
+sem.add_rule("Boolean -> TRUE" , lambda t: lambda x: x)
+sem.add_rule("Boolean -> FALSE" , lambda t: lambda x: not_identity(x))
 sem.add_rule("Boolean -> LMOD TRUE ", lambda l, t: lambda x: l(x))
 sem.add_rule("Boolean -> LMOD FALSE" , lambda l, t: lambda x: l(not_identity(x)))
 
@@ -546,8 +556,8 @@ sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda 
 
 # Data Command Keywords
 sem.add_lexicon_rule("Add", ["add"], identity)
-sem.add_lexicon_rule("Increment", ["increment"], identity)
-sem.add_lexicon_rule("Decrement", ["decrement"], identity)
+sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
+sem.add_lexicon_rule("Decrement", ["decrement", "increase"], identity)
 sem.add_lexicon_rule("Subtract", ["subtract"], identity)
 sem.add_lexicon_rule("From", ["from"], identity)
 
@@ -726,6 +736,7 @@ sem.add_lexicon_rule("With",['with'],identity)
 sem.add_lexicon_rule("Arrow",['arrow'],identity)
 sem.add_lexicon_rule("Direction",['up', 'leftt', 'right', 'down'],identity)
 sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: [d+" "+a])
+sem.add_rule("KEY_NAME -> Direction", lambda d: [d+" arrow"])
 
 ## Synonyms
 def addSynToLexiconRule(nonterminal, terminal, terminalType):
