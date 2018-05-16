@@ -58,7 +58,7 @@ def processSentence(data):
         return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
 
 def singleCommand(commandName, value):
-    print("commandName, value", commandName, value)
+    #print("commandName, value", commandName, value)
     return [commandName, value]
 
 def singleCommandNoValue(commandName):
@@ -283,7 +283,6 @@ sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
 sem.add_rule("AP -> EventHandler", identity)
 # sem.add_rule("AP -> EventHandler", lambda eventHandler: [111,124, eventHandler])
-sem.add_rule("AP -> OrderedCommand", identity)
 #sem.add_rule("AP -> SequentialCommand", identity)
 sem.add_rule("AP -> ConditionalCommand", identity)
 sem.add_rule("AP -> LoopCommand", identity)
@@ -291,6 +290,7 @@ sem.add_rule("AP -> TimerCommand", identity)
 sem.add_rule("AP -> BroadcastCommand", identity)
 sem.add_rule("AP -> ControlCommand", identity)
 sem.add_rule("AL -> SequentialCommand", identity)
+sem.add_rule("AL -> OrderedCommand", identity)
 
 
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
@@ -343,7 +343,12 @@ sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, un
 sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
 
 sem.add_rule("SoundCommand -> Change TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
-sem.add_rule("SoundCommand -> Decrease TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+
+sem.add_rule("SoundCommand -> Change TheVolume By NP Percent", lambda change, volume, by, Unk, p: singleCommand("changeVolumeBy:", Unk))
+
+sem.add_rule("SoundCommand -> Decrement TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", negate(Unk)))
+
+sem.add_rule("SoundCommand -> Decrement TheVolume By NP Percent", lambda change, volume, by, Unk, p: singleCommand("changeVolumeBy:", negate(Unk)))
 
 sem.add_rule("SoundCommand -> Increment TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
 
@@ -552,7 +557,7 @@ sem.add_lexicon_rule("Thiss", ["this"], identity)
 # Data Command Keywords
 sem.add_lexicon_rule("Add", ["add"], identity)
 sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
-sem.add_lexicon_rule("Decrement", ["decrement", "increase"], identity)
+sem.add_lexicon_rule("Decrement", ["decrement", "decrease"], identity)
 sem.add_lexicon_rule("Subtract", ["subtract"], identity)
 sem.add_lexicon_rule("From", ["from"], identity)
 

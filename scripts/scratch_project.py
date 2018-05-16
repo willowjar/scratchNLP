@@ -83,7 +83,11 @@ class ScratchProject(ScratchProjectBase):
 
 		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
 		os.system('zip -r ' + zipfile_path + ' ./*')
-
+		
+		# if path the specified output directory doesn't exist yet, create the
+		# folder accordingly.
+		if not os.path.exists(path_to_output_dir):
+    			os.makedirs(path_to_output_dir)
 		sb2_path = os.path.join(path_to_output_dir, project_name + '.sb2')
 		print('sb2_path is ' + sb2_path)
 
