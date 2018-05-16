@@ -58,8 +58,8 @@ def parse_input_str(input_str, scratch):
 	# Before attempting to parse the sentence, update the grammar.
 	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, scratch)
 	trees = lab_rules.sem.parse_sentence(input_str)
-	for tree in trees:
-		print(tree)
+	#for tree in trees:
+		#print(tree)
 	if len(trees) > 1:
 		print("[WARNING] Obtained %d parses; selecting the first one."%(len(trees)))
 	elif len(trees) == 0:

@@ -229,9 +229,9 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	utterance_vocab = extract_names([utterance])
 
 	# Add variables to the scratch project object.
-	if 'VARIABLE_NAME' in utterance_vocab:
-		for var in utterance_vocab['VARIABLE_NAME']:
-			scratch_project.add_variable(var)
+	#if 'VARIABLE_NAME' in utterance_vocab:
+	#	for var in utterance_vocab['VARIABLE_NAME']:
+	#		scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
