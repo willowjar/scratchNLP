@@ -22,7 +22,6 @@ expression_map = {
   r'message called (\w*)': ['MESSAGE_NAME'],
   r'variable called (\w*)': ['VARIABLE_NAME'],
   r'variable named (\w*)': ['VARIABLE_NAME'],
-  #r'(?:.*) new variable (\w*)': ['VARIABLE_NAME'],
   r'list called (\w*)': ['LIST_NAME'],
   r'list named (\w*)': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
@@ -30,54 +29,16 @@ expression_map = {
   r'play the (\w*) sound': ['NAME_OF_SOUND'],
   #r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['Unk'],
-  # Require that the user ends the braodcast message name with a period.
-  #r'broadcast ((?:\w| )*.)': ['MESSAGE_NAME'],
   r'broadcast (\w*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   #r'delete variable (\w*)': ['VARIABLE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
-  #r'change (\w*) by .*': ['VARIABLE_NAME'],
-  #r'make a list called (\w*)': ['LIST_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
-  r'delete element .* of list (\w*)': ['LIST_NAME'],
-  #r'replace element .* of list (\w*) with .*': ['LIST_NAME'],
-  #r'element .* of list (\w*) .*': ['LIST_NAME']
-  #r'the first item in list (\w*)': ['LIST_NAME'],
 }
 
 # global
 expression_map_list = [expression_map]
 
-#Commented out origional one here, see updated below!!!!
-
-# def extract_names(sentences):
-# 	""" Use the the global expression map list to extract variable, list, and
-# 	message names
-# 	Args:
-# 		sentences (array of str): sentences from which to extract vocabulary
-# 	Returns:
-# 		dict: map of each nonterminal to a list of terminals.
-# 	"""
-# 	result = {}
-# 	#print len(sentences)
-# 	for sentence in sentences:
-# 		#print 'sentence'
-# 		#print sentence
-# 		for expression_map in expression_map_list:
-# 			#print expression_map
-# 			for regex in expression_map:
-# 				#print '\t' + regex
-# 				variables = expression_map[regex]
-# 				matches = re.findall(regex, sentence, re.M|re.I)
-# 				print("variables",variables)
-# 				print("matches",matches)
-# 				for i in range(0, len(matches)):
-# 					#print '\t\t' + str(i) + matches[i]
-# 					if variables[i] in result:
-# 						result[variables[i]].add(matches[i].strip())
-# 					else:
-# 						result[variables[i]] = set([matches[i].strip()])
-# 	return result
 def extract_names(sentences):
 	""" Use the the global expression map list to extract variable, list, and
 	message names
@@ -87,23 +48,15 @@ def extract_names(sentences):
 		dict: map of each nonterminal to a list of terminals.
 	"""
 	result = {}
-	#print len(sentences)
+	
 	for sentence in sentences:
-		#print 'sentence'
-		#print sentence
 		for expression_map in expression_map_list:
-			#print expression_map
 			for regex in expression_map:
-				#print '\t' + regex
+				
 				variables = expression_map[regex]
 				matches = re.findall(regex, sentence, re.M|re.I)
-				print("variables",variables)
-				print("*****matches",matches)
+				
 				if len(variables) == 1:
-					#print("single",variables,matches)
-					#could have multiple matches but only 1 var
-					# using set cuz we only care to add the vocab once even if
-					# the same word appears twice
 					this_variable = variables[0]
 					matches_set = set(matches)
 					for match in matches_set:
@@ -113,12 +66,9 @@ def extract_names(sentences):
 							result[this_variable] = set([match.strip()])
 				else:
 					#assume results grouped by tuple if there are atleast 1 result
-					#print("multiple",variables,matches)
 					for i in range(0, len(variables)):
 						this_variable = variables[i]
-						print("var", this_variable)
 						if len(matches)> 0 and i < len(matches):
-							print("matches", matches)
 							matches_for_this_var = matches[i]
 							for match in matches_for_this_var:
 								if this_variable in result:
@@ -143,9 +93,7 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 		mode="a+"
 	with open(vocabulary_file, mode) as myfile:
 		for key in vocab:
-			# #print key
 			for instance in vocab[key]:
-				# #print '\t' + instance
 				myfile.write("1\t" + key + "\t" + instance + "\n")
 	myfile.close()
 
@@ -252,13 +200,9 @@ def get_unknowns_given_productions(utterance, semantic_rule_set):
 			the unknown words
 	"""
 	logged_unknowns = [production.rhs() for production in semantic_rule_set.productions if production.lhs() == 'Unk']
-	#print('logged_unknowns')
-	#print(logged_unknowns)
 
 	# Known words must come from the right hand side of rules
 	known_right_hand_sides = [production.rhs() for production in semantic_rule_set.productions]
-	#print('known_right_hand_sides')
-	#print(known_right_hand_sides)
 	flatten = lambda l: [item for sublist in l for item in sublist]
 	known_words = flatten(known_right_hand_sides)
 	utterance_tokens = utterance.split()
@@ -283,20 +227,14 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 
 	# Add unknown names from utterance to the grammar
 	utterance_vocab = extract_names([utterance])
-	print 'utterance_vocab'
-	print utterance_vocab
 
 	# Add variables to the scratch project object.
 	if 'VARIABLE_NAME' in utterance_vocab:
-		print("AHHHH")
 		for var in utterance_vocab['VARIABLE_NAME']:
-			print("###", var)
 			scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
-	print 'last production in semantic rule set should be based on utterance vocab'
-	print semantic_rule_set.productions[-1]
 	# Find all unknown words in the input, save them in the grammar, and replace
 	#  them with 'Unk' which represents that they are unknown.
 	unk_list = get_unknowns_given_productions(utterance, semantic_rule_set)
@@ -315,13 +253,8 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	"""
 
 	# Add unknown names from utterance to the grammar
-	#print 'extracting names'
 	utterance_vocab = extract_names([utterance])
-	#print 'done extracting names'
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
-	#print 'utterance_vocab'
-	#print utterance_vocab
-	# #print 'utterance_vocab'
 
 	# Find all unknown words in the input, save them in the grammar, and replace
 	#  them with 'Unk' which represents that they are unknown.

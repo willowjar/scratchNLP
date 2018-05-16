@@ -19,25 +19,22 @@ class ScratchProject(ScratchProjectBase):
 		"""Create a variable initialized to 0"""
 		self.variables[name] = opt_value
 
+	def add_to_list(self, name, element):
+		self.lists[name].append(element)
 
-	def add_list(self, name, opt_contents):
-		"""Create a list initialized to 0"""
-		print('add lists')
-		if opt_contents:
-			self.lists[name] = opt_contents
-		else:
-			#if name in self.lists:
-					#raise Exception('A list called ' + name + 'has already been created')
-			self.lists[name] = []
+	def add_list(self, name, opt_contents=[]):
+		"""Create a list initialized to empty list"""
+		self.lists[name] = opt_contents
 
 	def add_script(self, script):
 		# TODO: verify is this correct behavior
-		if (script):
+		if len(script) > 0 and script[0] != None:
 			if (script[0][0].startswith('when')):
 				# detected an event block
 				# create a stack of old scripts
 				if len(self.scripts) > 0:
 					self.add_stack(self.scripts)
+					self.scripts = []
 				# create a new stack for event handler
 				self.add_stack(script)
 			else:
@@ -63,9 +60,15 @@ class ScratchProject(ScratchProjectBase):
 						"listName": key,
 						"contents": value,
 					})
-
+		# Include current scripts in the json
+		self.add_stack(self.scripts)
 		sprite1["scripts"] = self.stacks
 		self.json["children"][0] = sprite1
+		
+		# The current scripts should not ACTUALLY be included in
+		# stacks until the current script stacks have been completed
+		# or a new stack is started.
+		self.stacks = self.stacks[:-1]
 		return json.dumps(self.json)
 
 	def save_project(self, path_to_output_dir):
