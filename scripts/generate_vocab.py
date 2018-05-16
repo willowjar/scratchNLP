@@ -3,10 +3,6 @@ import sys
 import re
 from text2num import text2int
 
-
-# TODO(quacht): add argument validation
-# TODO(quacht): specify which vocabulary file to append generate rules to.
-
 # Reference explaining the regexs seen in the expression map.
 # It's useful to test a regular expression using https://pythex.org/
 regexMap = {
@@ -31,7 +27,6 @@ expression_map = {
   r'wait (\w*) seconds': ['Unk'],
   r'broadcast (\w*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
-  #r'delete variable (\w*)': ['VARIABLE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
 }
@@ -266,18 +261,3 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 
 if __name__ == "__main__":
 	generate_vocab_list()
-'''
-	if len(sys.argv) == 3:
-		vocabulary_file = sys.argv[1]
-		example_sentences_file = sys.argv[2]
-
-		# Read sentences to extract variable and list names.
-		#example_sentences_file = "example_sentences.text"
-		#vocabulary_file = "new_vocab_file.txt"
-
-		# Generate vocab file
-		#generate_vocab_list(example_sentences_file, vocabulary_file)
-		generate_vocab_list_with_examples(example_sentences_file, vocabulary_file)
-	else:
-		print('Usage: generate_vocab.py <vocabulary_file_path> <example_sentences>')\
-'''

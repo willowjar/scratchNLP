@@ -1,0 +1,4 @@
+first set the volume to 50 percent
+second play the drum sound
+third decrease the volume by 30
+finally broadcast shush

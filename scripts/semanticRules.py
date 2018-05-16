@@ -421,7 +421,7 @@ sem.add_rule("NP -> NP Subtracted By NP", lambda unk1, subtracted, by, unk2: sub
 
 sem.add_rule("NP -> NP Subtracted From NP", lambda unk1, subtracted, by, unk2: subtract(unk2,unk1))
 
-sem.add_rule("NP -> Difference Between NP and NP", lambda d, b, n1, a, n2: subtract(n1,n2))
+sem.add_rule("NP -> Difference Between NP And NP", lambda d, b, n1, a, n2: subtract(n1,n2))
 
 sem.add_rule("NP -> NP Times NP", lambda unk1, times, unk2: getProduct(unk1,unk2))
 sem.add_rule("NP -> NP Multiplied By NP", lambda unk1, multiplied, by, unk2: getProduct(unk1,unk2))

@@ -1,0 +1,3 @@
+when the space key is pressed broadcast hello 3 times then create a new variable called count thats it
+do the following 5 times add 1 to count thats it
+if count is greater than zero then play the bing sound and change volume by 3 thats it

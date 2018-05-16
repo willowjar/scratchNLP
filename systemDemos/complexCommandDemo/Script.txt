@@ -1,0 +1,4 @@
+make a variable called x
+when the green flag is clicked make a list called list and repeat play the bang sound 5 times and if x is equal to 1 then broadcast alas thats it thats it
+when the down arrow is pressed broadcast downwego thats it
+finally broadcast Iamdone
