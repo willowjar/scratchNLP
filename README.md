@@ -68,16 +68,21 @@ optional arguments:
 ```scratch_project_base.py``` defines the ScratchProjectBase Class which has a
 basic JSON that specifies the base ScratchProject upon which the system builds.
 
+```text2num.py``` defines the helper function to convert a word representing a number into the numerical value. 
+
+```test_fixtures/generate_sb2_fixture_with_assets``` contains a set of asset files to be included in the generated .sb2 file. 
+
+```systemDemos/``` contains demos of the working system. In each subdirectory, there is a file called Scripts.txt that contains the instructions used in the demo, the corresponding sb2 file generated, and a screenshot of the Scratch program when the sb2 file is loaded into Scratch.
+
 
 ## Example of Creating a Project
------
+
 Demos of the system could be found under the directory 
+```
 /mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/systemDemos
+```
 
-In each of the subdirectory, there is a file called Scripts.txt that contains the instructions used in the demo, the corresponding sb2 file generated, and a screenshot of the Scratch program when the sb2 file is loaded into Scratch.
------
-
-To simulate this example, you may copy and paste the following into the terminal after starting ```python semantic.py```.
+To simulate the following example, you may copy and paste the following into the terminal after starting ```python semantic.py```.
 
 ```
 make a variable called bananas and set bananas to 10
