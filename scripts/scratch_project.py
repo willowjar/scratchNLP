@@ -28,7 +28,7 @@ class ScratchProject(ScratchProjectBase):
 
 	def add_script(self, script):
 		# TODO: verify is this correct behavior
-		if len(script) > 0 and script[0] != None:
+		if len(script) > 0 and script[0] != None and script != None:
 			if (script[0][0].startswith('when')):
 				# detected an event block
 				# create a stack of old scripts
