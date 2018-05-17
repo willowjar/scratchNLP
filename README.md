@@ -127,7 +127,10 @@ You should have the following output
 [WARNING] Obtained 2 parses; selecting the first one.
 {'variables': {'strawberries': 0, 'bananas': 0}, 'lists': {'fruit': []}, 'scripts': [[['whenKeyPressed', 'right arrow'], ['changeVar:by:', 'strawberries', 5]]]}
 ```
+Please note that in order for our system to parse a command mutating or using a variable, the variable must be 
+created first. When you enter commands line by line, the output shows the semantic result from the current command entered, it will not contain information from previous commands other than the variables or lists that were created. So if you create a variable called x, add 2 to x, then add 3 to x (all on separate lines), you will only see the result of "add 3 to x" and not "add 2 to x" then "add 3 to x". However, the information about previous commands is still maintained and you will be able to see the this in the json when you generate the project
 
+```
 You can request the project.json at any point in the process of creating a project, using the keyword "json". Note: repetitive portions of the json have been omitted and replaced with '...'
 ```
 > json
