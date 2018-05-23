@@ -11,7 +11,7 @@ play the meow sound 10 times
 ```
 corresponds to the script 
 ```
-[['doRepeat', [['doRepeat:', 'times']], [['tea'], 'setVar:to:', 'tea', ['randomFrom:to:', '1', '5']]]]
+[['doRepeat', 10, [['doPlaySoundAndWait', 'meow']]]]
 ```
 and
 ```
@@ -19,7 +19,7 @@ if x is not less than three then broadcast hello thats it
 ```
 corresponds to the script 
 ```
-[["doIf", ["not", ["<", ["readVariable", "x"], "three"]], [["broadcast:", "hello"]]]]
+[['doIf', ['not', ['<', ['readVariable', 'x'], 3]], [['broadcast:', 'hello']]]]
 ```
 
 By specifying a series of commands through the command line interface, you can construct an Scratch Project controlling a single sprite with custom variables, lists, and messages, and sound commands. With every input, you get a response about the number of parses identified in the sentence, the current state of what variables and lists exist in the program, and the script generated from the input. 
