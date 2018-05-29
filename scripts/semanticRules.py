@@ -15,22 +15,14 @@ def getWordsInSynset(synset):
 	lemmas = synset.lemmas()
 	for lemma in lemmas:
 		this_synonym = str(lemma.name())
-		# athena parser won't be able to parse multi-word words
-		# they are identified by having _ in the name here
 		words.add(this_synonym)
 	return words
 def findSynoyms(word, part_of_speech):
 	synonyms = set()
 	synsets_found = wn.synsets(word, part_of_speech)
 	for synset in synsets_found:
-		#print("synset",synset)
 		current_synset_synonyms = getWordsInSynset(synset)
 		synonyms.update(current_synset_synonyms)
-        # hypernyms = synset.hypernyms()
-		# directHypernym = hypernyms[0]
-		# hypernym_synonyms = getWordsInSynset(directHypernym)
-		#synonyms.update(hypernym_synonyms)
-		#print("hypernyms",hypernyms)
 	#convert to array form to be added in semanticRules
 	synonyms = list(synonyms)
 	return synonyms
@@ -58,7 +50,6 @@ def processSentence(data):
         return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
 
 def singleCommand(commandName, value):
-    print("commandName, value", commandName, value)
     return [commandName, value]
 
 def singleCommandNoValue(commandName):
@@ -98,6 +89,7 @@ def setVariable(var_name, value):
 
 def deleteVariable(variable_name):
     del global_variables[variable_name]
+    return wait(0.1)
 
 def createVariable(variable_list):
     for var in variable_list:
@@ -283,7 +275,6 @@ sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
 sem.add_rule("AP -> EventHandler", identity)
 # sem.add_rule("AP -> EventHandler", lambda eventHandler: [111,124, eventHandler])
-sem.add_rule("AP -> OrderedCommand", identity)
 #sem.add_rule("AP -> SequentialCommand", identity)
 sem.add_rule("AP -> ConditionalCommand", identity)
 sem.add_rule("AP -> LoopCommand", identity)
@@ -291,6 +282,7 @@ sem.add_rule("AP -> TimerCommand", identity)
 sem.add_rule("AP -> BroadcastCommand", identity)
 sem.add_rule("AP -> ControlCommand", identity)
 sem.add_rule("AL -> SequentialCommand", identity)
+sem.add_rule("AL -> OrderedCommand", identity)
 
 
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
@@ -318,7 +310,7 @@ sem.add_rule("List -> New List", lambda det, liss: None)
 sem.add_rule("List -> List Called", lambda liss, c: None)
 
 sem.add_rule("KEY_NAME -> KEY_NAME Key", lambda name, key: name)
-sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
+sem.add_rule("KEY_NAME -> Det KEY_NAME Key", lambda det, name, key: name)
 sem.add_rule("KEY_NAME -> Direction Key", lambda name, key: name+" arrow")
 
 sem.add_rule("ITEM -> NP", lambda i:i)
@@ -343,7 +335,12 @@ sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, un
 sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
 
 sem.add_rule("SoundCommand -> Change TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
-sem.add_rule("SoundCommand -> Decrease TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
+
+sem.add_rule("SoundCommand -> Change TheVolume By NP Percent", lambda change, volume, by, Unk, p: singleCommand("changeVolumeBy:", Unk))
+
+sem.add_rule("SoundCommand -> Decrement TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", negate(Unk)))
+
+sem.add_rule("SoundCommand -> Decrement TheVolume By NP Percent", lambda change, volume, by, Unk, p: singleCommand("changeVolumeBy:", negate(Unk)))
 
 sem.add_rule("SoundCommand -> Increment TheVolume By NP", lambda change, volume, by, Unk: singleCommand("changeVolumeBy:", Unk))
 
@@ -390,7 +387,7 @@ sem.add_rule("DataCommand -> Change VARIABLE_NAME By NP", lambda c, var1, b, np:
 # todo: fix commands working w/ lists
 sem.add_rule("Ele -> Det Ele", lambda d, e: e)
 sem.add_rule("DataCommand -> Add ITEM To LIST_NAME", lambda a, item, t, list_name: addToList(list_name, item))
-sem.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name: deleteFromList(ind, list_name))
+sem.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name: deleteListItem(list_name,ind))
 sem.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o, list_name,w, item: setItemInList(ind, list_name, item))
 sem.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,item: setItemInList(ind, list_name, item))
 
@@ -416,7 +413,7 @@ sem.add_rule("NP -> NP Subtracted By NP", lambda unk1, subtracted, by, unk2: sub
 
 sem.add_rule("NP -> NP Subtracted From NP", lambda unk1, subtracted, by, unk2: subtract(unk2,unk1))
 
-sem.add_rule("NP -> Difference Between NP and NP", lambda d, b, n1, a, n2: subtract(n1,n2))
+sem.add_rule("NP -> Difference Between NP And NP", lambda d, b, n1, a, n2: subtract(n1,n2))
 
 sem.add_rule("NP -> NP Times NP", lambda unk1, times, unk2: getProduct(unk1,unk2))
 sem.add_rule("NP -> NP Multiplied By NP", lambda unk1, multiplied, by, unk2: getProduct(unk1,unk2))
@@ -456,6 +453,7 @@ sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t
 
 
 sem.add_rule("CBP -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
+sem.add_rule("CBP -> Equals", lambda e: lambda a, b: equalTo(a,b))
 sem.add_rule("CBP -> Greater Than", lambda g, t: lambda a, b: greaterThan(a, b))
 sem.add_rule("CBP -> Less Than", lambda l, t: lambda a, b: lessThan(a, b))
 sem.add_rule("CBP -> Greater Than Or Equal To", lambda g, t, o, e, too: lambda a, b: GEQ(a, b))
@@ -514,8 +512,14 @@ sem.add_rule("Message -> Message Called", lambda d, name: name)
 
 # Conditional Command
 sem.add_rule("ConditionalCommand -> If BP Then AL Thats It", lambda i, bp, then, al, thats, it: ifCommand(bp,al))
+sem.add_rule("ConditionalCommand -> If BP AL Thats It", lambda i, bp, al, thats, it: ifCommand(bp,al))
 sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", lambda i, bp, then, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+
+sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+
 sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+
+sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 
 # Control Command
 
@@ -541,18 +545,12 @@ sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_l
 sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 
-sem.add_rule("Add -> TEST THIS", lambda test,this: "testthis")
-sem.add_rule("Add -> Testt Thiss", lambda test,this: "testthis")
 #####################################################################
 ## Lexicon
-sem.add_lexicon_rule("TEST", ["test"], identity)
-sem.add_lexicon_rule("THIS", ["this"], identity)
-sem.add_lexicon_rule("Testt", ["test"], identity)
-sem.add_lexicon_rule("Thiss", ["this"], identity)
 # Data Command Keywords
-sem.add_lexicon_rule("Add", ["add"], identity)
+sem.add_lexicon_rule("Add", ["add", "append"], identity)
 sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
-sem.add_lexicon_rule("Decrement", ["decrement", "increase"], identity)
+sem.add_lexicon_rule("Decrement", ["decrement", "decrease"], identity)
 sem.add_lexicon_rule("Subtract", ["subtract"], identity)
 sem.add_lexicon_rule("From", ["from"], identity)
 
@@ -672,6 +670,7 @@ sem.add_lexicon_rule("Timer", ["timer"], identity)
 sem.add_lexicon_rule("Reset", ["reset"], identity)
 
 ## Compare
+sem.add_lexicon_rule("Equals", ["equals"], identity)
 sem.add_lexicon_rule("Equal", ["equal"], identity)
 sem.add_lexicon_rule("Greater", ["greater"], identity)
 sem.add_lexicon_rule("Less", ["less"], identity)
@@ -700,7 +699,7 @@ sem.add_lexicon_rule("Make",['make', 'create'],identity)
 sem.add_lexicon_rule("For",['for'],identity)
 sem.add_lexicon_rule("Single",['single'],identity)
 sem.add_lexicon_rule("Sprites",['sprites'],identity)
-sem.add_lexicon_rule("Of",['of'],identity)
+sem.add_lexicon_rule("Of",['of', 'from'],identity)
 sem.add_lexicon_rule("Myself",['myself'],identity)
 sem.add_lexicon_rule("Ele",['element', 'item'],identity)
 
@@ -770,23 +769,11 @@ def addSynToLexiconRule(nonterminal, terminal, terminalType, synonyms):
     # the word itself
     if len(synonyms) > 0:
         if len(synonyms) != 1:
-            #print("synonyms",terminal,synonyms)
             sem.add_lexicon_rule(nonterminal, synonyms, identity)
         else:
             if (synonyms[0] != terminal):
-                #print("synonyms",terminal,synonyms)
                 sem.add_lexicon_rule(nonterminal, synonyms, identity)
-# res1,res2 = processSynonyms(["hello", "hell_one","hell_two","hell_three_four"])
-# print("res",res1,res2)
-# multiWordList = res2
-# nonterminal = "Test"
-# if multiWordList:
-#     for multiWordSyn in multiWordList:
-#         #currently only handle multiWordSyn that are 2 words(which should be 99% of the case)
-#         parents = [word.upper() for word in multiWordSyn]
-#         #create non terminal nodes representing each word in multiword synonym
-#         syntacticRule = nonterminal+" -> " + parents[0] + " " + parents[1]
-#         print("syntacticRule",syntacticRule)
+
 eligibleWords = [
     ["Increment", "increment", wn.VERB],
     ["Decrement", "decrement", wn.VERB],

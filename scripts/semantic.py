@@ -160,7 +160,14 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 				for x in output["variables"]:
 					scratch.add_variable(x, output["variables"][x])
 				for x in output["lists"]:
-					scratch.add_list(x, output["lists"][x])
+					scratch.add_list(x, output["lists"][x])			
+				# remove any variables or lists that were deleted.
+				for var in scratch.variables:
+					if var not in output["variables"]:
+						del scratch.variables[var]
+				for var in scratch.lists:
+					if var not in output["lists"]:
+						del scratch.lists[var]
 
 				for script in output["scripts"]:
 					scratch.add_script(script)

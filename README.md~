@@ -11,7 +11,7 @@ play the meow sound 10 times
 ```
 corresponds to the script 
 ```
-[['doRepeat', 10, [['doPlaySoundAndWait', 'meow']]]]
+[['doRepeat', [['doRepeat:', 'times']], [['tea'], 'setVar:to:', 'tea', ['randomFrom:to:', '1', '5']]]]
 ```
 and
 ```
@@ -19,7 +19,7 @@ if x is not less than three then broadcast hello thats it
 ```
 corresponds to the script 
 ```
-[['doIf', ['not', ['<', ['readVariable', 'x'], 3]], [['broadcast:', 'hello']]]]
+[["doIf", ["not", ["<", ["readVariable", "x"], "three"]], [["broadcast:", "hello"]]]]
 ```
 
 By specifying a series of commands through the command line interface, you can construct an Scratch Project controlling a single sprite with custom variables, lists, and messages, and sound commands. With every input, you get a response about the number of parses identified in the sentence, the current state of what variables and lists exist in the program, and the script generated from the input. 
@@ -68,21 +68,9 @@ optional arguments:
 ```scratch_project_base.py``` defines the ScratchProjectBase Class which has a
 basic JSON that specifies the base ScratchProject upon which the system builds.
 
-```text2num.py``` defines the helper function to convert a word representing a number into the numerical value. 
-
-```test_fixtures/generate_sb2_fixture_with_assets``` contains a set of asset files to be included in the generated .sb2 file. 
-
-```systemDemos/``` contains demos of the working system. In each subdirectory, there is a file called Scripts.txt that contains the instructions used in the demo, the corresponding sb2 file generated, and a screenshot of the Scratch program when the sb2 file is loaded into Scratch.
-
 
 ## Example of Creating a Project
-
-Demos of the system could be found under the directory 
-```
-/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/systemDemos
-```
-
-To simulate the following example, you may copy and paste the following into the terminal after starting ```python semantic.py```.
+To simulate this example, you may copy and paste the following into the terminal after starting ```python semantic.py```.
 
 ```
 make a variable called bananas and set bananas to 10
@@ -127,8 +115,6 @@ You should have the following output
 [WARNING] Obtained 2 parses; selecting the first one.
 {'variables': {'strawberries': 0, 'bananas': 0}, 'lists': {'fruit': []}, 'scripts': [[['whenKeyPressed', 'right arrow'], ['changeVar:by:', 'strawberries', 5]]]}
 ```
-Please note that in order for our system to parse a command mutating or using a variable, the variable must be 
-created first. When you enter commands line by line, the output shows the semantic result from the current command entered, it will not contain information from previous commands other than the variables or lists that were created. So if you create a variable called x, add 2 to x, then add 3 to x (all on separate lines), you will only see the result of "add 3 to x" and not "add 2 to x" then "add 3 to x". However, the information about previous commands is still maintained and you will be able to see the this in the json when you generate the project
 
 You can request the project.json at any point in the process of creating a project, using the keyword "json". Note: repetitive portions of the json have been omitted and replaced with '...'
 ```

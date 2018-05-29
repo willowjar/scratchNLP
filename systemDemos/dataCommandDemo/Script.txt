@@ -1,0 +1,6 @@
+create a variable named y 
+repeat the following 5 times increment y by 20 then decrement y by 1 thats it
+broadcast hey y times
+then make a new list called l
+make a variable called name and set name to three then multiply name by the sum of three and 4
+add name to l

@@ -28,7 +28,7 @@ class ScratchProject(ScratchProjectBase):
 
 	def add_script(self, script):
 		# TODO: verify is this correct behavior
-		if len(script) > 0 and script[0] != None:
+		if len(script) > 0 and script[0] != None and script != None:
 			if (script[0][0].startswith('when')):
 				# detected an event block
 				# create a stack of old scripts
@@ -83,7 +83,11 @@ class ScratchProject(ScratchProjectBase):
 
 		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
 		os.system('zip -r ' + zipfile_path + ' ./*')
-
+		
+		# if path the specified output directory doesn't exist yet, create the
+		# folder accordingly.
+		if not os.path.exists(path_to_output_dir):
+    			os.makedirs(path_to_output_dir)
 		sb2_path = os.path.join(path_to_output_dir, project_name + '.sb2')
 		print('sb2_path is ' + sb2_path)
 
