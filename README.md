@@ -71,6 +71,8 @@ basic JSON that specifies the base ScratchProject upon which the system builds.
 
 ```test_fixtures/generate_sb2_fixture_with_assets``` contains a set of asset files to be included in the generated .sb2 file. 
 
+```software/``` contains dependencies from Lab 3 of MIT's 6.863 Natural Language Processing class with Bob Berwick (Spring 2018)
+
 ```systemDemos/``` contains demos of the working system. In each subdirectory, there is a file called Scripts.txt that contains the instructions used in the demo, the corresponding sb2 file generated, and a screenshot of the Scratch program when the sb2 file is loaded into Scratch.
 
 
