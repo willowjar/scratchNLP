@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-sys.path.insert(0,'/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/software')
+sys.path.insert(0,'../software/')
 import lab3.cfg
 from lab3.category import Category, GrammarCategory, Variable, C, StarCategory
 from lab3.semantic_rule_set import SemanticRuleSet
@@ -17,7 +17,7 @@ def getWordsInSynset(synset):
 		this_synonym = str(lemma.name())
 		words.add(this_synonym)
 	return words
-def findSynoyms(word, part_of_speech):
+def findSynonyms(word, part_of_speech):
 	synonyms = set()
 	synsets_found = wn.synsets(word, part_of_speech)
 	for synset in synsets_found:
@@ -746,7 +746,7 @@ def processSynonyms(synonyms):
             single_word_synonyms.append(syn)
     return single_word_synonyms, multi_word_synonyms
 def findAndAddSynonymToGrammar(nonterminal, terminal, terminalType):
-    synonyms = findSynoyms(terminal, terminalType)
+    synonyms = findSynonyms(terminal, terminalType)
     singleWordList, multiWordList = processSynonyms(synonyms)
     # add singleword synonym list
     addSynToLexiconRule(nonterminal, terminal, terminalType, singleWordList)
@@ -802,12 +802,8 @@ eligibleWords = [
     ["Broadcast", "broadcast", wn.VERB]
 ]
 for e_word in eligibleWords:
-    findAndAddSynonymToGrammar(e_word[0],e_word[1], e_word[2])
+    findAndAddSynonymToGrammar(e_word[0], e_word[1], e_word[2])
 
-##############################################################################
-# Now we will run the rules you are adding to solve problems in this lab.
-import my_rules
-my_rules.add_my_rules(sem)
 
 
 
