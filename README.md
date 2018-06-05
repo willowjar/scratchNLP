@@ -22,13 +22,12 @@ corresponds to the script
 [['doIf', ['not', ['<', ['readVariable', 'x'], 3]], [['broadcast:', 'hello']]]]
 ```
 
-By specifying a series of commands through the command line interface, you can construct an Scratch Project controlling a single sprite with custom variables, lists, and messages, and sound commands. With every input, you get a response about the number of parses identified in the sentence, the current state of what variables and lists exist in the program, and the script generated from the input. 
+By specifying a series of commands through the command line interface, you can construct an Scratch Project controlling a single sprite with custom variables, lists, and messages, and sound commands. With every input, you get a response about the number of parses identified in the sentence, the current state of what variables and lists exist in the program, and the script generated from the input. To read more about the system and its design, you can read [our writeup](https://github.com/willowjar/scratchNLP/blob/master/constructing-scratch-programs.pdf).
 
 ## Getting Started
-- In Athena, type the following commands
 ```
-cd /mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/scripts
-setup 6.863
+git clone https://github.com/willowjar/scratchNLP.git
+cd scratchNLP/scripts
 python semantic.py 
 ```
 Running python semantic.py initiates a command line interface specifically for creating the Scratch programs with natural language. See the **Example of Creating a Project** Section for more on how to create a project.
@@ -79,7 +78,7 @@ basic JSON that specifies the base ScratchProject upon which the system builds.
 
 Demos of the system could be found under the directory 
 ```
-/mit/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/systemDemos
+scratchNLP/systemDemos
 ```
 
 To simulate the following example, you may copy and paste the following into the terminal after starting ```python semantic.py```.
