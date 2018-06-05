@@ -64,7 +64,7 @@ class ScratchProject(ScratchProjectBase):
 		self.add_stack(self.scripts)
 		sprite1["scripts"] = self.stacks
 		self.json["children"][0] = sprite1
-		
+
 		# The current scripts should not ACTUALLY be included in
 		# stacks until the current script stacks have been completed
 		# or a new stack is started.
@@ -83,7 +83,7 @@ class ScratchProject(ScratchProjectBase):
 
 		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
 		os.system('zip -r ' + zipfile_path + ' ./*')
-		
+
 		# if path the specified output directory doesn't exist yet, create the
 		# folder accordingly.
 		if not os.path.exists(path_to_output_dir):
