@@ -4,3 +4,4 @@ test_fixtures/*.pyc
 test_fixtures/*~
 scripts/*.pyc
 scripts/*~
+server/venv/*
