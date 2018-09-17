@@ -3,17 +3,35 @@ import os
 from zipfile import ZipFile
 import sys
 import json
+import time
 from scratch_project_base import ScratchProjectBase
 
+# TODO(quacht):What is the relationship between a script and an instruction within the representation of a ScratchProject created by ScratchNLP.
 class ScratchProject(ScratchProjectBase):
-	def __init__(self):
+	def __init__(self, opt_db_info=None):
 		ScratchProjectBase.__init__(self)
+		# project state
 		self.variables = {}
 		self.lists = {}
 		self.stacks = []
 		self.scripts = []
 		self.project_dir_path = ''
+		# db information
+		if opt_db_info:
+			load_from_db(opt_db_info)
+		else:
+			self.created = time.time()
+			self.name = None
+			self.author = None
+			self.instructions = None
+			self.id = None
 
+	def load_from_db(db_tuple):
+		self.id = db_tuple[0]
+		self.author = db_tuple[1]
+		self.created = db_tuple[2]
+		self.name = db_tuple[3]
+		self.instructions = db_tuple[4]
 
 	def add_variable(self,name, opt_value=0):
 		"""Create a variable initialized to 0"""
