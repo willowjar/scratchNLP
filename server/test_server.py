@@ -7,7 +7,7 @@ import urllib
 URL = "http://127.0.0.1:5000/"
 
 class TestScratchNLPAPI(unittest.TestCase):
-
+	# TODO: fix so that test passes and then enable test.
   #   def test_add_instruction(self):
 		# # sending get request and saving the response as response object
 		# testcases = [{
@@ -28,8 +28,21 @@ class TestScratchNLPAPI(unittest.TestCase):
 		# 	data = r.text
 		# 	self.assertEqual(data, testcase['response'])
 
-    def test_translate_instruction(self):
-     	# sending get request and saving the response as response object
+	def test_add_instruction_to_project(self):
+		user_name = "tina"
+		project_name = "show me your inner cat"
+		raw_instruction = "play the meow sound 5 times"
+
+		url = URL + "user/%s/project/%s/script/%s" %(user_name, project_name, raw_instruction)
+		print(url)
+		r = requests.get(url = url)
+		data = r.text
+		print("data")
+		print(data)
+		self.assertEqual(str(data), "play the meow sound")
+
+	def test_translate_instruction(self):
+		# sending get request and saving the response as response object
 		testcases = [
 		# TODO(quacht): support the say command.
 		# {
@@ -56,16 +69,12 @@ class TestScratchNLPAPI(unittest.TestCase):
 			self.assertEqual(str(data), testcase['response'])
 
 
-    def test_get_project(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+	def test_get_project(self):
+		self.assertTrue(True)
 
-    def test_get_all_projects(self):
-    	self.assertTrue(True)
+	def test_get_all_projects(self):
+		self.assertTrue(True)
 
 
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main()

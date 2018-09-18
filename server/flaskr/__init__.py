@@ -31,12 +31,14 @@ def create_app(test_config=None):
     # initialize the database
     db.init_db(app)
 
-    # TODO(quacht): This corresponds to a POST if it's the first instruction.
-    # if it's not, it's a PUT.
-    # Create or update a specific project with an instruction
+    # This corresponds to a POST if it's the first instruction. If it's not, it
+    # is a PUT. However, in actual use of the system, the client makes a get
+    # request to the following URL (route) which then gets serviced by this code
     @app.route('/user/<user_name>/project/<project_name>/script/<raw_instruction>')
     def process(user_name, project_name, raw_instruction):
+        # Create or update a specific project with an instruction
         database = db.get_db()
+
         project =  db.query_db('select * from projects where project_name = ?',
                 [project_name], one=True)
         if project is None:
@@ -44,33 +46,37 @@ def create_app(test_config=None):
             project = ScratchProject();
             project.name = project_name
             project.instructions = [raw_instruction]
-            project.author = "tina"
+            project.author = user_name
             db.insert_into_db(project)
-            return 'No such project, created new project, and tried to insert it'
+            return "Inserted project into db"
         else:
+            # TODO: properly read in the project object
+            project_object = ScratchProject(project)
+            # update the project_object appropriately...
+            opt_full_json = True
+            changes_to_add = process_single_instruction(raw_instruction, opt_full_json)
+            project_object.update(changes_to_add)
             # Update entry  for the projects
-            db.update_project(project, raw_instruction)
+            db.update(project_object)
             return 'Updated project'
-        # load current project into ScratchProject object
-        result = process_instruction(raw_instruction, scratch_project)
-        # TODO: update database with updated project
-        # Return the new script to the client
-        # return process_instruction(raw_instruction, scratch_project)
-        # return 'project: {projectName}, instruction: {instruction}'.format(projectName=project_name, instruction=raw_instruction)
+
+        # After updating the project, send the appropriate project state back to
+        # client.
+        return get_project(project_name)
 
     # TODO(quacht): This corresponds to a GET
     @app.route('/user/<user_name>/project/<project_name>')
-    def get_project(project_name):
+    def get_project(user_name, project_name):
         database = db.get_db()
-        user = {'id':'tina'}
-        project =  db.query_db('select * from projects where project_name = ?',
-                [project_name], one=True)
+        project =  db.get_project(project_name, user_name)
         if project is None:
             # No such project exists, create a new one
             return 'No such project'
         else:
-            # print project (1, u'tina', u'2018-06-27 03:56:37', u'tellmeajoke', u'sayyo')
-            return str(project)
+            # TODO: Rather than returning only the json that represents the project as expected by
+            # the scratch parser, how should we handle the information corresponding
+            # to the metadata of the project.
+            return str(project.to_json())
 
     # TODO(quacht): This corresponds to a GET. Consider only returning
     # projects that are public.
@@ -86,11 +92,11 @@ def create_app(test_config=None):
         return str(projects)
 
     @app.route('/user/<user_name>/allprojects')
-    def get_all_projects_by(user):
+    def get_all_projects_by(user_name):
         database = db.get_db()
-        projects = db.query_db('select * from projects where author_id = ?', [project_name])
-        if len(projects) == 0:
-            return 'No projects'
+        projects = db.query_db('select * from projects where author_id = ?', [user_name])
+        # if len(projects) == 0:
+        #     return 'No projects'
 
         return str(projects)
 

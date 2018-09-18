@@ -90,13 +90,13 @@ class SemanticRuleSet:
         if self.parser == None:
             self.construct_parser()
         tokens = [token.strip() for token in sentence.split()]
-    try:
-        trees = self.parser.parse(tokens)
-        # deduplicate trees, hashing by string value
-        trees = {str(t):t for t in trees}.values()
-        return trees
+        try:
+            trees = self.parser.parse(tokens)
+            # deduplicate trees, hashing by string value
+            trees = {str(t):t for t in trees}.values()
+            return trees
         except:
-       return []
+            return []
 
 
     def add_verb(self, form, root, past, present, ppart=None):
