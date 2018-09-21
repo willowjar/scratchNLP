@@ -103,7 +103,7 @@ def display_trace_gui(GUI_decorated_tree, sem_rule_set):
 			traceback.print_exc()
 
 ##############################################################################
-def process_single_instruction(input_str, opt_full_json=None):
+def process_single_instruction(input_str, opt_scripts_only=False):
 	"""
 	Given an input string process the string to generate the appropriate
 	Scratch scripts. The script gets added the the ScratchProject object
@@ -146,12 +146,12 @@ def process_single_instruction(input_str, opt_full_json=None):
 	# 	output = "I don't understand."
 	# 	output = e
 
-	# Print the result of the speech act
-	if opt_full_json:
-		return output
-	else:
+	if opt_scripts_only:
 		# Return only the bracketed representation
 		return output['scripts']
+	# Return the dictionary representing the changes to make to the Scratch
+	# Project
+	return output
 
 def process_instruction(input_str, scratch_project):
 	"""

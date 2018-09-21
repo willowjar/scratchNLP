@@ -5,7 +5,6 @@ import json
 import time
 from scratch_project_base import ScratchProjectBase
 
-# TODO(quacht):What is the relationship between a script and an instruction within the representation of a ScratchProject created by ScratchNLP.
 class ScratchProject(ScratchProjectBase):
 	def __init__(self, opt_db_info=None):
 		ScratchProjectBase.__init__(self)
@@ -26,8 +25,6 @@ class ScratchProject(ScratchProjectBase):
 			self.id = None
 
 	def load_from_db(self, db_tuple):
-		print("db_tuple")
-		print(db_tuple)
 		self.id = db_tuple[0]
 		self.author = db_tuple[1]
 		self.created = db_tuple[2]

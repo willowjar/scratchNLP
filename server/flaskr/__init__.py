@@ -1,15 +1,22 @@
+from flask import Flask
+from flask import request
+from flask_cors import CORS, cross_origin
+
 import os
 import sys
-from flask import Flask
 import db
 import time
+
 sys.path.insert(0,'../scripts/')
 from semantic import process_instruction, process_single_instruction
 from scratch_project import ScratchProject
 
 def create_app(test_config=None):
-    # create and configure the app
+    # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    # Enable Cross-Origin Resource Sharing (CORS), meaning other domains
+    # can make requests that will be handled by our API.
+    CORS(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
@@ -36,35 +43,43 @@ def create_app(test_config=None):
     # request to the following URL (route) which then gets serviced by this code
     @app.route('/user/<user_name>/project/<project_name>/script/<raw_instruction>')
     def process(user_name, project_name, raw_instruction):
+         # "Inserted project into db" or 'Updated project'
+        print(_update_project(user_name, project_name, raw_instruction))
+
+        # After updating the project, send the appropriate project state back to
+        # client.
+        return get_project(user_name, project_name)
+
+    def _update_project(user_name, project_name, raw_instruction):
+        '''Args:
+            project_name - name of project as stored in database
+            raw_instruction - the text representation of what the user said'''
         # Create or update a specific project with an instruction
         database = db.get_db()
 
-        project =  db.query_db('select * from projects where project_name = ?',
-                [project_name], one=True)
+        project =  db.query_db('select * from projects where project_name = ? and author_id = ?',
+                [project_name, user_name], one=True)
+
         if project is None:
             # No such project exists, create a new one
             project = ScratchProject();
             project.name = project_name
             project.instructions = [raw_instruction]
             project.author = user_name
+            changes_to_add = process_single_instruction(raw_instruction)
+            project.update(changes_to_add)
             db.insert_into_db(project)
             return "Inserted project into db"
         else:
             # TODO: properly read in the project object
             project_object = ScratchProject(project)
             # update the project_object appropriately...
-            opt_full_json = True
-            changes_to_add = process_single_instruction(raw_instruction, opt_full_json)
+            changes_to_add = process_single_instruction(raw_instruction)
             project_object.update(changes_to_add)
             # Update entry  for the projects
             db.update(project_object)
             return 'Updated project'
 
-        # After updating the project, send the appropriate project state back to
-        # client.
-        return get_project(project_name)
-
-    # TODO(quacht): This corresponds to a GET
     @app.route('/user/<user_name>/project/<project_name>')
     def get_project(user_name, project_name):
         database = db.get_db()
@@ -78,7 +93,7 @@ def create_app(test_config=None):
             # to the metadata of the project.
             return str(project.to_json())
 
-    # TODO(quacht): This corresponds to a GET. Consider only returning
+    # TODO(quacht): Consider only returning
     # projects that are public.
     # This should return all projects stored in the database
     @app.route('/allprojects')
@@ -100,10 +115,28 @@ def create_app(test_config=None):
 
         return str(projects)
 
-    # TODO(quacht): This corresponds to a GET.
     @app.route('/translate/<instruction>')
+    @cross_origin()
     def translate(instruction):
-        result = process_single_instruction(instruction)
+        result = process_single_instruction(instruction, False)
         return str(result)
+
+    @app.route('/user/<user_name>/scratch_program/<project_name>', methods=["POST"])
+    @cross_origin(allow_headers=['Content-Type'], methods=["POST"], send_wildcard=True)
+    def generate_project(user_name, project_name):
+        if request.method =="POST":
+            print("get json")
+            # Force the request to get its contents as JSON so that we actually
+            # get the payload of the request instead of None.
+            info = request.get_json(force=True)
+            instruction_list = info['instructions']
+            use_green_flag = info['useGreenFlag']
+            start = info['start']
+            end = info['end']
+
+            for instruction in instruction_list:
+                _update_project(user_name, project_name, instruction)
+            return get_project(user_name, project_name)
+        # return str(result)
 
     return app
