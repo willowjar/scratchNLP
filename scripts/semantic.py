@@ -117,34 +117,34 @@ def process_single_instruction(input_str, opt_scripts_only=False):
 
 	# Parse the sentence.
 	output = None
-	# try:
-	tree = parse_input_str(input_str)
-	if args.spm:
-		handle_syntax_parser_mode(tree, sem_rule_set)
-		# continue
-	else:
-		# Evaluate the parse tree.
-		decorated_tree = decorate_parse_tree(tree,
-											 sem_rule_set,
-											 set_productions_to_labels=False)
-		trace = eval_tree(decorated_tree,
-						  sem_rule_set,
-						  args.verbose)
+	try:
+		tree = parse_input_str(input_str)
+		if args.spm:
+			handle_syntax_parser_mode(tree, sem_rule_set)
+			# continue
+		else:
+			# Evaluate the parse tree.
+			decorated_tree = decorate_parse_tree(tree,
+												 sem_rule_set,
+												 set_productions_to_labels=False)
+			trace = eval_tree(decorated_tree,
+							  sem_rule_set,
+							  args.verbose)
 
-		output = trace[-1]['expr']
+			output = trace[-1]['expr']
 
-		if args.gui:
-			display_trace_gui(decorate_parse_tree(deepcopy(tree),
-												  sem_rule_set,
-												  set_productions_to_labels=True),
-							  sem_rule_set)
+			if args.gui:
+				display_trace_gui(decorate_parse_tree(deepcopy(tree),
+													  sem_rule_set,
+													  set_productions_to_labels=True),
+								  sem_rule_set)
 
-	# except Exception as e:
-	# 	# The parser did not return any parse trees.
-	# 	print_verbose("[WARNING] Could not parse input.")
-	# 	#traceback.print_exc() #TODO: Uncomment this line while debugging.
-	# 	output = "I don't understand."
-	# 	output = e
+	except Exception as e:
+		# The parser did not return any parse trees.
+		# print_verbose("[WARNING] Could not parse input.")
+		#traceback.print_exc() #TODO: Uncomment this line while debugging.
+		return "I don't understand."
+		# output = e
 
 	if opt_scripts_only:
 		# Return only the bracketed representation
