@@ -121,9 +121,20 @@ def create_app(test_config=None):
         result = process_single_instruction(instruction, False)
         return str(result)
 
+    # Get the project json for the user and project. If the use green flag
+    # option is set to true, then
+    def _get_project_helper(user_name, project_name, opt_use_green_flag=False):
+        database = db.get_db()
+        project =  db.get_project(project_name, user_name)
+        if project is None:
+            # No such project exists, create a new one
+            return 'No such project'
+        else:
+            return str(project.to_json(opt_use_green_flag))
+
     @app.route('/user/<user_name>/scratch_program/<project_name>', methods=["POST"])
     @cross_origin(allow_headers=['Content-Type'], methods=["POST"], send_wildcard=True)
-    def generate_project(user_name, project_name):
+    def generate_project_without_store(user_name, project_name):
         if request.method =="POST":
             print("get json")
             # Force the request to get its contents as JSON so that we actually
@@ -134,9 +145,33 @@ def create_app(test_config=None):
             start = info['start']
             end = info['end']
 
+            project = ScratchProject();
+            project.author = user_name
+            for instruction in instruction_list:
+                changes_to_add = process_single_instruction(instruction)
+                print("changes_to_add when creating a new project:")
+                print(changes_to_add)
+                project.update(changes_to_add)
+            return str(project.to_json(use_green_flag))
+
+    def old_generate_project(user_name, project_name):
+        if request.method =="POST":
+            print("get json")
+            # Force the request to get its contents as JSON so that we actually
+            # get the payload of the request instead of None.
+            info = request.get_json(force=True)
+            instruction_list = info['instructions']
+            use_green_flag = info['useGreenFlag']
+            start = info['start']
+            end = info['end']
+
+            # TODO: would it ever make sense to actually concatenate all the
+            # instructions into a single sentence for the server to parse?
+            # It would increase the complexity (in terms of generating a set of
+            # valid parses. I'm not sure it would even give the correct parse.
+            # what information is gained/lost? Whe
             for instruction in instruction_list:
                 _update_project(user_name, project_name, instruction)
-            return get_project(user_name, project_name)
-        # return str(result)
+            return _get_project_helper(user_name, project_name, use_green_flag)
 
     return app
