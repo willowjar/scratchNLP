@@ -151,27 +151,16 @@ def create_app(test_config=None):
                 changes_to_add = process_single_instruction(instruction)
                 print("changes_to_add when creating a new project:")
                 print(changes_to_add)
-                project.update(changes_to_add)
+                if changes_to_add != "I don't understand":
+                    # The instruction was valid and parseable.
+                    project.update(changes_to_add)
+                else:
+                    # Oh no! One of the instructions in the project was invalid!
+                    # TODO: generate a block that communicates what the invalid instruction was at that part of the project,
+                    # that way, when the project executes, the user will know. Still, we hope that no invalid instructions will ever get
+                    # put into the project.
+                    # TODO: consider also returing an array or sequence of invalid instructions and their locations.
+                    pass
             return str(project.to_json(use_green_flag))
-
-    def old_generate_project(user_name, project_name):
-        if request.method =="POST":
-            print("get json")
-            # Force the request to get its contents as JSON so that we actually
-            # get the payload of the request instead of None.
-            info = request.get_json(force=True)
-            instruction_list = info['instructions']
-            use_green_flag = info['useGreenFlag']
-            start = info['start']
-            end = info['end']
-
-            # TODO: would it ever make sense to actually concatenate all the
-            # instructions into a single sentence for the server to parse?
-            # It would increase the complexity (in terms of generating a set of
-            # valid parses. I'm not sure it would even give the correct parse.
-            # what information is gained/lost? Whe
-            for instruction in instruction_list:
-                _update_project(user_name, project_name, instruction)
-            return _get_project_helper(user_name, project_name, use_green_flag)
 
     return app
