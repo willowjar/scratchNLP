@@ -323,9 +323,9 @@ sem.add_rule("ITEM -> MESSAGE_NAME", lambda name: name)
 sem.add_rule("ITEM -> BP", lambda name: name)
 #sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 sem.add_rule("ITEM -> DATA_REPORTER", identity)
-sem.add_rule("ITEM -> SP", lambda i:i) # Speech phrase
 
 sem.add_rule("ITEM -> WP", lambda i:i) # Word phrase
+sem.add_rule("WP -> SP", lambda i:i) # Speech phrase
 sem.add_rule("WP -> Unk", lambda unk:unk) # Word phrase can map to what someone said.
 
 # Duration
@@ -334,6 +334,8 @@ sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
 # Speech2Text Commands
 sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
 sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech")) # TODO: I'm not sure if this is the right way to represent a reporter.
+sem.add_rule("SP -> Speech", lambda speech: singleCommandNoValue("getSpeech")) # TODO: I'm not sure if this is the right way to represent a reporter.
+
 sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
 sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
 
