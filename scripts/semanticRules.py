@@ -174,6 +174,9 @@ def ynQuestion(data):
     else:
         return "No."
 
+def whenYouHear(word_phrase):
+    return ["whenIHear", word_phrase]
+
 def whenGreenFlag():
     return ["whenGreenFlag"]
 
@@ -270,6 +273,8 @@ sem.add_rule("AL -> AP", lambda p: [p])
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
+sem.add_rule("AP -> Text2SpeechCommand", identity)
+sem.add_rule("AP -> Speech2TextCommand", identity)
 sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
@@ -284,7 +289,7 @@ sem.add_rule("AP -> ControlCommand", identity)
 sem.add_rule("AL -> SequentialCommand", identity)
 sem.add_rule("AL -> OrderedCommand", identity)
 
-
+# Ordered Command
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
 
 # SequentialCommand
@@ -318,11 +323,24 @@ sem.add_rule("ITEM -> MESSAGE_NAME", lambda name: name)
 sem.add_rule("ITEM -> BP", lambda name: name)
 #sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 sem.add_rule("ITEM -> DATA_REPORTER", identity)
+sem.add_rule("ITEM -> SP", lambda i:i) # Speech phrase
 
-
+sem.add_rule("ITEM -> WP", lambda i:i) # Word phrase
+sem.add_rule("WP -> Unk", lambda unk:unk) # Word phrase can map to what someone said.
 
 # Duration
 sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
+
+# Speech2Text Commands
+sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
+sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech")) # TODO: I'm not sure if this is the right way to represent a reporter.
+sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
+sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
+
+# Text2Speech Commands
+sem.add_rule("Text2SpeechCommand -> Say WP", lambda s, wp: singleCommand("speakAndWait:", wp))
+sem.add_rule("Text2SpeechCommand -> Set Voice To NAME_OF_VOICE", lambda s, v, t, voice_name: ingleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Set Language To LANGUAGE", lambda s, l, t, language: singleCommand("setLanguage:", language))
 
 # Sound Command
 # Use the halting version f the play sound block
@@ -676,7 +694,6 @@ sem.add_lexicon_rule("Greater", ["greater"], identity)
 sem.add_lexicon_rule("Less", ["less"], identity)
 sem.add_lexicon_rule("Than", ["than"], identity)
 
-
 ## Logic
 sem.add_lexicon_rule("Or", ["or"], identity)
 sem.add_lexicon_rule("And", ["and"], identity)
@@ -706,6 +723,18 @@ sem.add_lexicon_rule("Ele",['element', 'item'],identity)
 sem.add_lexicon_rule("TRUE", ["true"], identity)
 sem.add_lexicon_rule("FALSE", ["false"], identity)
 
+## SPEECH
+#### Pronouns
+sem.add_lexicon_rule("You",['you'],identity)
+#### Actions
+sem.add_lexicon_rule("Listen",['listen'],identity)
+sem.add_lexicon_rule("Hear",['hear'],identity)
+sem.add_lexicon_rule("Say",['speak', 'say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+#### Nouns
+sem.add_lexicon_rule("Response",['response', 'reply'],identity)
+sem.add_lexicon_rule("Speech",['speech'],identity)
+sem.add_lexicon_rule("Voice",['voice'],identity)
+sem.add_lexicon_rule("Language",['language'],identity)
 
 ## Operators
 sem.add_lexicon_rule("Divided",['divided'],identity)
