@@ -29,14 +29,6 @@ expression_map = {
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
-  # speakAndWait:
-  r'(?:say|speak|voice) ((?:\w*|\s)*)': ['WP'], # Word Phrase
-  r'(?:say|speak|voice) ((?:\w*|\s)*) out loud': ['WP'], # Word Phrase
-  r'if (?:the)? ?speech (?:is|equals) ((?:\w*|\s)*)': ['WP'], # Word Phrase
-  # setVoice: (assuming voices are only one word long)
-  r'set voice to (\w*)': ['VOICE_NAME'],
-  # setVoice: (assuming voices are only one word long)
-  r'set language to (\w*)': ['LANGUAGE_NAME'],
 }
 
 # global
@@ -234,7 +226,7 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=No
 		# Add variables to the scratch project object.
 		if 'VARIABLE_NAME' in utterance_vocab:
 			for var in utterance_vocab['VARIABLE_NAME']:
-				opt_scratch_project.add_variable(var)
+				scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
@@ -243,8 +235,6 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=No
 	unk_list = get_unknowns_given_productions(utterance, semantic_rule_set)
 
 	vocab_map = {'Unk': unk_list}
-	print("Unk list:")
-	print(vocab_map)
 	add_to_lexicon(vocab_map, semantic_rule_set)
 
 def add_unknowns_to_grammar_file(utterance, grammar_file_path):

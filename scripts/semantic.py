@@ -160,6 +160,7 @@ def process_instruction(input_str, scratch_project):
 	"""
 	# Ideally, we would only generate the vocabulary list once...
 	gv.generate_vocab_list(lab_rules.sem)
+
 	sem_rule_set = lab_rules.sem
 	batch_sentences=[]
 	valid_output=[]
@@ -298,7 +299,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 		except Exception as e:
 			# The parser did not return any parse trees.
 			print_verbose("[WARNING] Could not parse input.")
-			traceback.print_exc() #TODO: Uncomment this line while debugging.
+			#traceback.print_exc() #TODO: Uncomment this line while debugging.
 			output = "I don't understand."
 
 		# Print the result of the speech act
