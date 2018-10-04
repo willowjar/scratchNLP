@@ -584,6 +584,10 @@ sem.add_lexicon_rule("That", ["that"], identity)
 sem.add_lexicon_rule("This", ["this"], identity)
 
 # Names
+sem.add_lexicon_rule('VOICE_NAME',
+    ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
+sem.add_lexicon_rule('LANGUAGE_NAME',
+    ['English', 'Danish', 'Dutch','French', 'German', 'Italian', 'Japanese', 'Russian'], identity)
 sem.add_lexicon_rule('NAME_OF_SOUND',
                      ['meow','cave','boing','chomp','drum','jungle','hey'],
                      # TODO: the semantic rule for NAME_OF_SOUND could involve
