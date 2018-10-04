@@ -7,6 +7,6 @@ say hello
 speak hello
 set voice to quinn
 speak hello
-set language to russian
+set language to russion
 speak hello
 when you hear hi scratch say hi friend thats it
