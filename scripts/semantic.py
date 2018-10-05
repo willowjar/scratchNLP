@@ -89,11 +89,16 @@ def handle_syntax_parser_mode(tree, sem_rule_set):
 
 
 def validate_output(actual_output, expected_output):
-	if actual_output == expected_output:
-		print "[VALIDATION] SUCCESS: '%s' does match expected output: '%s'"%(actual_output, expected_output)
+	# The output returned by our system is a dictionary, not a string...
+	# convert to a string before comparing.
+	if str(actual_output) == expected_output:
+		# print "[VALIDATION] SUCCESS: '%s' does match expected output: '%s'"%(actual_output, expected_output)
+		pass
 	else:
-		print "[VALIDATION] FAILURE: '%s' does not match expected output: '%s'"%(actual_output, expected_output)
-
+		# print "[VALIDATION] FAILURE: '%s' does not match expected output: '%s'"%(actual_output, expected_output)
+		print "[VALIDATION] FAILURE:"
+		print "expected: '%s'" %(expected_output)
+		print "got: '%s'" %(actual_output)
 
 def display_trace_gui(GUI_decorated_tree, sem_rule_set):
 	# Display the GUI of the trace through the evaluation.
@@ -230,6 +235,8 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 	while True:
 		# Read in a sentence.
 		input_str = read_sentence(batch_sentences if batch_mode else None)
+		if not input_str:
+			break
 		input_str = input_str.lower().strip()
 		if input_str in ('', 'exit', 'quit'):
 			if batch_mode:
