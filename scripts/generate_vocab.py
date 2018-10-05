@@ -36,8 +36,8 @@ speech_command_map = {
   r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
   r'set voice to (\w*)': ['VOICE_NAME'],
   r'set accent to (\w*)': ['LANGUAGE_NAME'],
-  r'when you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
-  r'when i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
+  r'(?:when|if) you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
+  r'(?:when|if) i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
 }
 # global
 expression_map_list = [expression_map, speech_command_map]
@@ -252,7 +252,10 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=No
 	#  them with 'Unk' which represents that they are unknown.
 	unk_list = get_unknowns_given_productions(utterance, semantic_rule_set)
 
-	vocab_map = {'Unk': unk_list}
+	vocab_map = {
+		'Unk': unk_list,
+		}
+
 	add_to_lexicon(vocab_map, semantic_rule_set)
 
 def add_unknowns_to_grammar_file(utterance, grammar_file_path):

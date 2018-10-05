@@ -337,9 +337,7 @@ sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
 
 # Speech2Text Commands
 sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
-sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech")) # TODO: I'm not sure if this is the right way to represent a reporter.
-sem.add_rule("SP -> Speech", lambda speech: singleCommandNoValue("getSpeech")) # TODO: I'm not sure if this is the right way to represent a reporter.
-
+sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech"))
 sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
 sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
 
@@ -522,7 +520,9 @@ sem.add_rule("Boolean -> LMOD FALSE" , lambda l, t: lambda x: l(not_identity(x))
 
 sem.add_rule("BP -> BP And BP", lambda b1,andd, b2: logicAnd(b1, b2))
 sem.add_rule("BP -> BP Or BP", lambda b1, orr, b2: logicOr(b1, b2))
-
+sem.add_rule("BP -> SBP", lambda sbp: sbp)
+sem.add_rule("SBP -> SP Equals WP", lambda sp, eq, wp: equalTo(sp,wp)) #####
+sem.add_rule("SBP -> WP Equals SP", lambda sp, eq, wp: equalTo(sp,wp)) #####
 
 ## Broadcast Commands
 sem.add_rule("BroadcastCommand -> Broadcast MESSAGE_NAME", lambda broadcast, name: broadcastMessage(name))
@@ -699,7 +699,7 @@ sem.add_lexicon_rule("Timer", ["timer"], identity)
 sem.add_lexicon_rule("Reset", ["reset"], identity)
 
 ## Compare
-sem.add_lexicon_rule("Equals", ["equals"], identity)
+sem.add_lexicon_rule("Equals", ["equals", "is"], identity)
 sem.add_lexicon_rule("Equal", ["equal"], identity)
 sem.add_lexicon_rule("Greater", ["greater"], identity)
 sem.add_lexicon_rule("Less", ["less"], identity)
