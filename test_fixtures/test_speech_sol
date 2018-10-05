@@ -1,0 +1,8 @@
+{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
+{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', ['getSpeech']]]}
+{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'speech']]}
+{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
+{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
+{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'my name is tina']]}
+{'variables': {}, 'lists': {}, 'scripts': [['setLanguage:', 'russian']]}
+{'variables': {}, 'lists': {}, 'scripts': [['setVoice:', 'quinn']]}

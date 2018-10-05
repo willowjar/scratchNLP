@@ -30,15 +30,17 @@ expression_map = {
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
-  # r'(?:say|speak|voice) (\w*|\s)*': ['WP'], # Word Phrase
-  r'say ((?:\w|\s)*)': ['WP'], # Word Phrase
-  r'set voice to (\w*)': ['VOICE_NAME'],
-  r'set accent to (\w*)': ['LANGUAGE_NAME'],
-
 }
 
+speech_command_map = {
+  r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
+  r'set voice to (\w*)': ['VOICE_NAME'],
+  r'set accent to (\w*)': ['LANGUAGE_NAME'],
+  r'when you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
+  r'when i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP'],
+}
 # global
-expression_map_list = [expression_map]
+expression_map_list = [expression_map, speech_command_map]
 
 def add_item_to_dict(key_value_tuple, dictionary):
 	key = key_value_tuple[0]
