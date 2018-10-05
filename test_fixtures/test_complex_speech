@@ -5,3 +5,7 @@ if the speech equals hi scratch say hi thats it
 if the speech equals hi scratch say hi friend thats it
 if the speech is hi scratch say hi friend thats it
 when you hear hello say goodbye thats it
+if the speech is equal to hi say hi thats it
+if the speech isnt equal to hi say hi thats it
+if the speech is not equal to hi say hi thats it
+if hi is equal to the speech play the meow sound thats it

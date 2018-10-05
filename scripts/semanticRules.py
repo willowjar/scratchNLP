@@ -474,15 +474,16 @@ sem.add_rule("Timer -> Det Timer", lambda d, tim: [tim])
 
 sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t], n)))
 
-
-sem.add_rule("CBP -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
-sem.add_rule("CBP -> Equals", lambda e: lambda a, b: equalTo(a,b))
+sem.add_rule("CBP -> CBP_equality", lambda i: i)
+sem.add_rule("CBP_equality -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
+sem.add_rule("CBP_equality -> Equals", lambda e: lambda a, b: equalTo(a,b))
 sem.add_rule("CBP -> Greater Than", lambda g, t: lambda a, b: greaterThan(a, b))
 sem.add_rule("CBP -> Less Than", lambda l, t: lambda a, b: lessThan(a, b))
 sem.add_rule("CBP -> Greater Than Or Equal To", lambda g, t, o, e, too: lambda a, b: GEQ(a, b))
 sem.add_rule("CBP -> Less Than Or Equal To", lambda l, t, o, e, too: lambda a, b: LEQ(a, b))
 
 sem.add_rule("CBP -> LMOD CBP", lambda m, c: lambda a, b: m(c(a, b)))
+sem.add_rule("CBP_equality -> LMOD CBP_equality", lambda m, eq: m(eq))
 
 sem.add_rule("LMOD -> POS", lambda pos: lambda x: x)
 sem.add_rule("LMOD -> NEG", lambda neg: lambda x: not_identity(x))
@@ -521,8 +522,9 @@ sem.add_rule("Boolean -> LMOD FALSE" , lambda l, t: lambda x: l(not_identity(x))
 sem.add_rule("BP -> BP And BP", lambda b1,andd, b2: logicAnd(b1, b2))
 sem.add_rule("BP -> BP Or BP", lambda b1, orr, b2: logicOr(b1, b2))
 sem.add_rule("BP -> SBP", lambda sbp: sbp)
-sem.add_rule("SBP -> SP Equals WP", lambda sp, eq, wp: equalTo(sp,wp)) #####
-sem.add_rule("SBP -> WP Equals SP", lambda sp, eq, wp: equalTo(sp,wp)) #####
+
+sem.add_rule("SBP -> SP CBP_equality WP", lambda sp, eq, wp: equalTo(sp,wp))
+sem.add_rule("SBP -> WP CBP_equality SP", lambda sp, eq, wp: equalTo(sp,wp))
 
 ## Broadcast Commands
 sem.add_rule("BroadcastCommand -> Broadcast MESSAGE_NAME", lambda broadcast, name: broadcastMessage(name))

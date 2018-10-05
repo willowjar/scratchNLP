@@ -5,3 +5,7 @@
 {'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
 {'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
 {'variables': {}, 'lists': {}, 'scripts': [[['whenIHear', 'hello'], ['speakAndWait:', 'goodbye']]]}
+{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', 'hi', ['getSpeech']], [['doPlaySoundAndWait', 'meow']]]]}
