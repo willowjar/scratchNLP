@@ -36,8 +36,8 @@ speech_command_map = {
   r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
   r'set voice to (\w*)': ['VOICE_NAME'],
   r'set accent to (\w*)': ['LANGUAGE_NAME'],
-  r'when you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
-  r'when i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP'],
+  r'when you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
+  r'when i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
 }
 # global
 expression_map_list = [expression_map, speech_command_map]
@@ -84,10 +84,11 @@ def extract_names_and_words(sentences):
 						if len(matches)> 0 and i < len(matches):
 							matches_for_this_var = matches[i]
 							for match in matches_for_this_var:
-								if this_variable in result:
-									result[this_variable].add(match.strip())
+								if this_variable == "WP":
+									for word in match.strip().split():
+										add_item_to_dict(('Word', word), result)
 								else:
-									result[this_variable] = set([match.strip()])
+									add_item_to_dict((this_variable, match.strip()), result)
 	return result
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
