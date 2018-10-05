@@ -337,6 +337,7 @@ sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
 
 # Speech2Text Commands
 sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
+sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
 sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech"))
 sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
 sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))

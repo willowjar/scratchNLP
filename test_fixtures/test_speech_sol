@@ -6,3 +6,5 @@
 {'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'my name is tina']]}
 {'variables': {}, 'lists': {}, 'scripts': [['setLanguage:', 'russian']]}
 {'variables': {}, 'lists': {}, 'scripts': [['setVoice:', 'quinn']]}
+{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
+{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
