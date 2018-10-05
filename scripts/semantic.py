@@ -61,18 +61,22 @@ def read_sentence(batch_mode_sentences=None):
 		except KeyboardInterrupt:
 			return ""
 
-
+# TODO: add some sort of metric for discriminating between parses
+#  This metric could be doing it by simplest parse?
 def parse_input_str(input_str,opt_scratch_project=None):
 	# Before attempting to parse the sentence, update the grammar.
 	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, opt_scratch_project)
 	trees = lab_rules.sem.parse_sentence(input_str)
-	#for tree in trees:
-		#print(tree)
+	index_of_tree_to_pick = 0
 	if len(trees) > 1:
-		print("[WARNING] Obtained %d parses; selecting the first one."%(len(trees)))
+		print("[WARNING] Obtained %d parses; selecting the parse with the largest height."%(len(trees)))
+		tree_heights= [tree.height() for tree in trees]
+		index_of_tree_to_pick = tree_heights.index(min(tree_heights))
 	elif len(trees) == 0:
 		raise Exception("Failed to parse the sentence: " + input_str)
-	return trees[0]
+
+	assert("I don't understand." != trees[0])
+	return trees[index_of_tree_to_pick]
 
 
 def handle_syntax_parser_mode(tree, sem_rule_set):
@@ -142,7 +146,7 @@ def process_single_instruction(input_str, opt_scripts_only=False):
 	except Exception as e:
 		# The parser did not return any parse trees.
 		# print_verbose("[WARNING] Could not parse input.")
-		#traceback.print_exc() #TODO: Uncomment this line while debugging.
+		traceback.print_exc() #TODO: Uncomment this line while debugging.
 		return "I don't understand."
 		# output = e
 
@@ -167,50 +171,49 @@ def process_instruction(input_str, scratch_project):
 
 	# Parse the sentence.
 	output = None
-	# try:
-	tree = parse_input_str(input_str)
-	if args.spm:
-		handle_syntax_parser_mode(tree, sem_rule_set)
-		# continue
-	else:
-		# Evaluate the parse tree.
-		decorated_tree = decorate_parse_tree(tree,
-											 sem_rule_set,
-											 set_productions_to_labels=False)
-		trace = eval_tree(decorated_tree,
-						  sem_rule_set,
-						  args.verbose)
-		evaluation_history.append(deepcopy(trace))
-		output = trace[-1]['expr']
+	try:
+		tree = parse_input_str(input_str)
+		if args.spm:
+			handle_syntax_parser_mode(tree, sem_rule_set)
+			# continue
+		else:
+			# Evaluate the parse tree.
+			decorated_tree = decorate_parse_tree(tree,
+												 sem_rule_set,
+												 set_productions_to_labels=False)
+			trace = eval_tree(decorated_tree,
+							  sem_rule_set,
+							  args.verbose)
+			evaluation_history.append(deepcopy(trace))
+			output = trace[-1]['expr']
 
-		# process output to update scratch project
-		for x in output["variables"]:
-			scratch_project.add_variable(x, output["variables"][x])
-		for x in output["lists"]:
-			scratch_project.add_list(x, output["lists"][x])
-		# remove any variables or lists that were deleted.
-		for var in scratch_project.variables:
-			if var not in output["variables"]:
-				del scratch_project.variables[var]
-		for var in scratch_project.lists:
-			if var not in output["lists"]:
-				del scratch_project.lists[var]
+			# process output to update scratch project
+			for x in output["variables"]:
+				scratch_project.add_variable(x, output["variables"][x])
+			for x in output["lists"]:
+				scratch_project.add_list(x, output["lists"][x])
+			# remove any variables or lists that were deleted.
+			for var in scratch_project.variables:
+				if var not in output["variables"]:
+					del scratch_project.variables[var]
+			for var in scratch_project.lists:
+				if var not in output["lists"]:
+					del scratch_project.lists[var]
 
-		for script in output["scripts"]:
-			scratch_project.add_script(script)
+			for script in output["scripts"]:
+				scratch_project.add_script(script)
 
-		if args.gui:
-			display_trace_gui(decorate_parse_tree(deepcopy(tree),
-												  sem_rule_set,
-												  set_productions_to_labels=True),
-							  sem_rule_set)
-
-	# except Exception as e:
-	# 	# The parser did not return any parse trees.
-	# 	print_verbose("[WARNING] Could not parse input.")
-	# 	#traceback.print_exc() #TODO: Uncomment this line while debugging.
-	# 	output = "I don't understand."
-	# 	output = e
+			if args.gui:
+				display_trace_gui(decorate_parse_tree(deepcopy(tree),
+													  sem_rule_set,
+													  set_productions_to_labels=True),
+								  sem_rule_set)
+	except Exception as e:
+		# The parser did not return any parse trees.
+		print_verbose("[WARNING] Could not parse input.")
+		# traceback.print_exc() #TODO: Uncomment this line while debugging.
+		output = "I don't understand."
+		output = e
 
 	# Print the result of the speech act
 	return output
@@ -280,12 +283,17 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 				for x in output["lists"]:
 					scratch.add_list(x, output["lists"][x])
 				# remove any variables or lists that were deleted.
+				new_variables = {}
 				for var in scratch.variables:
-					if var not in output["variables"]:
-						del scratch.variables[var]
+					if var in output["variables"]:
+						new_variables[var] = scratch.variables[var]
+				scratch.variables = new_variables
+
+				new_lists = {}
 				for var in scratch.lists:
-					if var not in output["lists"]:
-						del scratch.lists[var]
+					if var in output["lists"]:
+						new_lists[var] = scratch.lists[var]
+				scratch.lists = new_lists
 
 				for script in output["scripts"]:
 					scratch.add_script(script)
@@ -299,7 +307,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 		except Exception as e:
 			# The parser did not return any parse trees.
 			print_verbose("[WARNING] Could not parse input.")
-			#traceback.print_exc() #TODO: Uncomment this line while debugging.
+			traceback.print_exc() #TODO: Uncomment this line while debugging.
 			output = "I don't understand."
 
 		# Print the result of the speech act

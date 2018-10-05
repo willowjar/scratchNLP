@@ -1,12 +1,11 @@
 listen and wait
 say the speech
 say speech
-if speech is hi scratch say hi friend thats it
-when you hear hello say goodbye
 say hello
 speak hello
-set voice to quinn
-speak hello
-set language to russian
-speak hello
+say my name is tina
 when you hear hi scratch say hi friend thats it
+if speech is hi scratch say hi friend thats it
+when you hear hello say goodbye
+set accent to russian
+set voice to quinn

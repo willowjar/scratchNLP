@@ -325,8 +325,12 @@ sem.add_rule("ITEM -> BP", lambda name: name)
 sem.add_rule("ITEM -> DATA_REPORTER", identity)
 
 sem.add_rule("ITEM -> WP", lambda i:i) # Word phrase
-sem.add_rule("WP -> SP", lambda i:i) # Speech phrase
-sem.add_rule("WP -> Unk", lambda unk:unk) # Word phrase can map to what someone said.
+
+sem.add_rule("WP -> WP_1", lambda i:i) # Speech phrase
+sem.add_rule("WP -> WP_2", lambda i:i) # Speech phrase
+sem.add_rule("WP_1 -> SP", lambda i:i) # Speech phrase
+sem.add_rule("WP_2 -> Word", lambda unk:unk) # Word phrase can map to what someone said.
+sem.add_rule("WP_2 -> Word WP_2", lambda w1, wp : ' '.join([w1, wp])) # Word phrase can map to what someone said.
 
 # Duration
 sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
@@ -340,9 +344,10 @@ sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp)
 sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
 
 # Text2Speech Commands
+sem.add_rule("Text2SpeechCommand -> Say The Speech", lambda s, t, speech: singleCommand("speakAndWait:", singleCommandNoValue("getSpeech")))
 sem.add_rule("Text2SpeechCommand -> Say WP", lambda s, wp: singleCommand("speakAndWait:", wp))
-sem.add_rule("Text2SpeechCommand -> Set Voice To NAME_OF_VOICE", lambda s, v, t, voice_name: ingleCommand("setVoice:", voice_name))
-sem.add_rule("Text2SpeechCommand -> Set Language To LANGUAGE", lambda s, l, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Set Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Set Accent To LANGUAGE_NAME", lambda s, l, t, language: singleCommand("setLanguage:", language))
 
 # Sound Command
 # Use the halting version f the play sound block
@@ -589,6 +594,10 @@ sem.add_lexicon_rule('NAME_OF_SOUND',
                      # TODO: the semantic rule for NAME_OF_SOUND could involve
                      # searching
                      lambda name: name)
+sem.add_lexicon_rule('LANGUAGE_NAME',
+    ['english', 'danish', 'dutch','french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.captialize())
+sem.add_lexicon_rule('VOICE_NAME',
+    ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
 sem.add_lexicon_rule("I", ["i"], identity)
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
 
@@ -737,6 +746,7 @@ sem.add_lexicon_rule("Response",['response', 'reply'],identity)
 sem.add_lexicon_rule("Speech",['speech'],identity)
 sem.add_lexicon_rule("Voice",['voice'],identity)
 sem.add_lexicon_rule("Language",['language'],identity)
+sem.add_lexicon_rule("Accent",['accent'],identity)
 
 ## Operators
 sem.add_lexicon_rule("Divided",['divided'],identity)

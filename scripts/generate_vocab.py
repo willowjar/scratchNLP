@@ -29,14 +29,28 @@ expression_map = {
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
+  r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
+  # r'(?:say|speak|voice) (\w*|\s)*': ['WP'], # Word Phrase
+  r'say ((?:\w|\s)*)': ['WP'], # Word Phrase
+  r'set voice to (\w*)': ['VOICE_NAME'],
+  r'set accent to (\w*)': ['LANGUAGE_NAME'],
+
 }
 
 # global
 expression_map_list = [expression_map]
 
-def extract_names(sentences):
+def add_item_to_dict(key_value_tuple, dictionary):
+	key = key_value_tuple[0]
+	value =key_value_tuple[1]
+	if key in dictionary:
+		dictionary[key].add(value)
+	else:
+		dictionary[key] = set([value])
+
+def extract_names_and_words(sentences):
 	""" Use the the global expression map list to extract variable, list, and
-	message names
+	message names and also words contained in phrases.
 	Args:
 		sentences (array of str): sentences from which to extract vocabulary
 	Returns:
@@ -47,18 +61,20 @@ def extract_names(sentences):
 	for sentence in sentences:
 		for expression_map in expression_map_list:
 			for regex in expression_map:
-
 				variables = expression_map[regex]
-				matches = re.findall(regex, sentence, re.M|re.I)
+				matches = re.findall(regex, sentence, re.M|re.I) #  re.M (multi-line), re.I (ignore case)
 
 				if len(variables) == 1:
 					this_variable = variables[0]
 					matches_set = set(matches)
 					for match in matches_set:
-						if this_variable in result:
-							result[this_variable].add(match.strip())
+						# Word phrases need to be split before they are included in the
+						# grammar through semantic rules
+						if this_variable == "WP":
+							for word in match.strip().split():
+								add_item_to_dict(('Word', word), result)
 						else:
-							result[this_variable] = set([match.strip()])
+							add_item_to_dict((this_variable, match.strip()), result)
 				else:
 					#assume results grouped by tuple if there are atleast 1 result
 					for i in range(0, len(variables)):
@@ -135,7 +151,7 @@ def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_fi
 		content = f.readlines()
 	sentences = [x.strip() for x in content]
 
-	new_vocab = extract_names(sentences)
+	new_vocab = extract_names_and_words(sentences)
 	core_vocab = get_core_vocab()
 
 	final_vocab = core_vocab.copy()
@@ -220,13 +236,12 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=No
 	"""
 
 	# Add unknown names from utterance to the grammar
-	utterance_vocab = extract_names([utterance])
-
+	utterance_vocab = extract_names_and_words([utterance])
 	if opt_scratch_project:
 		# Add variables to the scratch project object.
 		if 'VARIABLE_NAME' in utterance_vocab:
 			for var in utterance_vocab['VARIABLE_NAME']:
-				scratch_project.add_variable(var)
+				opt_scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
@@ -247,7 +262,7 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 		str: the utterance with the unknowns replaced with 'Unk'
 	"""
 	# Add unknown names from utterance to the grammar
-	utterance_vocab = extract_names([utterance])
+	utterance_vocab = extract_names_and_words([utterance])
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
 
 	# Find all unknown words in the input, save them in the grammar, and replace
@@ -259,4 +274,4 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	return new_utterance
 
 if __name__ == "__main__":
-	generate_vocab_list()
+	pass
