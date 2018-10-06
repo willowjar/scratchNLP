@@ -1,6 +1,6 @@
 example_sentences_files*
 node_js_files*
-test_fixtures/*.pyc
 test_fixtures/*~
-scripts/*.pyc
 scripts/*~
+server/venv/*
+*.pyc

@@ -542,7 +542,7 @@ sem.add_lexicon_rule("That", ["that"], identity)
 sem.add_lexicon_rule("This", ["this"], identity)
 
 # Names
-sem.add_lexicon_rule("NAME_OF_SOUND",
+sem.add_lexicon_rule('NAME_OF_SOUND',
                      ['meow','cave','boing','chomp','drum','jungle','hey'],
                      # TODO: the semantic rule for NAME_OF_SOUND could involve
                      # searching
@@ -781,11 +781,3 @@ eligibleWords = [
 ]
 for e_word in eligibleWords:
     findAndAddSynonymToGrammar(e_word[0], e_word[1], e_word[2])
-
-
-
-
-
-
-
-

@@ -43,14 +43,14 @@ def extract_names(sentences):
 		dict: map of each nonterminal to a list of terminals.
 	"""
 	result = {}
-	
+
 	for sentence in sentences:
 		for expression_map in expression_map_list:
 			for regex in expression_map:
-				
+
 				variables = expression_map[regex]
 				matches = re.findall(regex, sentence, re.M|re.I)
-				
+
 				if len(variables) == 1:
 					this_variable = variables[0]
 					matches_set = set(matches)
@@ -71,6 +71,7 @@ def extract_names(sentences):
 								else:
 									result[this_variable] = set([match.strip()])
 	return result
+
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
 	Given a vocab dictionary and vocabulary file, generate the vocab and put it
@@ -101,7 +102,6 @@ def add_to_lexicon(vocab, semantic_rule_set):
 		vocab (dict): dictionary that maps each nonterminal to a list of
 			terminals.
 	"""
-
 	for key in vocab:
 		semantic_rule_set.add_lexicon_rule(key, vocab[key], lambda word: word)
 
@@ -129,7 +129,6 @@ def get_core_vocab():
 def generate_vocab_list(semantic_rule_set):
 	new_vocab = get_core_vocab()
 	add_to_lexicon(new_vocab, semantic_rule_set)
-	#add_to_vocabulary_file(new_vocab, vocabulary_file_path)
 
 def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_file_path):
 	with open(example_sentences_file_path) as f:
@@ -210,7 +209,7 @@ def get_unknowns_given_productions(utterance, semantic_rule_set):
 
 	return unk_list
 
-def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
+def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=None):
 	""" All words that do not yet exist in the grammar or vocabulary must be
 	added to the vocabulary.
 	Args:
@@ -223,10 +222,11 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	# Add unknown names from utterance to the grammar
 	utterance_vocab = extract_names([utterance])
 
-	# Add variables to the scratch project object.
-	#if 'VARIABLE_NAME' in utterance_vocab:
-	#	for var in utterance_vocab['VARIABLE_NAME']:
-	#		scratch_project.add_variable(var)
+	if opt_scratch_project:
+		# Add variables to the scratch project object.
+		if 'VARIABLE_NAME' in utterance_vocab:
+			for var in utterance_vocab['VARIABLE_NAME']:
+				scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
@@ -246,7 +246,6 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	Returns:
 		str: the utterance with the unknowns replaced with 'Unk'
 	"""
-
 	# Add unknown names from utterance to the grammar
 	utterance_vocab = extract_names([utterance])
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
