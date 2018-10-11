@@ -7,9 +7,8 @@ from category import Category, GrammarCategory
 import cfg
 from semantic_db import SemanticDatabase
 
-
 class SemanticRuleSet:
-    
+
     def __init__(self):
         self.parser = None
         self.lexicon = []
@@ -20,7 +19,7 @@ class SemanticRuleSet:
 
     def parse_rule(self, text):
         tokens = text.split()
-        
+
         i = 0
         while i < len(tokens):
             if tokens[i].endswith(",") or tokens[i].endswith(":"):
@@ -28,7 +27,7 @@ class SemanticRuleSet:
                 tokens[i : i+2] = [replacement]
             else:
                 i += 1
-        
+
         return cfg.Production(GrammarCategory.parse(tokens[0]),
                               map(lambda x: GrammarCategory.parse(x),
                                   tokens[2:]))
@@ -43,8 +42,10 @@ class SemanticRuleSet:
 
     def add_rule(self, syntactic_rule, semantic_rule):
         self.parser = None
-        if isinstance(syntactic_rule, str):
-            syntactic_rule = self.parse_rule(syntactic_rule)
+        # Cast syntactic_rule to a string so that we can properly handle unicode
+        # characters and strings.
+        syntactic_rule = str(syntactic_rule)
+        syntactic_rule = self.parse_rule(syntactic_rule)
         self.add_match(syntactic_rule, semantic_rule)
         self.productions.append(syntactic_rule)
 
@@ -53,7 +54,7 @@ class SemanticRuleSet:
         for w in words:
             self.add_rule("%s -> '%s'"%(lhs, w), func)
 
-    
+
     def add_lexicon(self, preterminal, terminals):
         self.parser = None
         if isinstance(preterminal, str):
@@ -89,16 +90,13 @@ class SemanticRuleSet:
         if self.parser == None:
             self.construct_parser()
         tokens = [token.strip() for token in sentence.split()]
-        #print('sentence tokens')
-	#print(tokens)
-	# TODO: add the try except back.
-	#try:
-        trees = self.parser.parse(tokens)
-        # deduplicate trees, hashing by string value
-        trees = {str(t):t for t in trees}.values()
-        return trees
-        #except:
-	  #  return []
+        try:
+            trees = self.parser.parse(tokens)
+            # deduplicate trees, hashing by string value
+            trees = {str(t):t for t in trees}.values()
+            return trees
+        except:
+            return []
 
 
     def add_verb(self, form, root, past, present, ppart=None):

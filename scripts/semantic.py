@@ -11,14 +11,14 @@ import readline
 import traceback
 import sys
 import json
-from nltk.tree import Tree
-from nltk.draw.tree import TreeView
 
 import semanticRules as lab_rules
 import generate_vocab as gv
 from scratch_project import ScratchProject
 
 sys.path.insert(0,'../../software/')
+from nltk.tree import Tree
+from nltk.draw.tree import TreeView
 import lab3
 from lab3.drawtree import TreeView as MultiTreeView
 from lab3.production_matcher import decorate_parse_tree
@@ -26,7 +26,15 @@ from lab3.lambda_interpreter import eval_tree, decorate_tree_with_trace
 from lab3.semantic_rule_set import SemanticRuleSet
 
 ##############################################################################
-
+# Initialize args in case we are not running this script as the main script.
+class MockArgs:
+	def __init__(self):
+		self.verbose = None
+		self.gui = None
+		self.spm = None
+global args
+args = MockArgs()
+##############################################################################
 
 def print_verbose(s):
 	if args.verbose:
@@ -53,18 +61,22 @@ def read_sentence(batch_mode_sentences=None):
 		except KeyboardInterrupt:
 			return ""
 
-
-def parse_input_str(input_str, scratch):
+# TODO: add some sort of metric for discriminating between parses
+#  This metric could be doing it by simplest parse?
+def parse_input_str(input_str,opt_scratch_project=None):
 	# Before attempting to parse the sentence, update the grammar.
-	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, scratch)
+	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, opt_scratch_project)
 	trees = lab_rules.sem.parse_sentence(input_str)
-	#for tree in trees:
-		#print(tree)
+	index_of_tree_to_pick = 0
 	if len(trees) > 1:
-		print("[WARNING] Obtained %d parses; selecting the first one."%(len(trees)))
+		print("[WARNING] Obtained %d parses; selecting the parse with the largest height."%(len(trees)))
+		tree_heights= [tree.height() for tree in trees]
+		index_of_tree_to_pick = tree_heights.index(min(tree_heights))
 	elif len(trees) == 0:
 		raise Exception("Failed to parse the sentence: " + input_str)
-	return trees[0]
+
+	assert("I don't understand." != trees[0])
+	return trees[index_of_tree_to_pick]
 
 
 def handle_syntax_parser_mode(tree, sem_rule_set):
@@ -77,11 +89,16 @@ def handle_syntax_parser_mode(tree, sem_rule_set):
 
 
 def validate_output(actual_output, expected_output):
-	if actual_output == expected_output:
-		print "[VALIDATION] SUCCESS: '%s' does match expected output: '%s'"%(actual_output, expected_output)
+	# The output returned by our system is a dictionary, not a string...
+	# convert to a string before comparing.
+	if str(actual_output) == expected_output:
+		# print "[VALIDATION] SUCCESS: '%s' does match expected output: '%s'"%(actual_output, expected_output)
+		pass
 	else:
-		print "[VALIDATION] FAILURE: '%s' does not match expected output: '%s'"%(actual_output, expected_output)
-
+		# print "[VALIDATION] FAILURE: '%s' does not match expected output: '%s'"%(actual_output, expected_output)
+		print "[VALIDATION] FAILURE:"
+		print "expected: '%s'" %(expected_output)
+		print "got: '%s'" %(actual_output)
 
 def display_trace_gui(GUI_decorated_tree, sem_rule_set):
 	# Display the GUI of the trace through the evaluation.
@@ -95,7 +112,116 @@ def display_trace_gui(GUI_decorated_tree, sem_rule_set):
 			traceback.print_exc()
 
 ##############################################################################
+def process_single_instruction(input_str, opt_scripts_only=False):
+	"""
+	Given an input string process the string to generate the appropriate
+	Scratch scripts. The script gets added the the ScratchProject object
+	"""
+	# Ideally, we would only generate the vocabulary list once...
+	gv.generate_vocab_list(lab_rules.sem)
 
+	sem_rule_set = lab_rules.sem
+	batch_sentences=[]
+	valid_output=[]
+
+	# Parse the sentence.
+	output = None
+	try:
+		tree = parse_input_str(input_str)
+		if args.spm:
+			handle_syntax_parser_mode(tree, sem_rule_set)
+			# continue
+		else:
+			# Evaluate the parse tree.
+			decorated_tree = decorate_parse_tree(tree,
+												 sem_rule_set,
+												 set_productions_to_labels=False)
+			trace = eval_tree(decorated_tree,
+							  sem_rule_set,
+							  args.verbose)
+
+			output = trace[-1]['expr']
+
+			if args.gui:
+				display_trace_gui(decorate_parse_tree(deepcopy(tree),
+													  sem_rule_set,
+													  set_productions_to_labels=True),
+								  sem_rule_set)
+
+	except Exception as e:
+		# The parser did not return any parse trees.
+		# print_verbose("[WARNING] Could not parse input.")
+		traceback.print_exc() #TODO: Uncomment this line while debugging.
+		return "I don't understand."
+		# output = e
+
+	if opt_scripts_only:
+		# Return only the bracketed representation
+		return output['scripts']
+	# Return the dictionary representing the changes to make to the Scratch
+	# Project
+	return output
+
+def process_instruction(input_str, scratch_project):
+	"""
+	Given an input string process the string to generate the appropriate
+	Scratch scripts. The script gets added the the ScratchProject object
+	"""
+	# Ideally, we would only generate the vocabulary list once...
+	gv.generate_vocab_list(lab_rules.sem)
+
+	sem_rule_set = lab_rules.sem
+	batch_sentences=[]
+	valid_output=[]
+
+	# Parse the sentence.
+	output = None
+	try:
+		tree = parse_input_str(input_str)
+		if args.spm:
+			handle_syntax_parser_mode(tree, sem_rule_set)
+			# continue
+		else:
+			# Evaluate the parse tree.
+			decorated_tree = decorate_parse_tree(tree,
+												 sem_rule_set,
+												 set_productions_to_labels=False)
+			trace = eval_tree(decorated_tree,
+							  sem_rule_set,
+							  args.verbose)
+			evaluation_history.append(deepcopy(trace))
+			output = trace[-1]['expr']
+
+			# process output to update scratch project
+			for x in output["variables"]:
+				scratch_project.add_variable(x, output["variables"][x])
+			for x in output["lists"]:
+				scratch_project.add_list(x, output["lists"][x])
+			# remove any variables or lists that were deleted.
+			for var in scratch_project.variables:
+				if var not in output["variables"]:
+					del scratch_project.variables[var]
+			for var in scratch_project.lists:
+				if var not in output["lists"]:
+					del scratch_project.lists[var]
+
+			for script in output["scripts"]:
+				scratch_project.add_script(script)
+
+			if args.gui:
+				display_trace_gui(decorate_parse_tree(deepcopy(tree),
+													  sem_rule_set,
+													  set_productions_to_labels=True),
+								  sem_rule_set)
+	except Exception as e:
+		# The parser did not return any parse trees.
+		print_verbose("[WARNING] Could not parse input.")
+		# traceback.print_exc() #TODO: Uncomment this line while debugging.
+		output = "I don't understand."
+		output = e
+
+	# Print the result of the speech act
+	return output
 
 def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 	assert isinstance(sem_rule_set, SemanticRuleSet)
@@ -104,11 +230,13 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 
 	scratch = ScratchProject()
 	gv.generate_vocab_list(lab_rules.sem)
-	
+
 	evaluation_history = []
 	while True:
 		# Read in a sentence.
 		input_str = read_sentence(batch_sentences if batch_mode else None)
+		if not input_str:
+			break
 		input_str = input_str.lower().strip()
 		if input_str in ('', 'exit', 'quit'):
 			if batch_mode:
@@ -160,14 +288,19 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 				for x in output["variables"]:
 					scratch.add_variable(x, output["variables"][x])
 				for x in output["lists"]:
-					scratch.add_list(x, output["lists"][x])			
+					scratch.add_list(x, output["lists"][x])
 				# remove any variables or lists that were deleted.
+				new_variables = {}
 				for var in scratch.variables:
-					if var not in output["variables"]:
-						del scratch.variables[var]
+					if var in output["variables"]:
+						new_variables[var] = scratch.variables[var]
+				scratch.variables = new_variables
+
+				new_lists = {}
 				for var in scratch.lists:
-					if var not in output["lists"]:
-						del scratch.lists[var]
+					if var in output["lists"]:
+						new_lists[var] = scratch.lists[var]
+				scratch.lists = new_lists
 
 				for script in output["scripts"]:
 					scratch.add_script(script)
@@ -181,7 +314,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 		except Exception as e:
 			# The parser did not return any parse trees.
 			print_verbose("[WARNING] Could not parse input.")
-			#traceback.print_exc() #TODO: Uncomment this line while debugging.
+			traceback.print_exc() #TODO: Uncomment this line while debugging.
 			output = "I don't understand."
 
 		# Print the result of the speech act

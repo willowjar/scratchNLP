@@ -29,36 +29,54 @@ expression_map = {
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
+  r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
 }
 
+speech_command_map = {
+  r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
+  r'set voice to (\w*)': ['VOICE_NAME'],
+  r'set accent to (\w*)': ['LANGUAGE_NAME'],
+  r'(?:when|if) you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
+  r'(?:when|if) i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
+}
 # global
-expression_map_list = [expression_map]
+expression_map_list = [expression_map, speech_command_map]
 
-def extract_names(sentences):
+def add_item_to_dict(key_value_tuple, dictionary):
+	key = key_value_tuple[0]
+	value =key_value_tuple[1]
+	if key in dictionary:
+		dictionary[key].add(value)
+	else:
+		dictionary[key] = set([value])
+
+def extract_names_and_words(sentences):
 	""" Use the the global expression map list to extract variable, list, and
-	message names
+	message names and also words contained in phrases.
 	Args:
 		sentences (array of str): sentences from which to extract vocabulary
 	Returns:
 		dict: map of each nonterminal to a list of terminals.
 	"""
 	result = {}
-	
+
 	for sentence in sentences:
 		for expression_map in expression_map_list:
 			for regex in expression_map:
-				
 				variables = expression_map[regex]
-				matches = re.findall(regex, sentence, re.M|re.I)
-				
+				matches = re.findall(regex, sentence, re.M|re.I) #  re.M (multi-line), re.I (ignore case)
+
 				if len(variables) == 1:
 					this_variable = variables[0]
 					matches_set = set(matches)
 					for match in matches_set:
-						if this_variable in result:
-							result[this_variable].add(match.strip())
+						# Word phrases need to be split before they are included in the
+						# grammar through semantic rules
+						if this_variable == "WP":
+							for word in match.strip().split():
+								add_item_to_dict(('Word', word), result)
 						else:
-							result[this_variable] = set([match.strip()])
+							add_item_to_dict((this_variable, match.strip()), result)
 				else:
 					#assume results grouped by tuple if there are atleast 1 result
 					for i in range(0, len(variables)):
@@ -66,11 +84,13 @@ def extract_names(sentences):
 						if len(matches)> 0 and i < len(matches):
 							matches_for_this_var = matches[i]
 							for match in matches_for_this_var:
-								if this_variable in result:
-									result[this_variable].add(match.strip())
+								if this_variable == "WP":
+									for word in match.strip().split():
+										add_item_to_dict(('Word', word), result)
 								else:
-									result[this_variable] = set([match.strip()])
+									add_item_to_dict((this_variable, match.strip()), result)
 	return result
+
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
 	Given a vocab dictionary and vocabulary file, generate the vocab and put it
@@ -101,7 +121,6 @@ def add_to_lexicon(vocab, semantic_rule_set):
 		vocab (dict): dictionary that maps each nonterminal to a list of
 			terminals.
 	"""
-
 	for key in vocab:
 		semantic_rule_set.add_lexicon_rule(key, vocab[key], lambda word: word)
 
@@ -129,14 +148,13 @@ def get_core_vocab():
 def generate_vocab_list(semantic_rule_set):
 	new_vocab = get_core_vocab()
 	add_to_lexicon(new_vocab, semantic_rule_set)
-	#add_to_vocabulary_file(new_vocab, vocabulary_file_path)
 
 def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_file_path):
 	with open(example_sentences_file_path) as f:
 		content = f.readlines()
 	sentences = [x.strip() for x in content]
 
-	new_vocab = extract_names(sentences)
+	new_vocab = extract_names_and_words(sentences)
 	core_vocab = get_core_vocab()
 
 	final_vocab = core_vocab.copy()
@@ -210,7 +228,7 @@ def get_unknowns_given_productions(utterance, semantic_rule_set):
 
 	return unk_list
 
-def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
+def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=None):
 	""" All words that do not yet exist in the grammar or vocabulary must be
 	added to the vocabulary.
 	Args:
@@ -221,12 +239,12 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	"""
 
 	# Add unknown names from utterance to the grammar
-	utterance_vocab = extract_names([utterance])
-
-	# Add variables to the scratch project object.
-	#if 'VARIABLE_NAME' in utterance_vocab:
-	#	for var in utterance_vocab['VARIABLE_NAME']:
-	#		scratch_project.add_variable(var)
+	utterance_vocab = extract_names_and_words([utterance])
+	if opt_scratch_project:
+		# Add variables to the scratch project object.
+		if 'VARIABLE_NAME' in utterance_vocab:
+			for var in utterance_vocab['VARIABLE_NAME']:
+				opt_scratch_project.add_variable(var)
 
 	# Add the names to the syntactic/semantic rules
 	add_to_lexicon(utterance_vocab, semantic_rule_set)
@@ -234,7 +252,10 @@ def add_unknowns_to_grammar(utterance, semantic_rule_set, scratch_project):
 	#  them with 'Unk' which represents that they are unknown.
 	unk_list = get_unknowns_given_productions(utterance, semantic_rule_set)
 
-	vocab_map = {'Unk': unk_list}
+	vocab_map = {
+		'Unk': unk_list,
+		}
+
 	add_to_lexicon(vocab_map, semantic_rule_set)
 
 def add_unknowns_to_grammar_file(utterance, grammar_file_path):
@@ -246,9 +267,8 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	Returns:
 		str: the utterance with the unknowns replaced with 'Unk'
 	"""
-
 	# Add unknown names from utterance to the grammar
-	utterance_vocab = extract_names([utterance])
+	utterance_vocab = extract_names_and_words([utterance])
 	add_to_vocabulary_file(utterance_vocab, grammar_file_path, 'append')
 
 	# Find all unknown words in the input, save them in the grammar, and replace
@@ -260,4 +280,4 @@ def add_unknowns_to_grammar_file(utterance, grammar_file_path):
 	return new_utterance
 
 if __name__ == "__main__":
-	generate_vocab_list()
+	pass

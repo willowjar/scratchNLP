@@ -174,6 +174,9 @@ def ynQuestion(data):
     else:
         return "No."
 
+def whenYouHear(word_phrase):
+    return ["whenIHear", word_phrase]
+
 def whenGreenFlag():
     return ["whenGreenFlag"]
 
@@ -270,6 +273,8 @@ sem.add_rule("AL -> AP", lambda p: [p])
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
+sem.add_rule("AP -> Text2SpeechCommand", identity)
+sem.add_rule("AP -> Speech2TextCommand", identity)
 sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
@@ -284,7 +289,7 @@ sem.add_rule("AP -> ControlCommand", identity)
 sem.add_rule("AL -> SequentialCommand", identity)
 sem.add_rule("AL -> OrderedCommand", identity)
 
-
+# Ordered Command
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
 
 # SequentialCommand
@@ -319,10 +324,29 @@ sem.add_rule("ITEM -> BP", lambda name: name)
 #sem.add_rule("ITEM -> VARIABLE_NAME", lambda name: name)
 sem.add_rule("ITEM -> DATA_REPORTER", identity)
 
+sem.add_rule("ITEM -> WP", lambda i:i) # Word phrase
 
+sem.add_rule("WP -> WP_1", lambda i:i) # Speech phrase
+sem.add_rule("WP -> WP_2", lambda i:i) # Speech phrase
+sem.add_rule("WP_1 -> SP", lambda i:i) # Speech phrase
+sem.add_rule("WP_2 -> Word", lambda unk:unk) # Word phrase can map to what someone said.
+sem.add_rule("WP_2 -> Word WP_2", lambda w1, wp : ' '.join([w1, wp])) # Word phrase can map to what someone said.
 
 # Duration
 sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
+
+# Speech2Text Commands
+sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
+sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
+sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech"))
+sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
+sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
+
+# Text2Speech Commands
+sem.add_rule("Text2SpeechCommand -> Say The Speech", lambda s, t, speech: singleCommand("speakAndWait:", singleCommandNoValue("getSpeech")))
+sem.add_rule("Text2SpeechCommand -> Say WP", lambda s, wp: singleCommand("speakAndWait:", wp))
+sem.add_rule("Text2SpeechCommand -> Set Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Set Accent To LANGUAGE_NAME", lambda s, l, t, language: singleCommand("setLanguage:", language))
 
 # Sound Command
 # Use the halting version f the play sound block
@@ -444,8 +468,6 @@ sem.add_rule("Timer -> Det Timer", lambda d, tim: [tim])
 
 sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t], n)))
 
-
-
 sem.add_rule("SimpleEventHandler -> EVENT AL ", lambda e, a: SimpleEvent(e, a))
 sem.add_rule("EventHandler ->  SimpleEventHandler Thats It", lambda e, thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Thats It", lambda e, a, t, s, ti, thats, it: e)
@@ -474,19 +496,25 @@ sem.add_rule("BP -> VARIABLE_NAME CBP VARIABLE_NAME", lambda var1, cbp, var2: cb
 sem.add_rule("BP -> BP Boolean" , lambda b, boo: boo(b))
 sem.add_rule("BP -> BP And BP", lambda b1,andd, b2: logicAnd(b1, b2))
 sem.add_rule("BP -> BP Or BP", lambda b1, orr, b2: logicOr(b1, b2))
+sem.add_rule("BP -> SBP", lambda sbp: sbp)
 
 ## Comparison and Logic
-sem.add_rule("CBP -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
-sem.add_rule("CBP -> Equals", lambda e: lambda a, b: equalTo(a,b))
+sem.add_rule("CBP -> CBP_equality", lambda i: i)
+sem.add_rule("CBP_equality -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
+sem.add_rule("CBP_equality -> Equals", lambda e: lambda a, b: equalTo(a,b))
 sem.add_rule("CBP -> Greater Than", lambda g, t: lambda a, b: greaterThan(a, b))
 sem.add_rule("CBP -> Less Than", lambda l, t: lambda a, b: lessThan(a, b))
 sem.add_rule("CBP -> Greater Than Or Equal To", lambda g, t, o, e, too: lambda a, b: GEQ(a, b))
 sem.add_rule("CBP -> Less Than Or Equal To", lambda l, t, o, e, too: lambda a, b: LEQ(a, b))
+
 sem.add_rule("CBP -> LMOD CBP", lambda m, c: lambda a, b: m(c(a, b)))
+sem.add_rule("CBP_equality -> LMOD CBP_equality", lambda m, eq: m(eq))
 
 sem.add_rule("LMOD -> POS", lambda pos: lambda x: x)
 sem.add_rule("LMOD -> NEG", lambda neg: lambda x: not_identity(x))
 
+sem.add_rule("SBP -> SP CBP_equality WP", lambda sp, eq, wp: equalTo(sp,wp)) # SBP = speech boolean phrase
+sem.add_rule("SBP -> WP CBP_equality SP", lambda sp, eq, wp: equalTo(sp,wp))
 
 ## Broadcast Commands
 sem.add_rule("BroadcastCommand -> Broadcast MESSAGE_NAME", lambda broadcast, name: broadcastMessage(name))
@@ -542,11 +570,15 @@ sem.add_lexicon_rule("That", ["that"], identity)
 sem.add_lexicon_rule("This", ["this"], identity)
 
 # Names
-sem.add_lexicon_rule("NAME_OF_SOUND",
+sem.add_lexicon_rule('NAME_OF_SOUND',
                      ['meow','cave','boing','chomp','drum','jungle','hey'],
                      # TODO: the semantic rule for NAME_OF_SOUND could involve
                      # searching
                      lambda name: name)
+sem.add_lexicon_rule('LANGUAGE_NAME',
+    ['english', 'danish', 'dutch','french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.captialize())
+sem.add_lexicon_rule('VOICE_NAME',
+    ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
 sem.add_lexicon_rule("I", ["i"], identity)
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
 
@@ -648,12 +680,11 @@ sem.add_lexicon_rule("Timer", ["timer"], identity)
 sem.add_lexicon_rule("Reset", ["reset"], identity)
 
 ## Compare
-sem.add_lexicon_rule("Equals", ["equals"], identity)
+sem.add_lexicon_rule("Equals", ["equals", "is"], identity)
 sem.add_lexicon_rule("Equal", ["equal"], identity)
 sem.add_lexicon_rule("Greater", ["greater"], identity)
 sem.add_lexicon_rule("Less", ["less"], identity)
 sem.add_lexicon_rule("Than", ["than"], identity)
-
 
 ## Logic
 sem.add_lexicon_rule("Or", ["or"], identity)
@@ -684,6 +715,19 @@ sem.add_lexicon_rule("Ele",['element', 'item'],identity)
 sem.add_lexicon_rule("TRUE", ["true"], identity)
 sem.add_lexicon_rule("FALSE", ["false"], identity)
 
+## SPEECH
+#### Pronouns
+sem.add_lexicon_rule("You",['you'],identity)
+#### Actions
+sem.add_lexicon_rule("Listen",['listen'],identity)
+sem.add_lexicon_rule("Hear",['hear'],identity)
+sem.add_lexicon_rule("Say",['speak', 'say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+#### Nouns
+sem.add_lexicon_rule("Response",['response', 'reply'],identity)
+sem.add_lexicon_rule("Speech",['speech'],identity)
+sem.add_lexicon_rule("Voice",['voice'],identity)
+sem.add_lexicon_rule("Language",['language'],identity)
+sem.add_lexicon_rule("Accent",['accent'],identity)
 
 ## Operators
 sem.add_lexicon_rule("Divided",['divided'],identity)
@@ -781,11 +825,3 @@ eligibleWords = [
 ]
 for e_word in eligibleWords:
     findAndAddSynonymToGrammar(e_word[0], e_word[1], e_word[2])
-
-
-
-
-
-
-
-
