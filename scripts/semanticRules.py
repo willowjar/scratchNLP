@@ -343,10 +343,25 @@ sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp)
 sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
 
 # Text2Speech Commands
+sem.add_rule("Voice -> Det Voice", lambda d, v: v)
+sem.add_rule("Voice -> Your Voice", lambda d, v: v)
+sem.add_rule("VOICE_NAME -> Your VOICE_NAME Voice", lambda y, voice_name, v: voice_name)
+sem.add_rule("VOICE_NAME -> Det VOICE_NAME Voice", lambda d, voice_name, v: voice_name)
+sem.add_rule("VOICE_NAME -> VOICE_NAME Voice", lambda voice_name, v: voice_name)
+
 sem.add_rule("Text2SpeechCommand -> Say The Speech", lambda s, t, speech: singleCommand("speakAndWait:", singleCommandNoValue("getSpeech")))
 sem.add_rule("Text2SpeechCommand -> Say WP", lambda s, wp: singleCommand("speakAndWait:", wp))
 sem.add_rule("Text2SpeechCommand -> Set Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Change Voice To VOICE_NAME", lambda c, v, t, voice_name: singleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Use VOICE_NAME", lambda u, voice_name: singleCommand("setVoice:", voice_name))
+sem.add_rule("Text2SpeechCommand -> Switch Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
+
+sem.add_rule("Accent -> Det Accent", lambda d, acc: acc)
 sem.add_rule("Text2SpeechCommand -> Set Accent To LANGUAGE_NAME", lambda s, l, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Talk With Det LANGUAGE_NAME Accent", lambda t, w, d, language, ac: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Change Accent To LANGUAGE_NAME", lambda c, acc, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Use Det LANGUAGE_NAME Accent", lambda u, d, language, a: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Switch Accent To LANGUAGE_NAME", lambda s, a, t, language: singleCommand("setLanguage:", language))
 
 # Sound Command
 # Use the halting version f the play sound block
@@ -536,8 +551,6 @@ sem.add_rule("Message -> New Message", lambda d, name: name)
 sem.add_rule("Message -> Det Message", lambda d, name: name)
 sem.add_rule("Message -> Message Called", lambda d, name: name)
 
-
-
 # Conditional Command
 sem.add_rule("ConditionalCommand -> If BP Then AL Thats It", lambda i, bp, then, al, thats, it: ifCommand(bp,al))
 sem.add_rule("ConditionalCommand -> If BP AL Thats It", lambda i, bp, al, thats, it: ifCommand(bp,al))
@@ -573,6 +586,9 @@ sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_l
 sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 
+
+#General switches
+sem.add_rule("To -> To Be", lambda t, b: t)
 #####################################################################
 ## Lexicon
 # Data Command Keywords
@@ -598,7 +614,7 @@ sem.add_lexicon_rule('NAME_OF_SOUND',
                      # searching
                      lambda name: name)
 sem.add_lexicon_rule('LANGUAGE_NAME',
-    ['english', 'danish', 'dutch','french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.captialize())
+    ['english', 'danish', 'dutch','french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
 sem.add_lexicon_rule('VOICE_NAME',
     ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
 sem.add_lexicon_rule("I", ["i"], identity)
@@ -606,6 +622,7 @@ sem.add_lexicon_rule("Sprite", ["sprite"], identity)
 
 # Command Keywords
 sem.add_lexicon_rule("Play", ['play'], identity)
+sem.add_lexicon_rule("Use", ['use'], identity)
 sem.add_lexicon_rule("Set", ['set'], identity)
 sem.add_lexicon_rule("Replace", ['replace'], identity)
 sem.add_lexicon_rule("Change", ['change'], identity)
@@ -740,10 +757,12 @@ sem.add_lexicon_rule("FALSE", ["false"], identity)
 ## SPEECH
 #### Pronouns
 sem.add_lexicon_rule("You",['you'],identity)
+sem.add_lexicon_rule("Your",['your'],identity)
 #### Actions
 sem.add_lexicon_rule("Listen",['listen'],identity)
 sem.add_lexicon_rule("Hear",['hear'],identity)
-sem.add_lexicon_rule("Say",['speak', 'say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+sem.add_lexicon_rule("Say",['say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+sem.add_lexicon_rule("Talk",['talk'],identity)
 #### Nouns
 sem.add_lexicon_rule("Response",['response', 'reply'],identity)
 sem.add_lexicon_rule("Speech",['speech'],identity)
