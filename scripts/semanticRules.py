@@ -298,9 +298,7 @@ sem.add_rule("SequentialCommand -> SequenceAdverb AL", lambda seq_adv, action_li
 
 # Create Command
 sem.add_rule("CreateCommand -> Make Det Clone Of Myself", lambda m, det, c,o, my: createClone())
-
 sem.add_rule("CreateCommand -> Make VARIABLE_LIST", lambda make, vl: createVariable(vl))
-
 sem.add_rule("CreateCommand -> Make LIST_NAME", lambda make, name: createSingleList(name))
 
 sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME", lambda vl: [vl])
@@ -309,14 +307,19 @@ sem.add_rule("VARIABLE_LIST -> VARIABLE_NAME And VARIABLE_LIST", lambda vn, a, v
 sem.add_rule("VARIABLE_NAME -> Variable VARIABLE_NAME", lambda l, name: name)
 sem.add_rule("LIST_NAME -> List LIST_NAME", lambda l, name: name)
 sem.add_rule("Variable -> Det Variable", lambda det, var: None)
+sem.add_rule("Variable -> Your Variable", lambda det, var: None)
+sem.add_rule("Variable -> My Variable", lambda det, var: None)
 sem.add_rule("Variable -> Variable Called", lambda v, c: None)
 sem.add_rule("Variable -> New Variable", lambda v, c: None)
+
 sem.add_rule("List -> Det List", lambda det, liss: None)
+sem.add_rule("List -> Your List", lambda det, liss: None)
+sem.add_rule("List -> My List", lambda det, liss: None)
 sem.add_rule("List -> New List", lambda det, liss: None)
 sem.add_rule("List -> List Called", lambda liss, c: None)
 
 sem.add_rule("KEY_NAME -> KEY_NAME Key", lambda name, key: name)
-sem.add_rule("KEY_NAME -> Det KEY_NAME Key", lambda det, name, key: name)
+sem.add_rule("KEY_NAME -> Det KEY_NAME", lambda det, name: name)
 sem.add_rule("KEY_NAME -> Direction Key", lambda name, key: name+" arrow")
 
 sem.add_rule("ITEM -> NP", lambda i:i)
@@ -350,9 +353,12 @@ sem.add_rule("EVENT -> Whenever I Say WP", lambda we, i, say, wp: whenYouHear(wp
 # Text2Speech Commands
 sem.add_rule("Voice -> Det Voice", lambda d, v: v)
 sem.add_rule("Voice -> Your Voice", lambda d, v: v)
+sem.add_rule("Voice -> My Voice", lambda d, v: v)
 sem.add_rule("VOICE_NAME -> Your VOICE_NAME Voice", lambda y, voice_name, v: voice_name)
 sem.add_rule("VOICE_NAME -> Det VOICE_NAME Voice", lambda d, voice_name, v: voice_name)
 sem.add_rule("VOICE_NAME -> VOICE_NAME Voice", lambda voice_name, v: voice_name)
+sem.add_rule("VOICE_NAME -> Voice Called VOICE_NAME", lambda v, c, voice_name: voice_name)
+sem.add_rule("VOICE_NAME -> Voice Of VOICE_NAME", lambda v, c, voice_name: voice_name)
 
 sem.add_rule("Text2SpeechCommand -> Say The Speech", lambda s, t, speech: singleCommand("speakAndWait:", singleCommandNoValue("getSpeech")))
 sem.add_rule("Text2SpeechCommand -> Say WP", lambda s, wp: singleCommand("speakAndWait:", wp))
@@ -363,17 +369,26 @@ sem.add_rule("Text2SpeechCommand -> Switch Voice To VOICE_NAME", lambda s, v, t,
 
 sem.add_rule("AccentP -> Det Accent", lambda d, acc: acc)
 sem.add_rule("AccentP -> Your Accent", lambda y, acc: acc)
-sem.add_rule("Text2SpeechCommand -> Set AccentP To LANGUAGE_NAME", lambda s, l, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("AccentP -> My Accent", lambda y, acc: acc)
+sem.add_rule("LANGUAGE_NAMEP -> Accent Called LANGUAGE_NAME", lambda a, c, acc: acc)
+sem.add_rule("LANGUAGE_NAMEP -> Accent For LANGUAGE_NAME", lambda a, f, acc: acc)
+sem.add_rule("LANGUAGE_NAMEP -> Accent Of LANGUAGE_NAME", lambda a, f, acc: acc)
+sem.add_rule("LANGUAGE_NAMEP -> LANGUAGE_NAME", lambda acc: acc)
+
+sem.add_rule("Text2SpeechCommand -> Set AccentP To LANGUAGE_NAMEP", lambda s, l, t, language: singleCommand("setLanguage:", language))
 sem.add_rule("Text2SpeechCommand -> Talk With Det LANGUAGE_NAME Accent", lambda t, w, d, language, ac: singleCommand("setLanguage:", language))
-sem.add_rule("Text2SpeechCommand -> Change AccentP To LANGUAGE_NAME", lambda c, acc, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Change AccentP To LANGUAGE_NAMEP", lambda c, acc, t, language: singleCommand("setLanguage:", language))
 sem.add_rule("Text2SpeechCommand -> Use Det LANGUAGE_NAME Accent", lambda u, d, language, a: singleCommand("setLanguage:", language))
-sem.add_rule("Text2SpeechCommand -> Switch AccentP To LANGUAGE_NAME", lambda s, a, t, language: singleCommand("setLanguage:", language))
+sem.add_rule("Text2SpeechCommand -> Switch AccentP To LANGUAGE_NAMEP", lambda s, a, t, language: singleCommand("setLanguage:", language))
 
 # Sound Command
 # Use the halting version f the play sound block
-sem.add_rule("SoundCommand -> Play NAME_OF_SOUND Sound", lambda play, name, sound: singleCommand("doPlaySoundAndWait", name))
+sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: singleCommand("doPlaySoundAndWait", name))
 
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name)
+sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name)
+sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name)
+sem.add_rule("NAME_OF_SOUND -> Sound Called NAME_OF_SOUND", lambda s, c, name: name)
 
 sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 
@@ -436,17 +451,13 @@ sem.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, l
 sem.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o, list_name,w, item: setItemInList(ind, list_name, item))
 sem.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,item: setItemInList(ind, list_name, item))
 
-
 # Data Reporter
 sem.add_rule("DataReporter -> The OrderAdverb Item In LIST_NAME", lambda t, order_adverb, i, inn, list_name: getItem(wordMap(order_adverb), list_name))
 
 # Number Phrase
 sem.add_rule("NP -> Unk", lambda unk: getNumber(unk))
-
 sem.add_rule("NP -> NPP", identity)
-
 sem.add_rule("NP -> Det NPP", lambda det, npp: npp)
-
 sem.add_rule("NP -> VARIABLE_NAME", lambda v: getValue(v))
 
 sem.add_rule("NP -> NP Plus NP", lambda unk1, plus, unk2: add(unk1, unk2))
@@ -455,9 +466,7 @@ sem.add_rule("NPP -> Sum Of NP And NP", lambda s, of, unk1, a, unk2: add(unk1, u
 
 sem.add_rule("NP -> NP Minus NP", lambda unk1, minus, unk2: subtract(unk1, unk2))
 sem.add_rule("NP -> NP Subtracted By NP", lambda unk1, subtracted, by, unk2: subtract(unk1,unk2))
-
 sem.add_rule("NP -> NP Subtracted From NP", lambda unk1, subtracted, by, unk2: subtract(unk2,unk1))
-
 sem.add_rule("NP -> Difference Between NP And NP", lambda d, b, n1, a, n2: subtract(n1,n2))
 
 sem.add_rule("NP -> NP Times NP", lambda unk1, times, unk2: getProduct(unk1,unk2))
@@ -468,32 +477,33 @@ sem.add_rule("NP -> NP Divided By NP", lambda unk1, divided, by, unk2: getQuotie
 sem.add_rule("NPP -> Random Number Between NP And NP", lambda r, n, b, unk1, a, unk2: getRandomNumberBetween(unk1, unk2))
 sem.add_rule("NP -> Negative NP", lambda n, np: getProduct(-1,np))
 
+sem.add_rule("Backdrop -> Det Backdrop", lambda d, b: b)
+sem.add_rule("Backdrop -> Your Backdrop", lambda d, b: b)
+sem.add_rule("Backdrop -> My Backdrop", lambda d, b: b)
+sem.add_rule("BACKDROP_NAME -> Det BACKDROP_NAME", lambda d, b: b)
+sem.add_rule("BACKDROP_NAME -> Backdrop Called BACKDROP_NAME", lambda d, c, b: b)
+sem.add_rule("BACKDROP_NAME -> Backdrop Of BACKDROP_NAME", lambda d, c, b: b)
 
-
-
-sem.add_rule("EVENT -> When Det Green Flag Is Clicked", lambda w, t, g, f, i, c: whenGreenFlag())
-
-sem.add_rule("EVENT -> When Det Program Starts", lambda w, t, p, s: whenGreenFlag())
-
-sem.add_rule("EVENT -> When Green Flag Is Clicked", lambda w, g, f, i, c: whenGreenFlag())
-
-sem.add_rule("EVENT -> When Program Starts", lambda w, p, s: whenGreenFlag())
-
-sem.add_rule("EVENT -> When KEY_NAME Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name))
-
-sem.add_rule("EVENT -> When Direction Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name + " arrow"))
-
-sem.add_rule("EVENT -> When Det Sprite Is Clicked", lambda w, t, s, iss, cli: whenClicked())
-
-sem.add_rule("EVENT -> When Backdrop Switches To BACKDROP_NAME", lambda w, b, s, t, name: whenBackSwitch(name))
-
-sem.add_rule("EVENT -> When Backdrop Switches To Det BACKDROP_NAME", lambda w, b, s, t, th, name: whenBackSwitch(name))
-
-sem.add_rule("EVENT -> When I Receive MESSAGE_NAME", lambda w, i, r, message: whenReceive(message))
+sem.add_rule("Program -> Det Program", lambda d, p: p)
+sem.add_rule("Program -> My Program", lambda d, p: p)
+sem.add_rule("Program -> Your Program", lambda d, p: p)
 
 sem.add_rule("Timer -> Det Timer", lambda d, tim: [tim])
+sem.add_rule("Timer -> My Timer", lambda d, tim: [tim])
+sem.add_rule("Timer -> Your Timer", lambda d, tim: [tim])
 
+sem.add_rule("Sprite -> Det Sprite", lambda d, s: s)
+sem.add_rule("Sprite -> My Sprite", lambda d, s: s)
+sem.add_rule("Sprite -> Your Sprite", lambda d, s: s)
 
+sem.add_rule("EVENT -> When Det Green Flag Is Clicked", lambda w, t, g, f, i, c: whenGreenFlag())
+sem.add_rule("EVENT -> When Green Flag Is Clicked", lambda w, g, f, i, c: whenGreenFlag())
+sem.add_rule("EVENT -> When Program Starts", lambda w, p, s: whenGreenFlag())
+sem.add_rule("EVENT -> When KEY_NAME Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name))
+sem.add_rule("EVENT -> When Direction Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name + " arrow"))
+sem.add_rule("EVENT -> When Sprite Is Clicked", lambda w, s, iss, cli: whenClicked())
+sem.add_rule("EVENT -> When Backdrop Switches To BACKDROP_NAME", lambda w, b, s, t, name: whenBackSwitch(name))
+sem.add_rule("EVENT -> When I Receive MESSAGE_NAME", lambda w, i, r, message: whenReceive(message))
 sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t], n)))
 
 sem.add_rule("CBP -> CBP_equality", lambda i: i)
@@ -510,15 +520,11 @@ sem.add_rule("CBP_equality -> LMOD CBP_equality", lambda m, eq: m(eq))
 sem.add_rule("LMOD -> POS", lambda pos: lambda x: x)
 sem.add_rule("LMOD -> NEG", lambda neg: lambda x: not_identity(x))
 
-
-
 sem.add_rule("SimpleEventHandler -> EVENT AL ", lambda e, a: SimpleEvent(e, a))
 sem.add_rule("EventHandler ->  SimpleEventHandler Thats It", lambda e, thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Thats It", lambda e, a, t, s, ti, thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler Too Thats It", lambda e, t,thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It", lambda e, a, t, s, ti, to, thats, it: e)
-
-
 
 ## TimerCommand
 sem.add_rule("TimerCommand -> Reset Timer", lambda r, t: resetTimer())
@@ -564,24 +570,16 @@ sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", la
 sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-
-sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: ifCommand(bp,al)) # todo
+# sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: ifCommand(bp,al)) # todo
 
 # Control Command
 
 sem.add_rule("ControlCommand -> Wait NP Seconds", lambda waitt, unk, seconds: wait(unk))
-
 sem.add_rule("ControlCommand -> Wait Until BP", lambda wait, until, bp: waitUntil(bp))
-
 sem.add_rule("ControlCommand -> Repeat AL Until BP", lambda repeat, al, untill, bp: until(bp, al))
-
 sem.add_rule("ControlCommand -> Repeat AL Forever", lambda repeat, al, forever: doForever(al))
-
 sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, times: repeat(unk, al))
-
 sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
-
-
 
 #LoopCommand
 sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
@@ -607,6 +605,7 @@ sem.add_lexicon_rule("Det", ['the', 'this', 'a', 'an'], lambda word: lambda: Non
 sem.add_lexicon_rule("I", ["i"], identity)
 sem.add_lexicon_rule("You",['you'],identity)
 sem.add_lexicon_rule("Your",['your'],identity)
+sem.add_lexicon_rule("My",['my'],identity)
 sem.add_lexicon_rule("Myself",['myself'],identity)
 sem.add_lexicon_rule("It", ["it"], identity)
 
@@ -756,7 +755,7 @@ sem.add_lexicon_rule("Broadcast",['broadcast'],identity)
 
 # Timer Keywords
 sem.add_lexicon_rule("Timer", ["timer"], identity)
-sem.add_lexicon_rule("Reset", ["reset"], identity)
+sem.add_lexicon_rule("Reset", ["reset", "zero", "restart", "initialize"], identity)
 
 ## Adj
 sem.add_lexicon_rule("All",['all'],identity)
