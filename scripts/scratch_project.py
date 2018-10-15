@@ -4,8 +4,8 @@ import sys
 import json
 import time
 from scratch_project_base import ScratchProjectBase
+import copy
 
-# TODO(quacht):What is the relationship between a script and an instruction within the representation of a ScratchProject created by ScratchNLP.
 class ScratchProject(ScratchProjectBase):
 	def __init__(self, opt_db_info=None):
 		ScratchProjectBase.__init__(self)
@@ -26,8 +26,6 @@ class ScratchProject(ScratchProjectBase):
 			self.id = None
 
 	def load_from_db(self, db_tuple):
-		print("db_tuple")
-		print(db_tuple)
 		self.id = db_tuple[0]
 		self.author = db_tuple[1]
 		self.created = db_tuple[2]
@@ -81,23 +79,36 @@ class ScratchProject(ScratchProjectBase):
 		stack = [5,128] + [script_list]
 		self.stacks.append(stack)
 
-	def to_json(self):
-		# TODO: return and verify the json of the entire project
-		# not just the first/only sprite
-		print(self.json)
+	def _copy_with_green_flag(self, scratch_project_dict):
+		new_dict = copy.deepcopy(scratch_project_dict)
+		sprite1 = new_dict["children"][0]
+		for i in range(0,len(sprite1["scripts"])):
+			stack = sprite1["scripts"][i]
+			# If the stack doesn't already begin with an event hat block, then
+			# add the when green flag clicked event hat block to it so that
+			# the instructions will be executed when the project starts.
+			program_nested_array = stack[2]
+			if len(program_nested_array) > 0:
+				print("program_nested_array[0]")
+				print(program_nested_array[0])
+				if not program_nested_array[0][0].startswith("when"):
+					sprite1["scripts"][i][2] = [["whenGreenFlag"]] + program_nested_array
+		return new_dict
+
+	def to_json(self, opt_use_green_flag=False):
 		sprite1 = self.json["children"][0]
 		sprite1["variables"] = []
 		for key, value in self.variables.items():
-				sprite1["variables"].append({
-						"name": key,
-						"value": value,
-					})
+			sprite1["variables"].append({
+					"name": key,
+					"value": value,
+				})
 		sprite1["lists"] = []
 		for key, value in self.lists.items():
-				sprite1["lists"].append({
-						"listName": key,
-						"contents": value,
-					})
+			sprite1["lists"].append({
+					"listName": key,
+					"contents": value,
+				})
 		# Include current scripts in the json
 		self.add_stack(self.scripts)
 		sprite1["scripts"] = self.stacks
@@ -107,7 +118,12 @@ class ScratchProject(ScratchProjectBase):
 		# stacks until the current script stacks have been completed
 		# or a new stack is started.
 		self.stacks = self.stacks[:-1]
-		return json.dumps(self.json)
+
+		dict_representation = self.json
+		if opt_use_green_flag:
+			# All stacks that do not already use an event, should begin with a green flag?
+			dict_representation = self._copy_with_green_flag(self.json)
+		return json.dumps(dict_representation)
 
 	def save_project(self, path_to_output_dir):
 		raw_project_path = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_assets'
@@ -131,3 +147,4 @@ class ScratchProject(ScratchProjectBase):
 
 		os.system('mv ' + zipfile_path + ' ' + sb2_path)
 		os.chdir(current_dir)
+
