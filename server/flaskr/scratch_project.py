@@ -126,26 +126,22 @@ class ScratchProject(ScratchProjectBase):
 		return json.dumps(dict_representation)
 
 	def save_project(self, path_to_output_dir):
-		# raw_project_path = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_assets'
-		raw_project_path = '../test_fixtures/generate_sb2_fixture_with_assets'
+		raw_project_path = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/test_fixtures/generate_sb2_fixture_with_assets'
 		# write the project.json into a file
 		with open(os.path.join(raw_project_path, 'project.json'), 'w+') as f:
 			f.write(self.to_json())
 		# zip and rename the file
 		project_name = 'scratchNLPdemo'
 		current_dir = os.getcwd()
-
 		os.chdir(raw_project_path)
-		curdir = os.getcwd()
-		zipfile_path = os.path.join(curdir, project_name + '.zip')
 
+		zipfile_path = os.path.join(raw_project_path, project_name + '.zip')
 		os.system('zip -r ' + zipfile_path + ' ./*')
 
 		# if path the specified output directory doesn't exist yet, create the
 		# folder accordingly.
 		if not os.path.exists(path_to_output_dir):
 				os.makedirs(path_to_output_dir)
-		print(curdir, path_to_output_dir)
 		sb2_path = os.path.join(path_to_output_dir, project_name + '.sb2')
 		print('sb2_path is ' + sb2_path)
 
