@@ -368,6 +368,7 @@ sem.add_rule("Text2SpeechCommand -> Use VOICE_NAME", lambda u, voice_name: singl
 sem.add_rule("Text2SpeechCommand -> Switch Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
 
 sem.add_rule("AccentP -> Det Accent", lambda d, acc: acc)
+sem.add_rule("AccentP -> Accent", lambda acc: acc)
 sem.add_rule("AccentP -> Your Accent", lambda y, acc: acc)
 sem.add_rule("AccentP -> My Accent", lambda y, acc: acc)
 sem.add_rule("LANGUAGE_NAMEP -> Accent Called LANGUAGE_NAME", lambda a, c, acc: acc)
@@ -667,7 +668,7 @@ sem.add_lexicon_rule("Variable",['variable'],identity)
 ## Verbs - Speech
 sem.add_lexicon_rule("Listen",['listen'],identity)
 sem.add_lexicon_rule("Hear",['hear'],identity)
-sem.add_lexicon_rule("Say",['say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+sem.add_lexicon_rule("Say",['say', 'voice', 'speak'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
 sem.add_lexicon_rule("Talk",['talk'],identity)
 
 
