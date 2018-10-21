@@ -151,7 +151,7 @@ def create_app(test_config=None):
                 changes_to_add = process_single_instruction(instruction)
                 print("changes_to_add when creating a new project:")
                 print(changes_to_add)
-                if changes_to_add != "I don't understand":
+                if changes_to_add != "I don't understand.":
                     # The instruction was valid and parseable.
                     project.update(changes_to_add)
                 else:

@@ -50,7 +50,7 @@ def soundToNumber(string):
     if string in sounds:
         return sounds[string]
     else:
-        ## TODO RAISE ERROR 
+        ## TODO RAISE ERROR
         return 1
 
 def playInstrumentBeats(sound, beats):
@@ -407,7 +407,7 @@ sem.add_rule('INSTRUMENT -> Instrument1 Instrument2', lambda i, i2: i + ' ' + i2
 
 sem.add_rule('MusicCommand -> Play DRUM For NP Beats' , lambda p, i, f, n, b: playInstrumentBeats(soundToNumber(i), n))
 sem.add_rule('MusicCommand -> Play DRUM NP Beats' , lambda p, i, n, b: playInstrumentBeats(soundToNumber(i), n))
-sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i playInstrumentBeats(soundToNumber(i), n))
+sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(soundToNumber(i), n))
 
 
 
