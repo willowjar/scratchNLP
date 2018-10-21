@@ -43,6 +43,19 @@ global_variables = {}
 global_lists = {}
 
 ####################################################################
+# Music Actions
+def soundToNumber(string):
+
+    sounds = {"snare drum": 1, "base drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
+    if string in sounds:
+        return sounds[string]
+    else:
+        ## TODO RAISE ERROR 
+        return 1
+
+def playInstrumentBeats(sound, beats):
+    return ["playDrum", sound, beats]
+
 # Speech Actions
 def processSentence(data):
     if len(data) > 0:
@@ -276,6 +289,7 @@ sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
 sem.add_rule("AP -> Text2SpeechCommand", identity)
 sem.add_rule("AP -> Speech2TextCommand", identity)
+sem.add_rule("AP -> MusicCommand", identity)
 sem.add_rule("AP -> SoundCommand", identity)
 sem.add_rule("AP -> CreateCommand", identity)
 sem.add_rule("AP -> DataCommand", identity)
@@ -368,6 +382,7 @@ sem.add_rule("Text2SpeechCommand -> Use VOICE_NAME", lambda u, voice_name: singl
 sem.add_rule("Text2SpeechCommand -> Switch Voice To VOICE_NAME", lambda s, v, t, voice_name: singleCommand("setVoice:", voice_name))
 
 sem.add_rule("AccentP -> Det Accent", lambda d, acc: acc)
+sem.add_rule("AccentP -> Accent", lambda acc: acc)
 sem.add_rule("AccentP -> Your Accent", lambda y, acc: acc)
 sem.add_rule("AccentP -> My Accent", lambda y, acc: acc)
 sem.add_rule("LANGUAGE_NAMEP -> Accent Called LANGUAGE_NAME", lambda a, c, acc: acc)
@@ -380,6 +395,21 @@ sem.add_rule("Text2SpeechCommand -> Talk With Det LANGUAGE_NAME Accent", lambda 
 sem.add_rule("Text2SpeechCommand -> Change AccentP To LANGUAGE_NAMEP", lambda c, acc, t, language: singleCommand("setLanguage:", language))
 sem.add_rule("Text2SpeechCommand -> Use Det LANGUAGE_NAME Accent", lambda u, d, language, a: singleCommand("setLanguage:", language))
 sem.add_rule("Text2SpeechCommand -> Switch AccentP To LANGUAGE_NAMEP", lambda s, a, t, language: singleCommand("setLanguage:", language))
+
+# Music Command
+sem.add_rule('DRUM -> Drum1 Drum2', lambda i, i2: i + ' ' + i2)
+sem.add_rule('DRUM -> Drum1 Drum2 Drum3', lambda i, i2, i3: i + ' ' + i2 + ' ' + i3)
+sem.add_rule('DRUM -> DRUM Drum', lambda i, d: i)
+sem.add_rule('DRUM -> Drum DRUM', lambda d, i: i)
+sem.add_rule('DRUM -> Det DRUM', lambda d, i: i)
+
+sem.add_rule('INSTRUMENT -> Instrument1 Instrument2', lambda i, i2: i + ' ' + i2)
+
+sem.add_rule('MusicCommand -> Play DRUM For NP Beats' , lambda p, i, f, n, b: playInstrumentBeats(soundToNumber(i), n))
+sem.add_rule('MusicCommand -> Play DRUM NP Beats' , lambda p, i, n, b: playInstrumentBeats(soundToNumber(i), n))
+sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i playInstrumentBeats(soundToNumber(i), n))
+
+
 
 # Sound Command
 # Use the halting version f the play sound block
@@ -616,13 +646,24 @@ sem.add_lexicon_rule('NAME_OF_SOUND',
                      # searching
                      lambda name: name)
 sem.add_lexicon_rule('LANGUAGE_NAME',
-    ['english', 'danish', 'dutch','french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
+    ['english', 'danish', 'dutch', 'french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
 sem.add_lexicon_rule('VOICE_NAME', ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
 sem.add_lexicon_rule("Direction",['up', 'left', 'right', 'down'],identity)
 sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: d+" "+a)
 
 sem.add_lexicon_rule("Unk", ['0','1','2','3','4','5','6','7','8','9'], identity)
 sem.add_lexicon_rule("SequenceAdverb", ['then', 'after', 'finally'], identity)
+
+sem.add_lexicon_rule("DRUM", ['tambourine', 'claves', 'cowbell', 'triangle', 'bongo', 'conga', 'cabasa', 'guiro', 'vibraslap', 'cuica'], identity)
+sem.add_lexicon_rule("Drum1", ['snare', 'bass', 'side', 'crash', 'open', 'closed', 'hand', 'wood'], identity)
+sem.add_lexicon_rule("Drum2", ['drum', 'stick', 'cymbal', 'highhat', 'hi', 'clap', 'block'], identity)
+sem.add_lexicon_rule("Drum3", ['hat'], identity)
+
+sem.add_lexicon_rule("INSTRUMENT", ['piano', 'organ', 'guitar', 'bass', 'pizzicato', 'cello', 'trombone', 'clarinet', 'saxophone', 'flute', 'bassoon', 'choir', 'vibraphone', 'marimba'], identity)
+sem.add_lexicon_rule("Instrument1", ['electric', 'wooden', 'music', 'steel', 'synth'], identity)
+sem.add_lexicon_rule("Instrument2", ['piano', 'guitar', 'flute', 'box', 'drum', 'lead', 'pad'], identity)
+
+
 sem.add_lexicon_rule("OrderAdverb",
                        ['secondly', 'fourthly', 'fifthly', 'seventh', 'second', 'fifth', 'sixthly', 'third', 'thirdly', 'fourth', 'sixth', 'firstly', 'first'],
                        lambda word: wordMap(word))
@@ -654,6 +695,10 @@ sem.add_lexicon_rule("Voice",['voice'],identity)
 sem.add_lexicon_rule("Language",['language'],identity)
 sem.add_lexicon_rule("Accent",['accent'],identity)
 
+# Music
+sem.add_lexicon_rule("Drum", ['drum', 'instrument'], identity)
+sem.add_lexicon_rule("Beats", ['beats', 'beat'], identity)
+
 # Scratch specific
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
 sem.add_lexicon_rule("Sprites",['sprites'],identity)
@@ -667,7 +712,7 @@ sem.add_lexicon_rule("Variable",['variable'],identity)
 ## Verbs - Speech
 sem.add_lexicon_rule("Listen",['listen'],identity)
 sem.add_lexicon_rule("Hear",['hear'],identity)
-sem.add_lexicon_rule("Say",['say', 'voice'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
+sem.add_lexicon_rule("Say",['say', 'voice', 'speak'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
 sem.add_lexicon_rule("Talk",['talk'],identity)
 
 
