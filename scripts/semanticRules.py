@@ -56,6 +56,26 @@ def soundToNumber(string):
 def playInstrumentBeats(sound, beats):
     return ["playDrum", sound, beats]
 
+def InstrumentToNumber(string):
+    sounds = {"piano": 1, "electric piano": 2, "organ": 3, "guitar": 4, "electric guitar": 5, "bass": 6, "pizzicato": 7, "cello": 8, "trombone": 9, "clarinet": 10, "saxophone": 11, "flute": 12, "wooden flute": 13, "bassoon": 14, "choir": 15, "vibraphone": 16, "music box": 17, "steel drum": 18, "marimba": 18, "synth lead": 20, "synth pad": 21}
+    if string in sounds:
+        return sounds[string]
+    else:
+        ## TODO RAISE ERROR
+        return 0
+
+def setInstrument(num):
+    return ["instrument:", num]
+
+def playNoteDuration(note, duration):
+    return ["noteOn:duration:elapsed:from:", note, duration]
+
+def setTempo(num):
+    return ["setTempoTo:", num]
+
+def changeTempo(num):
+    return ["changeTempoBy:", num]
+
 # Speech Actions
 def processSentence(data):
     if len(data) > 0:
@@ -404,6 +424,20 @@ sem.add_rule('DRUM -> Drum DRUM', lambda d, i: i)
 sem.add_rule('DRUM -> Det DRUM', lambda d, i: i)
 
 sem.add_rule('INSTRUMENT -> Instrument1 Instrument2', lambda i, i2: i + ' ' + i2)
+sem.add_rule('INSTRUMENT -> Det INSTRUMENT', lambda d, i: i)
+sem.add_rule('Note -> Det Note', lambda d, i: i)
+
+sem.add_rule('MusicCommand -> Use INSTRUMENT', lambda u, i: setInstrument(InstrumentToNumber(i)))
+sem.add_rule('MusicCommand -> Set Det Instrument To INSTRUMENT', lambda s, d, i, t, ii: setInstrument(InstrumentToNumber(ii)))
+sem.add_rule('MusicCommand -> Use INSTRUMENT As Det Instrument', lambda u, ii, a, d, i: setInstrument(InstrumentToNumber(ii)))
+sem.add_rule('MusicCommand -> Play INSTRUMENT', lambda p, i: setInstrument(InstrumentToNumber(i)))
+sem.add_rule('MusicCommand -> Play Note NP For NP Beats ', lambda p, n, note, f, beats, b: playNoteDuration(note, beats))
+
+sem.add_rule('Tempo -> Det Tempo', lambda d, t: t)
+sem.add_rule('MusicCommand -> Set Tempo To NP ', lambda s, tempo, t, n: setTempo(n))
+sem.add_rule('MusicCommand -> Change Tempo By NP ', lambda s, tempo, t, n: changeTempo(n))
+sem.add_rule('MusicCommand -> Increment Tempo By NP ', lambda i, tempo, t, n: changeTempo(n))
+sem.add_rule('MusicCommand -> Decrement Tempo By NP ', lambda d, tempo, t, n: changeTempo(negate(n)))
 
 sem.add_rule('MusicCommand -> Play DRUM For NP Beats' , lambda p, i, f, n, b: playInstrumentBeats(soundToNumber(i), n))
 sem.add_rule('MusicCommand -> Play DRUM NP Beats' , lambda p, i, n, b: playInstrumentBeats(soundToNumber(i), n))
@@ -698,6 +732,9 @@ sem.add_lexicon_rule("Accent",['accent'],identity)
 # Music
 sem.add_lexicon_rule("Drum", ['drum', 'instrument'], identity)
 sem.add_lexicon_rule("Beats", ['beats', 'beat'], identity)
+sem.add_lexicon_rule("Note", ['note'], identity)
+sem.add_lexicon_rule("Instrument", ['instrument'], identity) 
+sem.add_lexicon_rule("Tempo", ['tempo'], identity) 
 
 # Scratch specific
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
@@ -829,6 +866,7 @@ sem.add_lexicon_rule("The", ["the"], identity)
 sem.add_lexicon_rule("This", ["this"], identity)
 sem.add_lexicon_rule("To",['to'],identity)
 sem.add_lexicon_rule("By",['by'],identity)
+sem.add_lexicon_rule("As",['as'],identity)
 
 ## Synonyms
 def processSynonyms(synonyms):
