@@ -26,36 +26,36 @@ class ScratchProjectBase:
 	"tempoBPM": 60,
 	"videoAlpha": 0.5,
 	"children": [{
-			"objName": "Sprite1",
-			"sounds": get_sounds(),
-			"costumes": [{
-					"costumeName": "costume1",
-					"baseLayerID": 1,
-					"baseLayerMD5": "f9a1c175dbe2e5dee472858dd30d16bb.svg",
-					"bitmapResolution": 1,
-					"rotationCenterX": 47,
-					"rotationCenterY": 55
-				},
-				{
-					"costumeName": "costume2",
-					"baseLayerID": 2,
-					"baseLayerMD5": "6e8bd9ae68fdb02b7e1e3df656a75635.svg",
-					"bitmapResolution": 1,
-					"rotationCenterX": 47,
-					"rotationCenterY": 55
-				}],
-			"currentCostumeIndex": 0,
-			"scratchX": 0,
-			"scratchY": 0,
-			"scale": 1,
-			"direction": 90,
-			"rotationStyle": "normal",
-			"isDraggable": False,
-			"indexInLibrary": 1,
-			"visible": True,
-			"spriteInfo": {
-			}
-		}],
+		"objName": "Sprite1",
+		"sounds": get_sounds(),
+		"costumes": [{
+				"costumeName": "costume1",
+				"baseLayerID": 1,
+				"baseLayerMD5": "f9a1c175dbe2e5dee472858dd30d16bb.svg",
+				"bitmapResolution": 1,
+				"rotationCenterX": 47,
+				"rotationCenterY": 55
+			},
+			{
+				"costumeName": "costume2",
+				"baseLayerID": 2,
+				"baseLayerMD5": "6e8bd9ae68fdb02b7e1e3df656a75635.svg",
+				"bitmapResolution": 1,
+				"rotationCenterX": 47,
+				"rotationCenterY": 55
+			}],
+		"currentCostumeIndex": 0,
+		"scratchX": 0,
+		"scratchY": 0,
+		"scale": 1,
+		"direction": 90,
+		"rotationStyle": "normal",
+		"isDraggable": False,
+		"indexInLibrary": 1,
+		"visible": True,
+		"spriteInfo": {
+		}
+	}],
 	"info": {
 		"scriptCount": 0,
 		"flashVersion": "MAC 28,0,0,126",

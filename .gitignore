@@ -3,4 +3,5 @@ node_js_files*
 test_fixtures/*~
 scripts/*~
 server/venv/*
+server/*.db
 *.pyc
