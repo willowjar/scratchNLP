@@ -144,12 +144,12 @@ def create_app(test_config=None):
             use_green_flag = info['useGreenFlag']
             start = info['start']
             end = info['end']
-
+            print('generate_project_without_store')
+            print('\tstart' + str(start))
+            print('\tend' + str(end))
             project = ScratchProject();
             project.author = user_name
-            print('blah')
-            print(instruction_list[start:end])
-            for instruction in instruction_list[start:end-1]:
+            for instruction in instruction_list[int(start):int(end)]:
                 changes_to_add = process_single_instruction(instruction)
                 print("changes_to_add when creating a new project:")
                 print(changes_to_add)
