@@ -1,3 +1,5 @@
+from sounds import get_sounds
+
 class ScratchProjectBase:
 	def __init__(self):
 		self.json = {
@@ -25,62 +27,7 @@ class ScratchProjectBase:
 	"videoAlpha": 0.5,
 	"children": [{
 			"objName": "Sprite1",
-			"sounds": [{
-					"soundName": "meow",
-					"soundID": 0,
-					"md5": "83c36d806dc92327b9e7049a565c6bff.wav",
-					"sampleCount": 18688,
-					"rate": 22050,
-					"format": ""
-				},
-				{
-					"soundName": "cave",
-					"soundID": 1,
-					"md5": "881f1bf5f301a36efcce4204a44af9ab.wav",
-					"sampleCount": 163584,
-					"rate": 22050,
-					"format": "adpcm"
-				},
-				{
-					"soundName": "boing",
-					"soundID": 2,
-					"md5": "53a3c2e27d1fb5fdb14aaf0cb41e7889.wav",
-					"sampleCount": 6804,
-					"rate": 22050,
-					"format": "adpcm"
-				},
-				{
-					"soundName": "chomp",
-					"soundID": 3,
-					"md5": "0b1e3033140d094563248e61de4039e5.wav",
-					"sampleCount": 2912,
-					"rate": 11025,
-					"format": ""
-				},
-				{
-					"soundName": "drum",
-					"soundID": 4,
-					"md5": "f730246174873cd4ae4127c83e475b50.wav",
-					"sampleCount": 107136,
-					"rate": 22050,
-					"format": "adpcm"
-				},
-				{
-					"soundName": "jungle",
-					"soundID": 5,
-					"md5": "b234a04cc3958437c43ed3d93f34a345.wav",
-					"sampleCount": 76032,
-					"rate": 22050,
-					"format": "adpcm"
-				},
-				{
-					"soundName": "hey",
-					"soundID": 6,
-					"md5": "ec7c272faa862c9f8f731792e686e3c9.wav",
-					"sampleCount": 5414,
-					"rate": 22050,
-					"format": "adpcm"
-				}],
+			"sounds": get_sounds(),
 			"costumes": [{
 					"costumeName": "costume1",
 					"baseLayerID": 1,
