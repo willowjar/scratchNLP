@@ -36,8 +36,10 @@ speech_command_map = {
   r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
   r'set voice to (\w*)': ['VOICE_NAME'],
   r'set accent to (\w*)': ['LANGUAGE_NAME'],
-  r'(?:when|if) you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
-  r'(?:when|if) i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
+  r'(?:when|if|whenever) you hear ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'], # Concern: would need to generate this regex for every command, replacing "say". Maybe a good workaround is to map every "unknown to a word."
+  r'(?:when|if|whenever) i say ((?:\w|\s)*) say ((?:\w|\s)*)': ['WP', 'WP'],
+  r'the speech (?:is|equals|is equal to) ((?:\w|\s)*)': ['WP'],
+  r'((?:\w|\s)*) (?:is|equals|is equal to) the speech': ['WP'],
 }
 # global
 expression_map_list = [expression_map, speech_command_map]
@@ -49,6 +51,8 @@ def add_item_to_dict(key_value_tuple, dictionary):
 		dictionary[key].add(value)
 	else:
 		dictionary[key] = set([value])
+	# print('add_item_to_dict')
+	# print('\tdictionary[key]: ' + str(dictionary[key]))
 
 def extract_names_and_words(sentences):
 	""" Use the the global expression map list to extract variable, list, and
@@ -89,6 +93,9 @@ def extract_names_and_words(sentences):
 										add_item_to_dict(('Word', word), result)
 								else:
 									add_item_to_dict((this_variable, match.strip()), result)
+	# print('extract_names_and_words:')
+	# print('\tsentence: ' + str(sentences))
+	# print('\tresult: ' + str(result))
 	return result
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):

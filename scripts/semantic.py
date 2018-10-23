@@ -11,9 +11,11 @@ import readline
 import traceback
 import sys
 import json
+import os
 
 import semanticRules as lab_rules
 import generate_vocab as gv
+sys.path.insert(0,'../server/flaskr')
 from scratch_project import ScratchProject
 
 sys.path.insert(0,'../../software/')
@@ -262,7 +264,8 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 			print scratch.to_json()
 			continue
 		elif input_str == 'make scratch project' or input_str in 'make sb2':
-			path_to_result = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/'
+			# path_to_result = '/afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/'
+			path_to_result = '../../BuiltProjects/'
 			print scratch.save_project(path_to_result)
 			continue
 

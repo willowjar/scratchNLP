@@ -147,11 +147,13 @@ def create_app(test_config=None):
 
             project = ScratchProject();
             project.author = user_name
-            for instruction in instruction_list:
+            print('blah')
+            print(instruction_list[start:end])
+            for instruction in instruction_list[start:end-1]:
                 changes_to_add = process_single_instruction(instruction)
                 print("changes_to_add when creating a new project:")
                 print(changes_to_add)
-                if changes_to_add != "I don't understand":
+                if changes_to_add != "I don't understand.":
                     # The instruction was valid and parseable.
                     project.update(changes_to_add)
                 else:
