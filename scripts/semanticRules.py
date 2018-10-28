@@ -41,24 +41,31 @@ identity = lambda x: x
 sem = SemanticRuleSet()
 global_variables = {}
 global_lists = {}
+global_sounds = set()
 
 ####################################################################
 # Music Actions
 def soundToNumber(string):
-
     sounds = {"snare drum": 1, "base drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
     if string in sounds:
+        # Add the sound to the project.
+        global_sounds.add(string.title())
+        # Return the number corresponding to desired sound.
         return sounds[string]
     else:
         ## TODO RAISE ERROR
         return 1
 
 def playInstrumentBeats(sound, beats):
+    # Add the sound to the project.
+    global_sounds.add(string.title())
     return ["playDrum", sound, beats]
 
 def InstrumentToNumber(string):
     sounds = {"piano": 1, "electric piano": 2, "organ": 3, "guitar": 4, "electric guitar": 5, "bass": 6, "pizzicato": 7, "cello": 8, "trombone": 9, "clarinet": 10, "saxophone": 11, "flute": 12, "wooden flute": 13, "bassoon": 14, "choir": 15, "vibraphone": 16, "music box": 17, "steel drum": 18, "marimba": 18, "synth lead": 20, "synth pad": 21}
     if string in sounds:
+        # Add the sound to the project.
+        global_sounds.add(string.title())
         return sounds[string]
     else:
         ## TODO RAISE ERROR
@@ -80,13 +87,18 @@ def changeTempo(num):
 def processSentence(data):
     if len(data) > 0:
         data = [thing for thing in data if thing != None]
-        return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
+        return {'scripts': data, 'variables': global_variables, 'lists': global_lists, 'sounds': global_sounds}
 
 def singleCommand(commandName, value):
     return [commandName, value]
 
 def singleCommandNoValue(commandName):
     return [commandName]
+
+def playSound(name):
+    # Add the sound to the project.
+    global_sounds.add(name.title())
+    return ["doPlaySoundAndWait", name.title()]
 
 def ifCommand(if_cond, if_body):
     return ["doIf", if_cond, if_body]
@@ -448,7 +460,7 @@ sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(sound
 
 # Sound Command
 # Use the halting version f the play sound block
-sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: singleCommand("doPlaySoundAndWait", name.title()))
+sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: playSound(name))
 
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title())
