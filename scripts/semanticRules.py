@@ -7,7 +7,7 @@ from lab3.semantic_rule_set import SemanticRuleSet
 from lab3.semantic_db import pretty_print_entry
 
 from nltk.corpus import wordnet as wn
-from text2num import text2int
+from text2num import text2float
 
 ############################synonym helpers #########################
 def getWordsInSynset(synset):
@@ -29,10 +29,10 @@ def findSynonyms(word, part_of_speech):
 ####################################################################
 
 def translate(data):
-    pass
+	pass
 
 def translateModifier(data):
-    pass
+	pass
 
 ####################################################################
 
@@ -46,253 +46,254 @@ global_lists = {}
 # Music Actions
 def soundToNumber(string):
 
-    sounds = {"snare drum": 1, "base drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
-    if string in sounds:
-        return sounds[string]
-    else:
-        ## TODO RAISE ERROR
-        return 1
+	sounds = {"snare drum": 1, "base drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
+	if string in sounds:
+		return sounds[string]
+	else:
+		## TODO RAISE ERROR
+		return 1
 
 def playInstrumentBeats(sound, beats):
-    return ["playDrum", sound, beats]
+	return ["playDrum", sound, beats]
 
 def InstrumentToNumber(string):
-    sounds = {"piano": 1, "electric piano": 2, "organ": 3, "guitar": 4, "electric guitar": 5, "bass": 6, "pizzicato": 7, "cello": 8, "trombone": 9, "clarinet": 10, "saxophone": 11, "flute": 12, "wooden flute": 13, "bassoon": 14, "choir": 15, "vibraphone": 16, "music box": 17, "steel drum": 18, "marimba": 18, "synth lead": 20, "synth pad": 21}
-    if string in sounds:
-        return sounds[string]
-    else:
-        ## TODO RAISE ERROR
-        return 0
+	sounds = {"piano": 1, "electric piano": 2, "organ": 3, "guitar": 4, "electric guitar": 5, "bass": 6, "pizzicato": 7, "cello": 8, "trombone": 9, "clarinet": 10, "saxophone": 11, "flute": 12, "wooden flute": 13, "bassoon": 14, "choir": 15, "vibraphone": 16, "music box": 17, "steel drum": 18, "marimba": 18, "synth lead": 20, "synth pad": 21}
+	if string in sounds:
+		return sounds[string]
+	else:
+		## TODO RAISE ERROR
+		return 0
 
 def setInstrument(num):
-    return ["instrument:", num]
+	return ["instrument:", num]
 
 def playNoteDuration(note, duration):
-    return ["noteOn:duration:elapsed:from:", note, duration]
+	return ["noteOn:duration:elapsed:from:", note, duration]
 
 def setTempo(num):
-    return ["setTempoTo:", num]
+	return ["setTempoTo:", num]
 
 def changeTempo(num):
-    return ["changeTempoBy:", num]
+	return ["changeTempoBy:", num]
 
 # Speech Actions
 def processSentence(data):
-    if len(data) > 0:
-        data = [thing for thing in data if thing != None]
-        return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
+	if len(data) > 0:
+		data = [thing for thing in data if thing != None]
+		return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
 
 def singleCommand(commandName, value):
-    return [commandName, value]
+	return [commandName, value]
 
 def singleCommandNoValue(commandName):
-    return [commandName]
+	return [commandName]
 
 def ifCommand(if_cond, if_body):
-    return ["doIf", if_cond, if_body]
+	return ["doIf", if_cond, if_body]
 
 def ifElseCommand(if_cond, if_body, else_body):
-    return ["doIfElse", if_cond, if_body, else_body]
+	return ["doIfElse", if_cond, if_body, else_body]
 
 
 def repeat(num_times, repeat_body):
-    return ["doRepeat", int(num_times), [repeat_body]]
+	return ["doRepeat", int(num_times), [repeat_body]]
 def until(until_condition, repeat_body):
-    return ["doUntil", until_condition, [repeat_body]]
+	return ["doUntil", until_condition, [repeat_body]]
 def doForever(forever_body):
-    return ["doForever", [forever_body]]
+	return ["doForever", [forever_body]]
 def deleteClone():
-    return ["deleteClone"]
+	return ["deleteClone"]
 
 
 def wait(wait_time):
-    return ["wait:elapsed:from:", wait_time]
+	return ["wait:elapsed:from:", wait_time]
 def waitUntil(until_condition):
-    return ["doWaitUntil", until_condition]
+	return ["doWaitUntil", until_condition]
 
 def getNumber(unk):
 		try:
 			num = int(unk)
 		except:
-			num = text2int(unk)
+			# num = text2int(unk)
+			num = text2float(unk)
 		return num
 
 def setVariable(var_name, value):
-    #global_variables[var_name] = value
-    return ["setVar:to:",var_name, value]
+	#global_variables[var_name] = value
+	return ["setVar:to:",var_name, value]
 
 def deleteVariable(variable_name):
-    del global_variables[variable_name]
-    return wait(0.1)
+	del global_variables[variable_name]
+	return wait(0.1)
 
 def createVariable(variable_list):
-    for var in variable_list:
-        global_variables[var] = 0
-    return wait(0.1)
-        # TODO: somehow prevent returning the variable name in response of processSentence.
-    #return None
+	for var in variable_list:
+		global_variables[var] = 0
+	return wait(0.1)
+		# TODO: somehow prevent returning the variable name in response of processSentence.
+	#return None
 
 def createSingleList(name):
-    global_lists[name] = []
-    return wait(0.1)
+	global_lists[name] = []
+	return wait(0.1)
 
 
 def createClone():
-    return ["createCloneOf:", "myself"]
+	return ["createCloneOf:", "myself"]
 
 def itemInList(unk, name):
-    return ["list:contains:", name, unk]
+	return ["list:contains:", name, unk]
 
 def resetTimer():
-    return ["timerReset"]
+	return ["timerReset"]
 
 # OPERATORS
 def add(n1, n2):
-    return ['+', n1, n2]
+	return ['+', n1, n2]
 
 def subtract(n1, n2):
-    return ['-', n1, n2]
+	return ['-', n1, n2]
 
 def getProduct(num, num2):
-    return ["*", num, num2]
+	return ["*", num, num2]
 
 def getQuotient(num, num2):
-    return ["/", num, num2]
+	return ["/", num, num2]
 
 def getValue(var):
-    return ["readVariable", var]
+	return ["readVariable", var]
 
 def getRandomNumberBetween(unk1, unk2):
-    return ['randomFrom:to:', unk1, unk2]
+	return ['randomFrom:to:', unk1, unk2]
 
 def lessThan(a,b):
-    return ["<", a, b]
+	return ["<", a, b]
 
 def greaterThan(a,b):
-    return [">", a, b]
+	return [">", a, b]
 
 def equalTo(a,b):
-    return ["=", a, b]
+	return ["=", a, b]
 
 def GEQ(a,b):
-    return ["|", [">", a, b], ["=", a, b]]
+	return ["|", [">", a, b], ["=", a, b]]
 
 def LEQ(a,b):
-    return ["|", ["<", a, b], ["=", a, b]]
+	return ["|", ["<", a, b], ["=", a, b]]
 
 def logicOr(b1, b2):
-    return ["|", b1, b2]
+	return ["|", b1, b2]
 
 def logicAnd(b1, b2):
-    return ["&", b1, b2]
+	return ["&", b1, b2]
 
 def waitTillTimer(x):
-    return ["doWaitUntil", x]
+	return ["doWaitUntil", x]
 
 def negate(unk):
-    return ["*", unk, -1]
+	return ["*", unk, -1]
 
 def changeVarBy(var_name, unk, opt_negate=False):
-    if opt_negate:
-        return ["changeVar:by:", var_name, ["*", unk, -1]]
-    return ["changeVar:by:",var_name, unk]
+	if opt_negate:
+		return ["changeVar:by:", var_name, ["*", unk, -1]]
+	return ["changeVar:by:",var_name, unk]
 
 def changeVarbyVar(var1, var2,opt_negate=False):
-    if opt_negate:
-        return ["setVar:to:", var1, ["*", getValue(var2), -1]]
-    return ["changeVar:by:", var1, getValue(var2)]
+	if opt_negate:
+		return ["setVar:to:", var1, ["*", getValue(var2), -1]]
+	return ["changeVar:by:", var1, getValue(var2)]
 
 def ynQuestion(data):
-    if sem.learned.yesno_query(data):
-        return "Yes."
-    else:
-        return "No."
+	if sem.learned.yesno_query(data):
+		return "Yes."
+	else:
+		return "No."
 
 def whenYouHear(word_phrase):
-    return ["whenIHear", word_phrase]
+	return ["whenIHear", word_phrase]
 
 def whenGreenFlag():
-    return ["whenGreenFlag"]
+	return ["whenGreenFlag"]
 
 def whenKeyClicked(name):
-    return ["whenKeyPressed", name]
+	return ["whenKeyPressed", name]
 
 def whenClicked():
-    return ["whenClicked"]
+	return ["whenClicked"]
 
 def whenBackSwitch(name):
-    return ["whenSceneStarts", name]
+	return ["whenSceneStarts", name]
 
 def whenReceive(message):
-    return ["whenIReceive", message]
+	return ["whenIReceive", message]
 
 def broadcastMessage(name):
-    return ["broadcast:", name]
+	return ["broadcast:", name]
 
 def broadCastMessageWait(name):
-    return ["doBroadcastAndWait:", name]
+	return ["doBroadcastAndWait:", name]
 
 def not_identity(x):
-    return ["not", x]
+	return ["not", x]
 
 def SimpleEvent(e, a):
-    # flatten the action list
-    return [e] + a
+	# flatten the action list
+	return [e] + a
 
 def whQuestion(data):
-    results = sem.learned.wh_query(data)
-    if len(results) == 0:
-        return "I don't know."
-    else:
-        return list(results)[0]
+	results = sem.learned.wh_query(data)
+	if len(results) == 0:
+		return "I don't know."
+	else:
+		return list(results)[0]
 
 def npOnlyHuhResponse(data):
-    return "What about %s?"%(pretty_print_entry(data))
+	return "What about %s?"%(pretty_print_entry(data))
 
 # List commands
 def getItem(ind, list_name):
-    return ['getLine:ofList:', ind, list_name]
+	return ['getLine:ofList:', ind, list_name]
 
 def wordMap(order_adverb):
-    adverbToNumMap = {
-        'firstly': 1,
-        'first': 1,
-        'second': 2,
-        'secondly': 2,
-        'third': 3,
-        'thirdly': 3,
-        'fourth': 4,
-        'fourthly': 4,
-        'fifth': 5,
-        'fifthly': 5,
-        'sixth': 6,
-        'sixthly': 6,
-        'seventh': 7}
-    return adverbToNumMap[order_adverb]
+	adverbToNumMap = {
+		'firstly': 1,
+		'first': 1,
+		'second': 2,
+		'secondly': 2,
+		'third': 3,
+		'thirdly': 3,
+		'fourth': 4,
+		'fourthly': 4,
+		'fifth': 5,
+		'fifthly': 5,
+		'sixth': 6,
+		'sixthly': 6,
+		'seventh': 7}
+	return adverbToNumMap[order_adverb]
 
 def addToList(list_name, item):
-    return ['append:toList:', item, list_name]
+	return ['append:toList:', item, list_name]
 
 def deleteListItem(list_name, ind):
-    return ['deleteLine:ofList:', ind, list_name]
+	return ['deleteLine:ofList:', ind, list_name]
 
 def setItemInList(ind, list_name, item):
-    return ['setLine:ofList:to:', ind, list_name, item]
+	return ['setLine:ofList:to:', ind, list_name, item]
 
 # Loop commands
 def repeat_action_list(action_list, duration):
-    if duration == 'forever':
-        return ['doForever', action_list]
-    else:
-        return ['doRepeat', duration, action_list]
+	if duration == 'forever':
+		return ['doForever', action_list]
+	else:
+		return ['doRepeat', duration, action_list]
 
 def get_duration(duration):
-        return duration
+		return duration
 
 # Sequential commands
 def appendToProgram(action_list):
-    program.append(action_list)
-    return action_list
+	program.append(action_list)
+	return action_list
 
 
 ####################################################################
@@ -303,6 +304,7 @@ sem.add_rule("Start -> S", lambda s: processSentence(s))
 
 # All Command
 sem.add_rule("S -> AL", identity)
+sem.add_rule('S -> BACKDROP_NAME', identity) #remove
 sem.add_rule("AL -> AP", lambda p: [p])
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
@@ -685,12 +687,12 @@ sem.add_lexicon_rule("It", ["it"], identity)
 
 ## Noun - names
 sem.add_lexicon_rule('NAME_OF_SOUND',
-                     ['meow','cave','boing','chomp','drum','jungle','hey'],
-                     # TODO: the semantic rule for NAME_OF_SOUND could involve
-                     # searching
-                     lambda name: name)
+					 ['meow','cave','boing','chomp','drum','jungle','hey'],
+					 # TODO: the semantic rule for NAME_OF_SOUND could involve
+					 # searching
+					 lambda name: name)
 sem.add_lexicon_rule('LANGUAGE_NAME',
-    ['english', 'danish', 'dutch', 'french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
+	['english', 'danish', 'dutch', 'french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
 sem.add_lexicon_rule('VOICE_NAME', ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
 sem.add_lexicon_rule("Direction",['up', 'left', 'right', 'down'],identity)
 sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: d+" "+a)
@@ -709,8 +711,8 @@ sem.add_lexicon_rule("Instrument2", ['piano', 'guitar', 'flute', 'box', 'drum', 
 
 
 sem.add_lexicon_rule("OrderAdverb",
-                       ['secondly', 'fourthly', 'fifthly', 'seventh', 'second', 'fifth', 'sixthly', 'third', 'thirdly', 'fourth', 'sixth', 'firstly', 'first'],
-                       lambda word: wordMap(word))
+					   ['secondly', 'fourthly', 'fifthly', 'seventh', 'second', 'fifth', 'sixthly', 'third', 'thirdly', 'fourth', 'sixth', 'firstly', 'first'],
+					   lambda word: wordMap(word))
 
 ## Noun - keywords
 
@@ -878,75 +880,77 @@ sem.add_lexicon_rule("To",['to'],identity)
 sem.add_lexicon_rule("By",['by'],identity)
 sem.add_lexicon_rule("As",['as'],identity)
 
+sem.add_lexicon_rule("BACKDROP_NAME",['Space'],identity)
+
 ## Synonyms
 def processSynonyms(synonyms):
-    single_word_synonyms = []
-    multi_word_synonyms = []
-    for syn in synonyms:
-        if '_' in syn:
-            #multi-word synonym
-            this_synonym =  syn.split('_')
-            if len(this_synonym) == 2:
-                #each multi word synonym is an array where each element is each word
-                multi_word_synonyms.append(this_synonym)
-        else:
-            single_word_synonyms.append(syn)
-    return single_word_synonyms, multi_word_synonyms
+	single_word_synonyms = []
+	multi_word_synonyms = []
+	for syn in synonyms:
+		if '_' in syn:
+			#multi-word synonym
+			this_synonym =  syn.split('_')
+			if len(this_synonym) == 2:
+				#each multi word synonym is an array where each element is each word
+				multi_word_synonyms.append(this_synonym)
+		else:
+			single_word_synonyms.append(syn)
+	return single_word_synonyms, multi_word_synonyms
 def findAndAddSynonymToGrammar(nonterminal, terminal, terminalType):
-    synonyms = findSynonyms(terminal, terminalType)
-    singleWordList, multiWordList = processSynonyms(synonyms)
-    # add singleword synonym list
-    addSynToLexiconRule(nonterminal, terminal, terminalType, singleWordList)
-    # add multi word synonym list
-    # if list is non empty
-    if multiWordList:
-        for multiWordSyn in multiWordList:
-            #currently only handle multiWordSyn that are 2 words(which should be 99% of the case)
-            parents = [word.upper() for word in multiWordSyn]
-            #create non terminal nodes representing each word in multiword synonym
-            syntacticRule = nonterminal+" -> " + parents[0] + " " + parents[1]
-	    #print("syntacticRule",syntacticRule,multiWordSyn[0],multiWordSyn[1])
-            #returning none since these words aren't important in the script generation
-            sem.add_rule(syntacticRule, lambda f, s: "none")
-            sem.add_lexicon_rule(parents[0], [multiWordSyn[0]], identity)
-            sem.add_lexicon_rule(parents[1], [multiWordSyn[1]], identity)
+	synonyms = findSynonyms(terminal, terminalType)
+	singleWordList, multiWordList = processSynonyms(synonyms)
+	# add singleword synonym list
+	addSynToLexiconRule(nonterminal, terminal, terminalType, singleWordList)
+	# add multi word synonym list
+	# if list is non empty
+	if multiWordList:
+		for multiWordSyn in multiWordList:
+			#currently only handle multiWordSyn that are 2 words(which should be 99% of the case)
+			parents = [word.upper() for word in multiWordSyn]
+			#create non terminal nodes representing each word in multiword synonym
+			syntacticRule = nonterminal+" -> " + parents[0] + " " + parents[1]
+		#print("syntacticRule",syntacticRule,multiWordSyn[0],multiWordSyn[1])
+			#returning none since these words aren't important in the script generation
+			sem.add_rule(syntacticRule, lambda f, s: "none")
+			sem.add_lexicon_rule(parents[0], [multiWordSyn[0]], identity)
+			sem.add_lexicon_rule(parents[1], [multiWordSyn[1]], identity)
 
 def addSynToLexiconRule(nonterminal, terminal, terminalType, synonyms):
-    # add to lexicon iff length of synonym>=1 and synonyms don't only contain
-    # the word itself
-    if len(synonyms) > 0:
-        if len(synonyms) != 1:
-            sem.add_lexicon_rule(nonterminal, synonyms, identity)
-        else:
-            if (synonyms[0] != terminal):
-                sem.add_lexicon_rule(nonterminal, synonyms, identity)
+	# add to lexicon iff length of synonym>=1 and synonyms don't only contain
+	# the word itself
+	if len(synonyms) > 0:
+		if len(synonyms) != 1:
+			sem.add_lexicon_rule(nonterminal, synonyms, identity)
+		else:
+			if (synonyms[0] != terminal):
+				sem.add_lexicon_rule(nonterminal, synonyms, identity)
 
 eligibleWords = [
-    ["Increment", "increment", wn.VERB],
-    ["Decrement", "decrement", wn.VERB],
-    ["Subtract", "subtract", wn.VERB],
-    ["Sprite", "sprite", wn.NOUN],
-    ["Play", "play", wn.VERB],
-    ["Replace", "replace", wn.VERB],
-    ["Change", "change", wn.VERB],
-    ["Stop", "stop", wn.VERB],
-    ["Wait", "wait", wn.VERB],
-    ["Repeat", "repeat", wn.VERB],
-    ["Delete", "delete", wn.VERB],
-    ["Make", "create", wn.VERB],
-    ["Make", "generate", wn.VERB],
-    ["Reset", "reset", wn.VERB],
-    ["Timer", "timer", wn.NOUN],
-    ["Time", "time", wn.NOUN],
-    ["Sound", "sound", wn.NOUN],
-    ["Message", "message", wn.NOUN],
-    ["Forever", "forever", wn.ADV],
-    ["Flag", "flag", wn.NOUN],
-    ["Receive", "receive", wn.VERB],
-    ["Equal", "equal", wn.ADJ],
-    ["Greater", "greater", wn.ADJ],
-    ["Less", "less", wn.ADJ],
-    ["Broadcast", "broadcast", wn.VERB]
+	["Increment", "increment", wn.VERB],
+	["Decrement", "decrement", wn.VERB],
+	["Subtract", "subtract", wn.VERB],
+	["Sprite", "sprite", wn.NOUN],
+	["Play", "play", wn.VERB],
+	["Replace", "replace", wn.VERB],
+	["Change", "change", wn.VERB],
+	["Stop", "stop", wn.VERB],
+	["Wait", "wait", wn.VERB],
+	["Repeat", "repeat", wn.VERB],
+	["Delete", "delete", wn.VERB],
+	["Make", "create", wn.VERB],
+	["Make", "generate", wn.VERB],
+	["Reset", "reset", wn.VERB],
+	["Timer", "timer", wn.NOUN],
+	["Time", "time", wn.NOUN],
+	["Sound", "sound", wn.NOUN],
+	["Message", "message", wn.NOUN],
+	["Forever", "forever", wn.ADV],
+	["Flag", "flag", wn.NOUN],
+	["Receive", "receive", wn.VERB],
+	["Equal", "equal", wn.ADJ],
+	["Greater", "greater", wn.ADJ],
+	["Less", "less", wn.ADJ],
+	["Broadcast", "broadcast", wn.VERB]
 ]
 for e_word in eligibleWords:
-    findAndAddSynonymToGrammar(e_word[0], e_word[1], e_word[2])
+	findAndAddSynonymToGrammar(e_word[0], e_word[1], e_word[2])

@@ -31,6 +31,12 @@ def text2int(textnum, numwords={}):
 
     return result + current
 
+def text2float(textnum):
+  try:
+    return float(textnum)
+  except:
+    text2int(textnum)
+
 def example_generateExpressionMap():
   blah = """add (.*) to (.*)
   subtract (.*) from (.*)
