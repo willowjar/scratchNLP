@@ -389,6 +389,7 @@ sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
 # Speech2Text Commands
 sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
 sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
+sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
 sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech"))
 # sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
 # sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
@@ -656,7 +657,8 @@ sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", la
 sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-# sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: ifCommand(bp,al)) # todo
+sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: singleCommandNoValue("listenAndWait") + [ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
+sem.add_rule("ConditionalCommand -> If You Hear WP Then AL Thats It", lambda i, y, s, wp, then, al, thats, it: singleCommandNoValue("listenAndWait") + [ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
 
 # Control Command
 

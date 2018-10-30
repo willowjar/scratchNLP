@@ -33,6 +33,8 @@ expression_map = {
 }
 
 speech_command_map = {
+  r'if i say ((?:\w|\s)*) then': ['WP'], # Word Phrase
+  r'if you hear ((?:\w|\s)*) then': ['WP'], # Word Phrase
   r'(?:say|speak|voice) ((?:\w|\s)*)': ['WP'], # Word Phrase
   r'set voice to (\w*)': ['VOICE_NAME'],
   r'set accent to (\w*)': ['LANGUAGE_NAME'],
