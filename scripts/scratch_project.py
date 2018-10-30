@@ -4,6 +4,7 @@ import sys
 import json
 import time
 from scratch_project_base import ScratchProjectBase
+from sounds import get_sounds_in_set
 import copy
 
 class ScratchProject(ScratchProjectBase):
@@ -14,6 +15,7 @@ class ScratchProject(ScratchProjectBase):
 		self.lists = {}
 		self.stacks = []
 		self.scripts = []
+		self.sounds = set()
 		self.project_dir_path = ''
 		# db information
 		if opt_db_info:
@@ -35,17 +37,23 @@ class ScratchProject(ScratchProjectBase):
 
 	def update(self, changes):
 		"""Given changes to add, update representation of the Scratch Project."""
+		for x in changes["sounds"]:
+			self.sounds.add(x)
 		for x in changes["variables"]:
 			self.add_variable(x, changes["variables"][x])
 		for x in changes["lists"]:
 			self.add_list(x, changes["lists"][x])
-		# remove any variables or lists that were deleted.
+
+		# remove any variables or lists or sounds that were deleted.
 		for var in self.variables:
 			if var not in changes["variables"]:
 				del self.variables[var]
 		for var in self.lists:
 			if var not in changes["lists"]:
 				del self.lists[var]
+		for var in self.sounds:
+			if var not in changes["sounds"]:
+				self.sounds.remove(var)
 
 		for script in changes["scripts"]:
 			self.add_script(script)
@@ -109,6 +117,7 @@ class ScratchProject(ScratchProjectBase):
 					"listName": key,
 					"contents": value,
 				})
+		sprite1["sounds"] = get_sounds_in_set(self.sounds)
 		# Include current scripts in the json
 		self.add_stack(self.scripts)
 		sprite1["scripts"] = self.stacks
