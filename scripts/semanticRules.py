@@ -9,6 +9,10 @@ from lab3.semantic_db import pretty_print_entry
 from nltk.corpus import wordnet as wn
 from text2num import text2int
 
+sys.path.insert(0,'../server/flaskr')
+import random
+from sounds import get_sounds
+
 ############################synonym helpers #########################
 def getWordsInSynset(synset):
 	words = set()
@@ -176,6 +180,10 @@ def getValue(var):
 
 def getRandomNumberBetween(unk1, unk2):
     return ['randomFrom:to:', unk1, unk2]
+
+def getRandomSound():
+    sound = random.choice(get_sounds())
+    return sound["soundName"]
 
 def lessThan(a,b):
     return ["<", a, b]
@@ -467,6 +475,7 @@ sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name.title())
 sem.add_rule("NAME_OF_SOUND -> Sound Called NAME_OF_SOUND", lambda s, c, name: name.title())
+sem.add_rule("NAME_OF_SOUND -> Random Sound", lambda r, s: getRandomSound());
 
 sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
