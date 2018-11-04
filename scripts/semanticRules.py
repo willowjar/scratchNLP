@@ -315,6 +315,19 @@ def appendToProgram(action_list):
     return action_list
 
 
+def getAP(phrase):
+    def isMultiCommand(phrase):
+        # Some commands are actually a list of multiple commands that must be
+        # on the same level as other commands.
+        # e.g. "if i say" or "if you hear" Conditional Command)
+        return len(phrase) == 2 and  phrase[0][0] == "listenAndWait" and phrase[1][0] == "doIf"
+
+    if isMultiCommand(phrase):
+        # MultiCommandsalready have an encapsulating set of brackets.
+        return phrase
+    else:
+        return [phrase]
+
 ####################################################################
 # Start rules
 
@@ -323,7 +336,7 @@ sem.add_rule("Start -> S", lambda s: processSentence(s))
 
 # All Command
 sem.add_rule("S -> AL", identity)
-sem.add_rule("AL -> AP", lambda p: [p])
+sem.add_rule("AL -> AP", lambda p: getAP(p))
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
@@ -666,8 +679,8 @@ sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", la
 sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
 sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: singleCommandNoValue("listenAndWait") + [ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
-sem.add_rule("ConditionalCommand -> If You Hear WP Then AL Thats It", lambda i, y, s, wp, then, al, thats, it: singleCommandNoValue("listenAndWait") + [ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
+sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: [singleCommandNoValue("listenAndWait"), ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
+sem.add_rule("ConditionalCommand -> If You Hear WP Then AL Thats It", lambda i, y, s, wp, then, al, thats, it: [singleCommandNoValue("listenAndWait"), ifCommand(equalTo(singleCommandNoValue("getSpeech"),wp),al)])
 
 # Control Command
 

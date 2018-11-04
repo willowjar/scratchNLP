@@ -1,10 +1,10 @@
-{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
-{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', ['getSpeech']]]}
-{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'speech']]}
-{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
-{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
-{'variables': {}, 'lists': {}, 'scripts': [['speakAndWait:', 'my name is tina']]}
-{'variables': {}, 'lists': {}, 'scripts': [['setLanguage:', 'russian']]}
-{'variables': {}, 'lists': {}, 'scripts': [['setVoice:', 'quinn']]}
-{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
-{'variables': {}, 'lists': {}, 'scripts': [['listenAndWait']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['listenAndWait']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', ['getSpeech']]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', 'speech']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', 'hello']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', 'my name is tina']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['setLanguage:', 'russian']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['setVoice:', 'quinn']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['listenAndWait']]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['listenAndWait']]}

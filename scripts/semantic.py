@@ -227,7 +227,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 		print changes
 
 		if output_validation_mode:
-			validate_output(output, valid_output[0])
+			validate_output(changes, valid_output[0])
 			del valid_output[0]
 
 		if args.show_database:
