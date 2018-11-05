@@ -82,6 +82,10 @@ def processSentence(data):
 		data = [thing for thing in data if thing != None]
 		return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
 
+def processPartial(data):
+	# print(data)
+	return {'scripts': [], 'variables': global_variables, 'lists': global_lists, "incomplete": data}
+
 def singleCommand(commandName, value):
 	return [commandName, value]
 
@@ -295,12 +299,24 @@ def appendToProgram(action_list):
 	program.append(action_list)
 	return action_list
 
+def incompleteCommand(t, end, cur):
+	'''
+	Return a dictionary with the following information:
+
+	Type: Type of incomplete command, could be "conditional", "event", "loop"
+	End Keyword: List of possible keywords to indicate the completed instruction
+	Current Parse: The current parse 
+	'''
+
+	return {"type": t, "end keyword": end, "current parse": cur}
+
 
 ####################################################################
 # Start rules
 
 
 sem.add_rule("Start -> S", lambda s: processSentence(s))
+sem.add_rule("Start -> IC", lambda ic: processPartial(ic))
 
 # All Command
 sem.add_rule("S -> AL", identity)
@@ -560,15 +576,17 @@ sem.add_rule("Sprite -> Det Sprite", lambda d, s: s)
 sem.add_rule("Sprite -> My Sprite", lambda d, s: s)
 sem.add_rule("Sprite -> Your Sprite", lambda d, s: s)
 
-sem.add_rule("EVENT -> When Det Green Flag Is Clicked", lambda w, t, g, f, i, c: whenGreenFlag())
-sem.add_rule("EVENT -> When Green Flag Is Clicked", lambda w, g, f, i, c: whenGreenFlag())
-sem.add_rule("EVENT -> When Program Starts", lambda w, p, s: whenGreenFlag())
-sem.add_rule("EVENT -> When KEY_NAME Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name))
-sem.add_rule("EVENT -> When Direction Is Clicked", lambda w, name, iss, pressed: whenKeyClicked(name + " arrow"))
-sem.add_rule("EVENT -> When Sprite Is Clicked", lambda w, s, iss, cli: whenClicked())
-sem.add_rule("EVENT -> When Backdrop Switches To BACKDROP_NAME", lambda w, b, s, t, name: whenBackSwitch(name))
-sem.add_rule("EVENT -> When I Receive MESSAGE_NAME", lambda w, i, r, message: whenReceive(message))
-sem.add_rule("EVENT -> When Timer CBP NP", lambda w, t, c, n: waitTillTimer(c([t], n)))
+sem.add_rule("EVENT -> When EVENTDES", lambda w, e: e)
+
+sem.add_rule("EVENTDES -> Det Green Flag Is Clicked", lambda t, g, f, i, c: whenGreenFlag())
+sem.add_rule("EVENTDES -> Green Flag Is Clicked", lambda g, f, i, c: whenGreenFlag())
+sem.add_rule("EVENTDES -> Program Starts", lambda p, s: whenGreenFlag())
+sem.add_rule("EVENTDES -> KEY_NAME Is Clicked", lambda name, iss, pressed: whenKeyClicked(name))
+sem.add_rule("EVENTDES -> Direction Is Clicked", lambda name, iss, pressed: whenKeyClicked(name + " arrow"))
+sem.add_rule("EVENTDES -> Sprite Is Clicked", lambda s, iss, cli: whenClicked())
+sem.add_rule("EVENTDES -> Backdrop Switches To BACKDROP_NAME", lambda w, b, s, t, name: whenBackSwitch(name))
+sem.add_rule("EVENTDES -> I Receive MESSAGE_NAME", lambda i, r, message: whenReceive(message))
+sem.add_rule("EVENTDES -> Timer CBP NP", lambda t, c, n: waitTillTimer(c([t], n)))
 
 sem.add_rule("CBP -> CBP_equality", lambda i: i)
 sem.add_rule("CBP_equality -> Equal To", lambda e, t: lambda a, b: equalTo(a,b))
@@ -640,12 +658,26 @@ sem.add_rule("Message -> Det Message", lambda d, name: name)
 sem.add_rule("Message -> Message Called", lambda d, name: name)
 
 # Conditional Command
-sem.add_rule("ConditionalCommand -> If BP Then AL Thats It", lambda i, bp, then, al, thats, it: ifCommand(bp,al))
-sem.add_rule("ConditionalCommand -> If BP AL Thats It", lambda i, bp, al, thats, it: ifCommand(bp,al))
-sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", lambda i, bp, then, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
-sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+
+# sem.add_rule("ConditionalCommand -> If BP Then AL Thats It", lambda i, bp, then, al, thats, it: ifCommand(bp,al))
+# sem.add_rule("ConditionalCommand -> If BP AL Thats It", lambda i, bp, al, thats, it: ifCommand(bp,al))
+# sem.add_rule("ConditionalCommand -> If BP Then AL Thats It Else AL Thats It", lambda i, bp, then, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+# sem.add_rule("ConditionalCommand -> If BP AL Thats It Else AL Thats It", lambda i, bp, al1, thats1, it1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+# sem.add_rule("ConditionalCommand -> If BP Then AL Else AL Thats It", lambda i, bp, then, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+# sem.add_rule("ConditionalCommand -> If BP AL Else AL Thats It", lambda i, bp, al1, ow, al2, thats2, it2: ifElseCommand(bp,al1,al2))
+
+sem.add_rule("IfCommand -> If BP Then AL Thats It", lambda i, bp, then, al, thats, it: (bp,al))
+sem.add_rule("IfCommand -> If BP AL Thats It", lambda i, bp, al, thats, it: (bp,al))
+sem.add_rule("ElseCommand -> Else AL Thats It", lambda e, al, t, i: al)
+sem.add_rule("ConditionalCommand -> IfCommand", lambda i: ifCommand(i[0], i[1]))
+sem.add_rule("ConditionalCommand -> IfCommand ElseCommand", lambda i, e: ifElseCommand(i[0], i[1], e))
+
+sem.add_rule("IC -> If", lambda i: incompleteCommand("conditional", "thats it", ifCommand("?", "?")))
+sem.add_rule("IC -> If BP", lambda i, bp: incompleteCommand("conditional", "thats it", ifCommand(bp, "?")))
+sem.add_rule("IC -> If BP AL", lambda i, bp, al: incompleteCommand("conditional", "thats it", ifCommand(bp, al + ["?"])))
+sem.add_rule("IC -> If BP Then", lambda i, bp, t: incompleteCommand("conditional", "thats it", ifCommand(bp, "?")))
+sem.add_rule("IC -> If BP Then AL", lambda i, bp, t, al: incompleteCommand("conditional", "thats it", ifCommand(bp, al + ["?"])))
+sem.add_rule("IC -> IfCommand Else", lambda i, e: incompleteCommand("conditional", "thats it", ifElseCommand(i[0], i[1], "?")))
 # sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: ifCommand(bp,al)) # todo
 
 # Control Command
@@ -658,6 +690,8 @@ sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, t
 sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
 
 #LoopCommand
+sem.add_rule("IC -> If BP AL", lambda i, bp, al: incompleteCommand("conditional", bp+al))
+
 sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
 sem.add_rule("LoopCommand -> LoopCommandP", identity)
 sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
