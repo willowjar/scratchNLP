@@ -3719,9 +3719,26 @@ sounds = [{
 	            "space"
 	        ]
 	    }]
+
+def get_sound_map():
+	counter = 0
+	soundmap = {}
+	for sound in sounds:
+		sound["soundID"] = counter
+		soundmap[sound["soundName"]] = sound
+		counter += 1
+	return soundmap
+
 def get_sounds():
 	counter = 0
 	for sound in sounds:
 		sound["soundID"] = counter
 		counter += 1
 	return sounds
+
+def get_sounds_in_set(soundNames):
+	filteredList = []
+	soundmap = get_sound_map()
+	for name in soundNames:
+		filteredList.append(soundmap[name])
+	return filteredList

@@ -1,11 +1,11 @@
-{'variables': {}, 'lists': {}, 'scripts': [[['whenIHear', 'hi scratch'], ['speakAndWait:', 'hi friend']]]}
-{'variables': {}, 'lists': {}, 'scripts': [[['whenIHear', 'meow to me'], ['doPlaySoundAndWait', 'meow']]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [[['whenIHear', 'hello'], ['speakAndWait:', 'goodbye']]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
-{'variables': {}, 'lists': {}, 'scripts': [['doIf', ['=', 'hi', ['getSpeech']], [['doPlaySoundAndWait', 'meow']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [[['whenIHear', 'hi scratch'], ['speakAndWait:', 'hi friend']]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi scratch'], [['speakAndWait:', 'hi friend']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [[['whenIHear', 'hello'], ['speakAndWait:', 'goodbye']]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'sounds': set([]), 'lists': {}, 'scripts': [['doIf', ['=', ['getSpeech'], 'hi'], [['speakAndWait:', 'hi']]]]}
+{'variables': {}, 'sounds': set(['Meow']), 'lists': {}, 'scripts': [[['whenIHear', 'meow to me'], ['doPlaySoundAndWait', 'Meow']]]}
+{'variables': {}, 'sounds': set(['Meow']), 'lists': {}, 'scripts': [['doIf', ['=', 'hi', ['getSpeech']], [['doPlaySoundAndWait', 'Meow']]]]}

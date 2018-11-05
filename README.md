@@ -3,13 +3,13 @@ Tina Quach, Kara Luo, Willow Jarvis
 
 {quacht, luok, wjarvis}@mit.edu
 
-ScratchNLP provides a framework for someone to create [Scratch](http://scratch.mit.edu/) programs by providing a series of natural language instructions that get translated into the internal representation of [Scratch 2.0](https://en.scratch-wiki.info/wiki/Scratch_2.0) projects. 
+ScratchNLP provides a framework for someone to create [Scratch](http://scratch.mit.edu/) programs by providing a series of natural language instructions that get translated into the internal representation of [Scratch 2.0](https://en.scratch-wiki.info/wiki/Scratch_2.0) projects.
 
-For example, 
+For example,
 ```
 play the meow sound 10 times
 ```
-corresponds to the script 
+corresponds to the script
 ```
 [['doRepeat', 10, [['doPlaySoundAndWait', 'meow']]]]
 ```
@@ -17,7 +17,7 @@ and
 ```
 if x is not less than three then broadcast hello thats it
 ```
-corresponds to the script 
+corresponds to the script
 ```
 [['doIf', ['not', ['<', ['readVariable', 'x'], 3]], [['broadcast:', 'hello']]]]
 ```
@@ -28,7 +28,7 @@ By specifying a series of commands through the command line interface, you can c
 ```
 git clone https://github.com/willowjar/scratchNLP.git
 cd scratchNLP/scripts
-python semantic.py 
+python semantic.py
 ```
 Running python semantic.py initiates a command line interface specifically for creating the Scratch programs with natural language. See the **Example of Creating a Project** Section for more on how to create a project.
 
@@ -56,7 +56,7 @@ optional arguments:
 ```
 
 ## Overview
-```scripts/semantic.py``` is the entry point for the system. It launches the command line interface and manages the project creation process.  
+```scripts/semantic.py``` is the entry point for the system. It launches the command line interface and manages the project creation process.
 
 ```semanticRules.py``` defines a context free grammar and associated semantic rules. This file also stores the lexicon and code to generate and add synonyms to the lexicon. The file is compatible with the software in MIT's 6.863 Natural Language Processing software for lab 3.
 
@@ -67,9 +67,9 @@ optional arguments:
 ```scratch_project_base.py``` defines the ScratchProjectBase Class which has a
 basic JSON that specifies the base ScratchProject upon which the system builds.
 
-```text2num.py``` defines the helper function to convert a word representing a number into the numerical value. 
+```text2num.py``` defines the helper function to convert a word representing a number into the numerical value.
 
-```test_fixtures/generate_sb2_fixture_with_assets``` contains a set of asset files to be included in the generated .sb2 file. 
+```test_fixtures/generate_sb2_fixture_with_assets``` contains a set of asset files to be included in the generated .sb2 file.
 
 ```software/``` contains dependencies from Lab 3 of MIT's 6.863 Natural Language Processing class with Bob Berwick (Spring 2018)
 
@@ -78,7 +78,7 @@ basic JSON that specifies the base ScratchProject upon which the system builds.
 
 ## Example of Creating a Project
 
-Demos of the system could be found under the directory 
+Demos of the system could be found under the directory
 ```
 scratchNLP/systemDemos
 ```
@@ -128,7 +128,7 @@ You should have the following output
 [WARNING] Obtained 2 parses; selecting the first one.
 {'variables': {'strawberries': 0, 'bananas': 0}, 'lists': {'fruit': []}, 'scripts': [[['whenKeyPressed', 'right arrow'], ['changeVar:by:', 'strawberries', 5]]]}
 ```
-Please note that in order for our system to parse a command mutating or using a variable, the variable must be 
+Please note that in order for our system to parse a command mutating or using a variable, the variable must be
 created first. When you enter commands line by line, the output shows the semantic result from the current command entered, it will not contain information from previous commands other than the variables or lists that were created. So if you create a variable called x, add 2 to x, then add 3 to x (all on separate lines), you will only see the result of "add 3 to x" and not "add 2 to x" then "add 3 to x". However, the information about previous commands is still maintained and you will be able to see the this in the json when you generate the project
 
 You can request the project.json at any point in the process of creating a project, using the keyword "json". Note: repetitive portions of the json have been omitted and replaced with '...'
@@ -183,14 +183,14 @@ You can request the project.json at any point in the process of creating a proje
         }
       ],
       "scripts": [
-        [5, 128, 
+        [5, 128,
           [["wait:elapsed:from:", 0.1], ["setVar:to:", "bananas", 10], ["wait:elapsed:from:", 0.1], ["setVar:to:", "strawberies", 5], ["wait:elapsed:from:", 0.1], ["append:toList:", ["readVariable", "strawberries"], "fruit"], ["append:toList:", ["readVariable", "bananas"], "fruit"]]
         ],
-        [5, 128, 
+        [5, 128,
           [["whenGreenFlag"], ["doPlaySoundAndWait", "cave"]]], [5, 128, [["whenKeyPressed", "right arrow"], ["changeVar:by:", "bananas", 1]]
-        ], 
+        ],
         [5, 128, [["whenKeyPressed", "right arrow"], ["changeVar:by:", "strawberries", 5]]
-        ], 
+        ],
         [5, 128, []]
       ],
       "sounds": [
@@ -255,7 +255,10 @@ At any point, you may also type sb2 to generate an .sb2 file that can be uploade
 sb2_path is /afs/athena.mit.edu/course/6/6.863/spring2018/cgw/teams/pistachio-conkers/final_project/scratchNLP/result/scratchNLPdemo.sb2
 ```
 
-
+## Testing
+```cd scripts```
+```./test```
+This will validate the```test_fixtures/test_*_sol``` files against the outputs of their corresponding input sentences.
 
 
 

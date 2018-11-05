@@ -9,6 +9,10 @@ from lab3.semantic_db import pretty_print_entry
 from nltk.corpus import wordnet as wn
 from text2num import text2float
 
+sys.path.insert(0,'../server/flaskr')
+import random
+from sounds import get_sounds
+
 ############################synonym helpers #########################
 def getWordsInSynset(synset):
 	words = set()
@@ -41,6 +45,7 @@ identity = lambda x: x
 sem = SemanticRuleSet()
 global_variables = {}
 global_lists = {}
+global_sounds = set()
 
 ####################################################################
 # Music Actions
@@ -63,6 +68,11 @@ def InstrumentToNumber(string):
 	else:
 		## TODO RAISE ERROR
 		return 0
+
+def playInstrumentBeats(sound, beats):
+    # Add the sound to the project.
+    global_sounds.add(string.title())
+    return ["playDrum", sound, beats]
 
 def setInstrument(num):
 	return ["instrument:", num]
@@ -91,6 +101,11 @@ def singleCommand(commandName, value):
 
 def singleCommandNoValue(commandName):
 	return [commandName]
+
+def playSound(name):
+    # Add the sound to the project.
+    global_sounds.add(name.title())
+    return ["doPlaySoundAndWait", name.title()]
 
 def ifCommand(if_cond, if_body):
 	return ["doIf", if_cond, if_body]
@@ -169,6 +184,10 @@ def getValue(var):
 
 def getRandomNumberBetween(unk1, unk2):
 	return ['randomFrom:to:', unk1, unk2]
+
+def getRandomSound():
+    sound = random.choice(get_sounds())
+    return sound["soundName"]
 
 def lessThan(a,b):
 	return ["<", a, b]
@@ -311,6 +330,19 @@ def incompleteCommand(t, end, cur):
 	return {"type": t, "end keyword": end, "current parse": cur}
 
 
+def getAP(phrase):
+    def isMultiCommand(phrase):
+        # Some commands are actually a list of multiple commands that must be
+        # on the same level as other commands.
+        # e.g. "if i say" or "if you hear" Conditional Command)
+        return len(phrase) == 2 and  phrase[0][0] == "listenAndWait" and phrase[1][0] == "doIf"
+
+    if isMultiCommand(phrase):
+        # MultiCommandsalready have an encapsulating set of brackets.
+        return phrase
+    else:
+        return [phrase]
+
 ####################################################################
 # Start rules
 
@@ -320,8 +352,7 @@ sem.add_rule("Start -> IC", lambda ic: processPartial(ic))
 
 # All Command
 sem.add_rule("S -> AL", identity)
-sem.add_rule('S -> BACKDROP_NAME', identity) #remove
-sem.add_rule("AL -> AP", lambda p: [p])
+sem.add_rule("AL -> AP", lambda p: getAP(p))
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
 
@@ -395,6 +426,7 @@ sem.add_rule("Duration -> NP Times", lambda np, times: get_duration(np))
 # Speech2Text Commands
 sem.add_rule("Speech2TextCommand -> Listen And Wait", lambda l, a, w: singleCommandNoValue("listenAndWait"))
 sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
+sem.add_rule("Speech2TextCommand -> Wait For Det Response", lambda w, f, d, r: singleCommandNoValue("listenAndWait"))
 sem.add_rule("SP -> Det Speech", lambda t, speech: singleCommandNoValue("getSpeech"))
 # sem.add_rule("EVENT -> When You Hear WP", lambda w, y, hear, wp: whenYouHear(wp))
 # sem.add_rule("EVENT -> When I Say WP", lambda w, y, hear, wp: whenYouHear(wp))
@@ -466,12 +498,13 @@ sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(sound
 
 # Sound Command
 # Use the halting version f the play sound block
-sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: singleCommand("doPlaySoundAndWait", name.title()))
+sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: playSound(name))
 
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name.title())
 sem.add_rule("NAME_OF_SOUND -> Sound Called NAME_OF_SOUND", lambda s, c, name: name.title())
+sem.add_rule("NAME_OF_SOUND -> Random Sound", lambda r, s: getRandomSound());
 
 sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))

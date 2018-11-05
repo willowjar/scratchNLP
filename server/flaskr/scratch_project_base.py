@@ -1,4 +1,4 @@
-from sounds import get_sounds
+from sounds import get_sounds_in_set
 
 class ScratchProjectBase:
 	def __init__(self):
@@ -27,7 +27,7 @@ class ScratchProjectBase:
 	"videoAlpha": 0.5,
 	"children": [{
 		"objName": "Sprite1",
-		"sounds": get_sounds(),
+		"sounds": [],
 		"costumes": [{
 				"costumeName": "costume1",
 				"baseLayerID": 1,

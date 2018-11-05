@@ -8,7 +8,7 @@ import db
 import time
 
 sys.path.insert(0,'../scripts/')
-from semantic import process_instruction, process_single_instruction
+from semantic import process_single_instruction
 from scratch_project import ScratchProject
 
 def create_app(test_config=None):
@@ -142,14 +142,17 @@ def create_app(test_config=None):
             info = request.get_json(force=True)
             instruction_list = info['instructions']
             use_green_flag = info['useGreenFlag']
-            start = info['start']
-            end = info['end']
-            print('generate_project_without_store')
-            print('\tstart' + str(start))
-            print('\tend' + str(end))
+
+            if ('start' in info and 'end' in info):
+                start = info['start']
+                end = info['end']
+                instructions = instruction_list[int(start):int(end)]
+            else:
+                instructions = instruction_list
+
             project = ScratchProject();
             project.author = user_name
-            for instruction in instruction_list[int(start):int(end)]:
+            for instruction in instructions:
                 changes_to_add = process_single_instruction(instruction)
                 print("changes_to_add when creating a new project:")
                 print(changes_to_add)
