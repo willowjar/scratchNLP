@@ -648,6 +648,8 @@ sem.add_rule("EventHandler ->  SimpleEventHandler Thats It", lambda e, thats, it
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Thats It", lambda e, a, t, s, ti, thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler Too Thats It", lambda e, t,thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It", lambda e, a, t, s, ti, to, thats, it: e)
+sem.add_rule("EventHandler -> AL EVENT", lambda a, e: SimpleEvent(e, a))
+
 
 sem.add_rule("IC -> When", lambda w: incompleteCommand("event", "thats it", "?"))
 sem.add_rule("IC -> EVENT", lambda e: incompleteCommand("event", "thats it", [e, "?"]))
