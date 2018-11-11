@@ -646,10 +646,10 @@ sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It",
 
 sem.add_rule("IC -> When", lambda w: incompleteCommand("event", "thats it", "?"))
 sem.add_rule("IC -> EVENT", lambda e: incompleteCommand("event", "thats it", [e, "?"]))
-sem.add_rule("IC -> SimpleEventHandler", lambda e: incompleteCommand("event", "thats it", [e, "?"]))
-sem.add_rule("IC -> SimpleEventHandler At Det Same Time", lambda e, a, d, s, t: incompleteCommand("event", "thats it", [e, "?"]))
-sem.add_rule("IC -> SimpleEventHandler Too", lambda e, t: incompleteCommand("event", "thats it", [e, "?"]))
-sem.add_rule("IC -> SimpleEventHandler At Det Same Time Too", lambda e, a, d, s, t, tt: incompleteCommand("event", "thats it", [e, "?"]))
+sem.add_rule("IC -> SimpleEventHandler", lambda e: incompleteCommand("event", "thats it", e))
+sem.add_rule("IC -> SimpleEventHandler At Det Same Time", lambda e, a, d, s, t: incompleteCommand("event", "thats it", e))
+sem.add_rule("IC -> SimpleEventHandler Too", lambda e, t: incompleteCommand("event", "thats it", e))
+sem.add_rule("IC -> SimpleEventHandler At Det Same Time Too", lambda e, a, d, s, t, tt: incompleteCommand("event", "thats it", e))
 
 ## TimerCommand
 sem.add_rule("TimerCommand -> Reset Timer", lambda r, t: resetTimer())
