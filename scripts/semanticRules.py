@@ -90,11 +90,11 @@ def changeTempo(num):
 def processSentence(data):
 	if len(data) > 0:
 		data = [thing for thing in data if thing != None]
-		return {'scripts': data, 'variables': global_variables, 'lists': global_lists}
+		return {'scripts': data, 'variables': global_variables, 'lists': global_lists, 'sounds': global_sounds}
 
 def processPartial(data):
 	# print(data)
-	return {'scripts': [], 'variables': global_variables, 'lists': global_lists, "incomplete": data}
+	return {'scripts': [], 'variables': global_variables, 'lists': global_lists, "incomplete": data, 'sounds': global_sounds}
 
 def singleCommand(commandName, value):
 	return [commandName, value]
@@ -725,29 +725,33 @@ sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, t
 sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
 
 #LoopCommand
+sem.add_rule("Repeat -> Repeat The Steps", lambda r, t, s: r)
+sem.add_rule("Repeat -> Repeat The Following Steps", lambda r, t, f, s: r)
+sem.add_rule("Repeat -> Repeat The Following", lambda r, t, f: r)
 
-sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
-sem.add_rule("LoopCommand -> LoopCommandP", identity)
-sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
-sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_list([ap], duration))
-sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
-sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
+sem.add_rule("LoopCommand -> Repeat AL Duration Thats It", lambda r, lcp, d, t, i: repeat_action_list(lcp, d))
+sem.add_rule("LoopCommand -> Repeat Duration AL Thats It", lambda r, d, lcp, t, i: repeat_action_list(lcp, d))
+sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list,s,b,r, duration: repeat_action_list(action_list, duration))
 
+# sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
+# sem.add_rule("LoopCommand -> LoopCommandP", identity)
+# sem.add_rule("LoopCommand -> AL Should Be Repeated Duration", lambda action_list, t,s,b,r, duration: repeat_action_list(action_list, duration))
+# sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_list([ap], duration))
+# sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
+# sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
+
+sem.add_rule("IC -> Repeat", lambda r: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
 sem.add_rule("IC -> Repeat AL", lambda r, a: incompleteCommand("loop", "thats it", repeat_action_list(a, "?")))
-sem.add_rule("IC -> Repeat The Following", lambda r, t, f: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
-sem.add_rule("IC -> Repeat The Following Steps", lambda r, t, f, s: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
-sem.add_rule("IC -> Repeat The Following Duration", lambda r, t, f, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
-sem.add_rule("IC -> Repeat The Following Steps Duration", lambda r, t, f, s, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
-sem.add_rule("IC -> The Following", lambda t, f: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
-sem.add_rule("IC -> The Following Steps", lambda t, f, s: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
-sem.add_rule("IC -> The Following Duration", lambda t, f, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
-sem.add_rule("IC -> The Following Steps Duration", lambda t, f, s, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+sem.add_rule("IC -> Repeat Duration", lambda r, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+# sem.add_rule("IC -> The Following", lambda t, f: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+# sem.add_rule("IC -> The Following Steps", lambda t, f, s: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+# sem.add_rule("IC -> The Following Duration", lambda t, f, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+# sem.add_rule("IC -> The Following Steps Duration", lambda t, f, s, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
 sem.add_rule("IC -> Repeat AL Duration", lambda r, a, d: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
-sem.add_rule("IC -> Repeat The Following Duration AL", lambda r, t, f, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
-sem.add_rule("IC -> Repeat The Following Steps Duration AL", lambda r, t, f, s, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
-sem.add_rule("IC -> The Following Duration AL", lambda t, f, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
-sem.add_rule("IC -> The Following Steps Duration AL", lambda t, f, s, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
-sem.add_rule("IC -> AL Should Be Repeated", lambda a,t,s,b,r: incompleteCommand("loop", "thats it", repeat_action_list(a, "?")))
+sem.add_rule("IC -> Repeat Duration AL", lambda r, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+# sem.add_rule("IC -> The Following Duration AL", lambda t, f, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+# sem.add_rule("IC -> The Following Steps Duration AL", lambda t, f, s, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> AL Should Be Repeated", lambda a,s,b,r: incompleteCommand("loop", "times", repeat_action_list(a, "?")))
 
 #General switches
 sem.add_rule("To -> To Be", lambda t, b: t)
