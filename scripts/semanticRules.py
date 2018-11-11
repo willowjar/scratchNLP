@@ -611,12 +611,14 @@ sem.add_rule("Sprite -> My Sprite", lambda d, s: s)
 sem.add_rule("Sprite -> Your Sprite", lambda d, s: s)
 
 sem.add_rule("EVENT -> When EVENTDES", lambda w, e: e)
+sem.add_rule("EVENTDES -> STARTEVENT", lambda s:s)
+sem.add_rule("EVENTDES -> KEYEVENT", lambda s:s)
 
-sem.add_rule("EVENTDES -> Det Green Flag Is Clicked", lambda t, g, f, i, c: whenGreenFlag())
-sem.add_rule("EVENTDES -> Green Flag Is Clicked", lambda g, f, i, c: whenGreenFlag())
-sem.add_rule("EVENTDES -> Program Starts", lambda p, s: whenGreenFlag())
-sem.add_rule("EVENTDES -> KEY_NAME Is Clicked", lambda name, iss, pressed: whenKeyClicked(name))
-sem.add_rule("EVENTDES -> Direction Is Clicked", lambda name, iss, pressed: whenKeyClicked(name + " arrow"))
+sem.add_rule("STARTEVENT -> Det Green Flag Is Clicked", lambda t, g, f, i, c: whenGreenFlag())
+sem.add_rule("STARTEVENT -> Green Flag Is Clicked", lambda g, f, i, c: whenGreenFlag())
+sem.add_rule("STARTEVENT -> Program Starts", lambda p, s: whenGreenFlag())
+sem.add_rule("KEYEVENT -> KEY_NAME Is Clicked", lambda name, iss, pressed: whenKeyClicked(name))
+sem.add_rule("KEYEVENT -> Direction Is Clicked", lambda name, iss, pressed: whenKeyClicked(name + " arrow"))
 sem.add_rule("EVENTDES -> Sprite Is Clicked", lambda s, iss, cli: whenClicked())
 sem.add_rule("EVENTDES -> Backdrop Switches To BACKDROP_NAME", lambda w, b, s, t, name: whenBackSwitch(name))
 sem.add_rule("EVENTDES -> I Receive MESSAGE_NAME", lambda i, r, message: whenReceive(message))
@@ -641,6 +643,13 @@ sem.add_rule("EventHandler ->  SimpleEventHandler Thats It", lambda e, thats, it
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Thats It", lambda e, a, t, s, ti, thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler Too Thats It", lambda e, t,thats, it: e)
 sem.add_rule("EventHandler -> SimpleEventHandler At Det Same Time Too Thats It", lambda e, a, t, s, ti, to, thats, it: e)
+
+sem.add_rule("IC -> When", lambda w: incompleteCommand("event", "thats it", "?"))
+sem.add_rule("IC -> EVENT", lambda e: incompleteCommand("event", "thats it", [e, "?"]))
+sem.add_rule("IC -> SimpleEventHandler", lambda e: incompleteCommand("event", "thats it", [e, "?"]))
+sem.add_rule("IC -> SimpleEventHandler At Det Same Time", lambda e, a, d, s, t: incompleteCommand("event", "thats it", [e, "?"]))
+sem.add_rule("IC -> SimpleEventHandler Too", lambda e, t: incompleteCommand("event", "thats it", [e, "?"]))
+sem.add_rule("IC -> SimpleEventHandler At Det Same Time Too", lambda e, a, d, s, t, tt: incompleteCommand("event", "thats it", [e, "?"]))
 
 ## TimerCommand
 sem.add_rule("TimerCommand -> Reset Timer", lambda r, t: resetTimer())
