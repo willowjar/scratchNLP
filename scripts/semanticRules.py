@@ -120,6 +120,7 @@ def until(until_condition, repeat_body):
 	return ["doUntil", until_condition, [repeat_body]]
 def doForever(forever_body):
 	return ["doForever", [forever_body]]
+
 def deleteClone():
 	return ["deleteClone"]
 
@@ -711,6 +712,7 @@ sem.add_rule("IC -> If BP AL", lambda i, bp, al: incompleteCommand("conditional"
 sem.add_rule("IC -> If BP Then", lambda i, bp, t: incompleteCommand("conditional", "thats it", ifCommand(bp, "?")))
 sem.add_rule("IC -> If BP Then AL", lambda i, bp, t, al: incompleteCommand("conditional", "thats it", ifCommand(bp, al + ["?"])))
 sem.add_rule("IC -> IfCommand Else", lambda i, e: incompleteCommand("conditional", "thats it", ifElseCommand(i[0], i[1], "?")))
+sem.add_rule("IC -> IfCommand Else AL", lambda i, e, al: incompleteCommand("conditional", "thats it", ifElseCommand(i[0], i[1], al + ["?"])))
 # sem.add_rule("ConditionalCommand -> If I Say WP Then AL Thats It", lambda i, me, s, wp, then, al, thats, it: ifCommand(bp,al)) # todo
 
 # Control Command
@@ -723,7 +725,6 @@ sem.add_rule("ControlCommand -> Repeat AL Unk Times", lambda repeatt, al, unk, t
 sem.add_rule("ControlCommand -> Delete Det Clone", lambda delete, this, clone: deleteClone())
 
 #LoopCommand
-sem.add_rule("IC -> If BP AL", lambda i, bp, al: incompleteCommand("conditional", bp+al))
 
 sem.add_rule("LoopCommand -> Repeat LoopCommandP", lambda r, lcp: lcp)
 sem.add_rule("LoopCommand -> LoopCommandP", identity)
