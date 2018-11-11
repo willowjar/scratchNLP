@@ -733,6 +733,21 @@ sem.add_rule("LoopCommandP -> AP Duration", lambda ap, duration: repeat_action_l
 sem.add_rule("LoopCommandP -> The Following Duration AL Thats It", lambda t, f, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 sem.add_rule("LoopCommandP -> The Following Steps Duration AL Thats It", lambda t, f, s, duration, action_list, tt, i: repeat_action_list(action_list, duration))
 
+sem.add_rule("IC -> Repeat AL", lambda r, a: incompleteCommand("loop", "thats it", repeat_action_list(a, "?")))
+sem.add_rule("IC -> Repeat The Following", lambda r, t, f: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+sem.add_rule("IC -> Repeat The Following Steps", lambda r, t, f, s: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+sem.add_rule("IC -> Repeat The Following Duration", lambda r, t, f, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+sem.add_rule("IC -> Repeat The Following Steps Duration", lambda r, t, f, s, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+sem.add_rule("IC -> The Following", lambda t, f: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+sem.add_rule("IC -> The Following Steps", lambda t, f, s: incompleteCommand("loop", "thats it", repeat_action_list("?", "?")))
+sem.add_rule("IC -> The Following Duration", lambda t, f, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+sem.add_rule("IC -> The Following Steps Duration", lambda t, f, s, d: incompleteCommand("loop", "thats it", repeat_action_list("?", d)))
+sem.add_rule("IC -> Repeat AL Duration", lambda r, a, d: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> Repeat The Following Duration AL", lambda r, t, f, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> Repeat The Following Steps Duration AL", lambda r, t, f, s, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> The Following Duration AL", lambda t, f, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> The Following Steps Duration AL", lambda t, f, s, d, a: incompleteCommand("loop", "thats it", repeat_action_list(a, d)))
+sem.add_rule("IC -> AL Should Be Repeated", lambda a,t,s,b,r: incompleteCommand("loop", "thats it", repeat_action_list(a, "?")))
 
 #General switches
 sem.add_rule("To -> To Be", lambda t, b: t)
