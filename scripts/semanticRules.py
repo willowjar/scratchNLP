@@ -353,6 +353,7 @@ sem.add_rule("Start -> IC", lambda ic: processPartial(ic))
 
 # All Command
 sem.add_rule("S -> AL", identity)
+sem.add_rule("S -> PRE AL", lambda p, a: a)
 sem.add_rule("AL -> AP", lambda p: getAP(p))
 sem.add_rule("AL -> AP AL", lambda p, l: [p]+l)
 sem.add_rule("AL -> AP And AL", lambda p,an, l: [p]+l)
@@ -373,6 +374,10 @@ sem.add_rule("AP -> BroadcastCommand", identity)
 sem.add_rule("AP -> ControlCommand", identity)
 sem.add_rule("AL -> SequentialCommand", identity)
 sem.add_rule("AL -> OrderedCommand", identity)
+
+sem.add_rule("PRE -> Can You", lambda c, y: c)
+sem.add_rule("PRE -> Can I", lambda c, y: c)
+sem.add_rule("PRE -> Please", lambda c: c)
 
 # Ordered Command
 sem.add_rule("OrderedCommand -> OrderAdverb AL", lambda num, al: al)
@@ -975,8 +980,12 @@ sem.add_lexicon_rule("This", ["this"], identity)
 sem.add_lexicon_rule("To",['to'],identity)
 sem.add_lexicon_rule("By",['by'],identity)
 sem.add_lexicon_rule("As",['as'],identity)
+sem.add_lexicon_rule("Can",['can', 'could', 'may'],identity)
+sem.add_lexicon_rule ("Please",['please'],identity)
 
 sem.add_lexicon_rule("BACKDROP_NAME",['Space'],identity)
+
+
 
 ## Synonyms
 def processSynonyms(synonyms):
