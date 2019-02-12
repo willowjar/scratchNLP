@@ -1,0 +1,3 @@
+create a variable called x and set x to a random number between 1 and 10
+log x
+log y

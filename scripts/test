@@ -2,3 +2,4 @@
 
 python semantic.py --batch_mode ../test_fixtures/test_speech --validate_output ../test_fixtures/test_speech_sol
 python semantic.py --batch_mode ../test_fixtures/test_complex_speech --validate_output ../test_fixtures/test_complex_speech_sol
+python semantic.py --batch_mode ../test_fixtures/test_log --validate_output ../test_fixtures/test_log_sol
