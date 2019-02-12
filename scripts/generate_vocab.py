@@ -28,6 +28,7 @@ expression_map = {
   r'broadcast (\w*)': ['MESSAGE_NAME'],
   r'when I receive (\w*)': ['MESSAGE_NAME'],
   r'set (\w*) to .*': ['VARIABLE_NAME'],
+  r'log (\w*)': ['VARIABLE_NAME'],
   r'add (\w*) to list (\w*)': ['ITEM','LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
 }

@@ -137,6 +137,13 @@ def setVariable(var_name, value):
     #global_variables[var_name] = value
     return ["setVar:to:",var_name, value]
 
+def logVariable(var_name):
+    if (var_name in global_variables):
+        whatToSay = var_name + " is " + str(getValue(var_name))
+    else:
+        whatToSay = "You don't have a variable called " + var_name
+    return ["speakAndWait:", whatToSay]
+
 def deleteVariable(variable_name):
     del global_variables[variable_name]
     return wait(0.1)
@@ -518,6 +525,7 @@ sem.add_rule("SoundCommand -> Faster", lambda faster: singleCommand("changeTempo
 ## Data Command
 
 # todo: fix
+sem.add_rule("DataCommand -> Log VARIABLE_NAME", lambda log, var_name: logVariable(var_name))
 sem.add_rule("DataCommand -> Delete VARIABLE_NAME", lambda delete, var_name: deleteVariable(var_name))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
 sem.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np: setVariable(var_name, np))
@@ -831,6 +839,7 @@ sem.add_lexicon_rule("Random",['random'],identity)
 sem.add_lexicon_rule("Number",['number'],identity)
 
 # Data Command Keywords
+sem.add_lexicon_rule("Log", ["log"], identity)
 sem.add_lexicon_rule("Add", ["add", "append"], identity)
 sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
 sem.add_lexicon_rule("Decrement", ["decrement", "decrease"], identity)

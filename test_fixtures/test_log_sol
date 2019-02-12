@@ -1,0 +1,3 @@
+{'variables': {'x': 0}, 'sounds': set([]), 'lists': {}, 'scripts': [['wait:elapsed:from:', 0.1], ['setVar:to:', 'x', ['randomFrom:to:', 1, 10]]]}
+{'variables': {'x': 0}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', "x is ['readVariable', 'x']"]]}
+{'variables': {'x': 0}, 'sounds': set([]), 'lists': {}, 'scripts': [['speakAndWait:', "You don't have a variable called y"]]}
