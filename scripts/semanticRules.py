@@ -488,9 +488,11 @@ sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(sound
 
 
 # Sound Command
-# Use the halting version f the play sound block
+# Use the halting version of the play sound block
 sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: playSound(name))
 
+# TODO(quacht): instead of just using name.title(), use a helper method to select the sound that might match best?
+# TODO(quacht): at the same time, verify that the sound actually belongs to the sound library.
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name.title())
@@ -835,7 +837,7 @@ sem.add_lexicon_rule("Added",['added'],identity)
 sem.add_lexicon_rule("Plus",['plus'],identity)
 sem.add_lexicon_rule("Negative",['negative'],identity)
 
-sem.add_lexicon_rule("Random",['random'],identity)
+sem.add_lexicon_rule("Random",['random', 'a'],identity)
 sem.add_lexicon_rule("Number",['number'],identity)
 
 # Data Command Keywords
