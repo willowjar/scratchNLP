@@ -563,7 +563,8 @@ class GrammarCategory(Category):
             position += 1
             while 1:
                 match = cls._PARSE_RE['stringmarker'].search(s, position)
-                if not match: raise ValueError('close quote', position)
+                if not match:
+                    raise ValueError('close quote', position)
                 position = match.end()
                 if match.group() == '\\': position += 1
                 elif match.group() == quotemark:
@@ -578,6 +579,7 @@ class GrammarCategory(Category):
             body['/'] = unify(body.get('/'), slash)
         elif not body.has_key('/'):
             body['/'] = False
+
         return cls(body), position
 
 
