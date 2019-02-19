@@ -89,10 +89,6 @@ def match_nonterminal(nonterminal, term):
 
 
 def match_node(node, term):
-    print('node')
-    print(node)
-    print('term')
-    print(term)
     if type(term) == str:
         return match_terminal(node, term)
     elif type(term) == unicode:
