@@ -498,7 +498,7 @@ sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title()
 sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name.title())
 sem.add_rule("NAME_OF_SOUND -> Sound Called NAME_OF_SOUND", lambda s, c, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Random Sound", lambda r, s: getRandomSound())
-sem.add_rule("NAME_OF_SOUND -> Unk", lambda unk1: unk1)
+# sem.add_rule("NAME_OF_SOUND -> Unk", lambda unk1: unk1)
 sem.add_rule("NAME_OF_SOUND -> Unk Unk", lambda unk1, unk2: unk1 + ' ' + unk2)
 sem.add_rule("NAME_OF_SOUND -> Unk Unk Unk", lambda unk1, unk2, unk3: unk1 + ' ' + unk2 + ' ' + unk3)
 
