@@ -22,7 +22,7 @@ expression_map = {
   r'list named (\w*)': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
   r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
-  r'play the ((\w|\s)*) sound': ['NAME_OF_SOUND'],
+  r'play the (\w*) sound': ['NAME_OF_SOUND'],
   #r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['Unk'],
   r'broadcast (\w*)': ['MESSAGE_NAME'],

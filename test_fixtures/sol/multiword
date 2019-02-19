@@ -1,4 +1,4 @@
 {'variables': {}, 'sounds': set(['Dance Celebrate']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Dance Celebrate']]}
-{'variables': {}, 'sounds': set(['Boing', 'Dance Celebrate']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Boing']]}
-{'variables': {}, 'sounds': set(['Meow', 'Dance Celebrate']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Meow']]}
+{'variables': {}, 'sounds': set(['Dance Celebrate', 'Boing']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Boing']]}
+{'variables': {}, 'sounds': set(['Meow', 'Dance Celebrate', 'Boing']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Meow']]}
 {'variables': {}, 'sounds': set(['Meow', 'Dance Celebrate', 'Boing', 'Tropical Birds']), 'lists': {}, 'scripts': [['doPlaySoundAndWait', 'Tropical Birds']]}
