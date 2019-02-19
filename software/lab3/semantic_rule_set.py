@@ -18,7 +18,17 @@ class SemanticRuleSet:
 
 
     def parse_rule(self, text):
+        # Remove the start and end quotes
+        print('rule to parse')
+        print(text)
+        tokens = text.strip("'").strip('"').split()
         tokens = text.split()
+        if (len(tokens) > 3 and "'" in text):
+            quote_split = text.split("'")
+            space_split = text.split()
+            tokens = space_split[:2] + [quote_split[1]]
+        print('tokens')
+        print(tokens)
 
         i = 0
         while i < len(tokens):
@@ -28,6 +38,15 @@ class SemanticRuleSet:
             else:
                 i += 1
 
+        print('inputs into GrammarCategory.parse is:')
+        print('tokens[0]')
+        print(tokens[0])
+        print('tokens[2:]')
+        print(tokens[2:])
+
+        # if any(map(tokens[2:], lambda x: " " in x)):
+        #     # This is a multi-word token.
+        #     print('yo')
         return cfg.Production(GrammarCategory.parse(tokens[0]),
                               map(lambda x: GrammarCategory.parse(x),
                                   tokens[2:]))
@@ -45,6 +64,8 @@ class SemanticRuleSet:
         # Cast syntactic_rule to a string so that we can properly handle unicode
         # characters and strings.
         syntactic_rule = str(syntactic_rule)
+        print('syntactic_rule before parsee')
+        print(syntactic_rule)
         syntactic_rule = self.parse_rule(syntactic_rule)
         self.add_match(syntactic_rule, semantic_rule)
         self.productions.append(syntactic_rule)

@@ -1,5 +1,5 @@
 """
-Utility functions for matching the productions from lab_rules 
+Utility functions for matching the productions from lab_rules
 with the (implicit) productions extracted from the feature chart.
 """
 
@@ -36,7 +36,7 @@ def match_nonterminal(nonterminal, term):
 
     # Check that the features match
     nonterm_slash = False
-    
+
     for k, v in nonterminal.iteritems():
         if isinstance(k, Feature):
             if k.name == 'type':
@@ -84,11 +84,15 @@ def match_nonterminal(nonterminal, term):
         num_term_features = len(term_features)
         if num_matched_features != num_term_features:
             return False
-    
+
     return True
 
 
 def match_node(node, term):
+    print('node')
+    print(node)
+    print('term')
+    print(term)
     if type(term) == str:
         return match_terminal(node, term)
     elif type(term) == unicode:
@@ -96,7 +100,7 @@ def match_node(node, term):
     else:
         return match_nonterminal(node.label(), term)
 
-    
+
 def match_rule(node, production_rule):
     # Match left hand side
     lhs_node = node
@@ -135,19 +139,20 @@ def decorate_parse_tree(tree, sem_rule_set, set_productions_to_labels=False):
     from the grammar and its associated lambda form.
     """
     prod_rules = []
-    
+
     def decorate(node):
+        # tina look here
         if not is_leaf_node(node):
             matching_rules = find_matching_productions(node, sem_rule_set)
             assert 0 < len(matching_rules)
-            
+
             if 1 < len(matching_rules):
                 # It's ok to match more than rule if they all map to the same
                 # lambda form.
                 set_of_rules = set([lambdastr(sem_rule_set.syn_sem_dict[rule])
                                     for rule in matching_rules])
                 assert len(set_of_rules) == 1, set_of_rules
-            
+
             prod_rules.append((node, matching_rules))
         node.matched_production = matching_rules[0]
         if set_productions_to_labels:

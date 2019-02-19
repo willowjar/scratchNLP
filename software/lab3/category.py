@@ -435,6 +435,9 @@ class Category(Nonterminal, FeatureI):
         if match is not None:
             return match.group(), match.end()
 
+        print("WE DON'T KNOW HOW TO PARSE THIS VALUE")
+        print('s, position, reentrances')
+        print(s, position, reentrances)
         # We don't know how to parse this value.
         raise ValueError('value', position)
 
@@ -552,18 +555,27 @@ class GrammarCategory(Category):
 
     @staticmethod
     def parse(s, position=0):
+        # When the token to parse is a name/multiword phrase we don't want to
+        # break that phrase into words (that will lose meaning)
+        # if (s.title in soundNames):
+        #     # return s?
+        #     pass
         return GrammarCategory.inner_parse(s, position)[0]
 
     @classmethod
     def inner_parse(cls, s, position, reentrances=None):
+        print("TINA LEARNING ABOUT INNER PARSE")
+
         if reentrances is None: reentrances = {}
         if s[position] in "'\"":
             start = position
             quotemark = s[position:position+1]
             position += 1
             while 1:
+                # TODO(quacht):  DEBUG HERE.
                 match = cls._PARSE_RE['stringmarker'].search(s, position)
-                if not match: raise ValueError('close quote', position)
+                if not match:
+                    raise ValueError('close quote', position)
                 position = match.end()
                 if match.group() == '\\': position += 1
                 elif match.group() == quotemark:
@@ -578,6 +590,9 @@ class GrammarCategory(Category):
             body['/'] = unify(body.get('/'), slash)
         elif not body.has_key('/'):
             body['/'] = False
+
+        print('stuff outputted from inner_parse')
+        print(cls(body), position)
         return cls(body), position
 
 
