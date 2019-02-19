@@ -22,7 +22,7 @@ expression_map = {
   r'list named (\w*)': ['LIST_NAME'],
   r'item (\w*) is in list (\w*)': ['ITEM', 'LIST_NAME'],
   r'(\w*) contains (\w*)': ['LIST_NAME', 'ITEM'],
-  r'play the (\w*) sound': ['NAME_OF_SOUND'],
+  r'play the ((\w|\s)*) sound': ['NAME_OF_SOUND'],
   #r'play the ((?:\w+\s)+?)sound': ['NAME_OF_SOUND'],
   r'wait (\w*) seconds': ['Unk'],
   r'broadcast (\w*)': ['MESSAGE_NAME'],
@@ -83,7 +83,16 @@ def extract_names_and_words(sentences):
 							for word in match.strip().split():
 								add_item_to_dict(('Word', word), result)
 						else:
-							add_item_to_dict((this_variable, match.strip()), result)
+							if isinstance(match, tuple):
+								match = match[0]
+
+							if this_variable == "NAME_OF_SOUND":
+								# verify that the sound is actually in the sound library.
+								pass
+							# TODO(quacht): handle conflicting names?
+							# match = match.strip().replace(' ', '_')
+							match = match.strip()
+							add_item_to_dict((this_variable, match), result)
 				else:
 					#assume results grouped by tuple if there are atleast 1 result
 					for i in range(0, len(variables)):
@@ -96,9 +105,9 @@ def extract_names_and_words(sentences):
 										add_item_to_dict(('Word', word), result)
 								else:
 									add_item_to_dict((this_variable, match.strip()), result)
-	# print('extract_names_and_words:')
-	# print('\tsentence: ' + str(sentences))
-	# print('\tresult: ' + str(result))
+	print('extract_names_and_words:')
+	print('\tsentence: ' + str(sentences))
+	print('\tresult: ' + str(result))
 	return result
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
