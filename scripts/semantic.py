@@ -129,8 +129,6 @@ def process_single_instruction(input_str, opt_scripts_only=False):
 	# Parse the sentence.
 	output = None
 	try:
-		print(input_str)
-		print(type(input_str))
 		tree = parse_input_str(input_str)
 		if args.spm:
 			handle_syntax_parser_mode(tree, sem_rule_set)

@@ -105,9 +105,6 @@ def extract_names_and_words(sentences):
 										add_item_to_dict(('Word', word), result)
 								else:
 									add_item_to_dict((this_variable, match.strip()), result)
-	print('extract_names_and_words:')
-	print('\tsentence: ' + str(sentences))
-	print('\tresult: ' + str(result))
 	return result
 
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
