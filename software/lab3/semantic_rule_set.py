@@ -18,7 +18,12 @@ class SemanticRuleSet:
 
 
     def parse_rule(self, text):
+        # Remove the start and end quotes
         tokens = text.split()
+        if (len(tokens) > 3 and "'" in text):
+            quote_split = text.split("'")
+            space_split = text.split()
+            tokens = space_split[:2] + [quote_split[1]]
 
         i = 0
         while i < len(tokens):

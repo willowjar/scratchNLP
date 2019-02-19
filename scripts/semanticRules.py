@@ -488,14 +488,19 @@ sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(sound
 
 
 # Sound Command
-# Use the halting version f the play sound block
+# Use the halting version of the play sound block
 sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: playSound(name))
 
+# TODO(quacht): instead of just using name.title(), use a helper method to select the sound that might match best?
+# TODO(quacht): at the same time, verify that the sound actually belongs to the sound library.
 sem.add_rule("NAME_OF_SOUND -> Det NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> Your NAME_OF_SOUND", lambda d, name: name.title())
 sem.add_rule("NAME_OF_SOUND -> NAME_OF_SOUND Sound", lambda name, sound: name.title())
 sem.add_rule("NAME_OF_SOUND -> Sound Called NAME_OF_SOUND", lambda s, c, name: name.title())
-sem.add_rule("NAME_OF_SOUND -> Random Sound", lambda r, s: getRandomSound());
+sem.add_rule("NAME_OF_SOUND -> Random Sound", lambda r, s: getRandomSound())
+# Some sounds may consist of names that have 2 or 3 words in them.
+sem.add_rule("NAME_OF_SOUND -> Unk Unk", lambda unk1, unk2: unk1 + ' ' + unk2)
+sem.add_rule("NAME_OF_SOUND -> Unk Unk Unk", lambda unk1, unk2, unk3: unk1 + ' ' + unk2 + ' ' + unk3)
 
 sem.add_rule("SoundCommand -> Set TheVolume To NP", lambda sett, volume, too, unk: singleCommand("setVolumeTo:", unk))
 sem.add_rule("SoundCommand -> Set TheVolume To NP Percent", lambda sett, volume, too, unk, percent: singleCommand("setVolumeTo:", unk))
@@ -717,103 +722,103 @@ sem.add_rule("To -> To Be", lambda t, b: t)
 ## Lexicon
 
 ## Determiners
-sem.add_lexicon_rule("Det", ['the', 'this', 'a', 'an'], lambda word: lambda: None)
+sem.add_lexicon_rule("Det", ["the", "this", "a", "an"], lambda word: lambda: None)
 
 ## Noun - pronouns
 sem.add_lexicon_rule("I", ["i"], identity)
-sem.add_lexicon_rule("You",['you'],identity)
-sem.add_lexicon_rule("Your",['your'],identity)
-sem.add_lexicon_rule("My",['my'],identity)
-sem.add_lexicon_rule("Myself",['myself'],identity)
+sem.add_lexicon_rule("You",["you"],identity)
+sem.add_lexicon_rule("Your",["your"],identity)
+sem.add_lexicon_rule("My",["my"],identity)
+sem.add_lexicon_rule("Myself",["myself"],identity)
 sem.add_lexicon_rule("It", ["it"], identity)
 
 ## Noun - names
-sem.add_lexicon_rule('NAME_OF_SOUND',
-                     ['meow','cave','boing','chomp','drum','jungle','hey'],
+sem.add_lexicon_rule("NAME_OF_SOUND",
+                     ["meow","cave","boing","chomp","drum","jungle","hey"],
                      # TODO: the semantic rule for NAME_OF_SOUND could involve
                      # searching
                      lambda name: name)
-sem.add_lexicon_rule('LANGUAGE_NAME',
-    ['english', 'danish', 'dutch', 'french', 'german', 'italian', 'japanese', 'russian'], lambda language: language.capitalize())
-sem.add_lexicon_rule('VOICE_NAME', ['quinn', 'max', 'squeak', 'giant', 'kitten'], identity)
-sem.add_lexicon_rule("Direction",['up', 'left', 'right', 'down'],identity)
+sem.add_lexicon_rule("LANGUAGE_NAME",
+    ["english", "danish", "dutch", "french", "german", "italian", "japanese", "russian"], lambda language: language.capitalize())
+sem.add_lexicon_rule("VOICE_NAME", ["quinn", "max", "squeak", "giant", "kitten"], identity)
+sem.add_lexicon_rule("Direction",["up", "left", "right", "down"],identity)
 sem.add_rule("KEY_NAME -> Direction Arrow", lambda d, a: d+" "+a)
 
-sem.add_lexicon_rule("Unk", ['0','1','2','3','4','5','6','7','8','9'], identity)
-sem.add_lexicon_rule("SequenceAdverb", ['then', 'after', 'finally'], identity)
+sem.add_lexicon_rule("Unk", ["0","1","2","3","4","5","6","7","8","9"], identity)
+sem.add_lexicon_rule("SequenceAdverb", ["then", "after", "finally"], identity)
 
-sem.add_lexicon_rule("DRUM", ['tambourine', 'claves', 'cowbell', 'triangle', 'bongo', 'conga', 'cabasa', 'guiro', 'vibraslap', 'cuica'], identity)
-sem.add_lexicon_rule("Drum1", ['snare', 'bass', 'side', 'crash', 'open', 'closed', 'hand', 'wood'], identity)
-sem.add_lexicon_rule("Drum2", ['drum', 'stick', 'cymbal', 'highhat', 'hi', 'clap', 'block'], identity)
-sem.add_lexicon_rule("Drum3", ['hat'], identity)
+sem.add_lexicon_rule("DRUM", ["tambourine", "claves", "cowbell", "triangle", "bongo", "conga", "cabasa", "guiro", "vibraslap", "cuica"], identity)
+sem.add_lexicon_rule("Drum1", ["snare", "bass", "side", "crash", "open", "closed", "hand", "wood"], identity)
+sem.add_lexicon_rule("Drum2", ["drum", "stick", "cymbal", "highhat", "hi", "clap", "block"], identity)
+sem.add_lexicon_rule("Drum3", ["hat"], identity)
 
-sem.add_lexicon_rule("INSTRUMENT", ['piano', 'organ', 'guitar', 'bass', 'pizzicato', 'cello', 'trombone', 'clarinet', 'saxophone', 'flute', 'bassoon', 'choir', 'vibraphone', 'marimba'], identity)
-sem.add_lexicon_rule("Instrument1", ['electric', 'wooden', 'music', 'steel', 'synth'], identity)
-sem.add_lexicon_rule("Instrument2", ['piano', 'guitar', 'flute', 'box', 'drum', 'lead', 'pad'], identity)
+sem.add_lexicon_rule("INSTRUMENT", ["piano", "organ", "guitar", "bass", "pizzicato", "cello", "trombone", "clarinet", "saxophone", "flute", "bassoon", "choir", "vibraphone", "marimba"], identity)
+sem.add_lexicon_rule("Instrument1", ["electric", "wooden", "music", "steel", "synth"], identity)
+sem.add_lexicon_rule("Instrument2", ["piano", "guitar", "flute", "box", "drum", "lead", "pad"], identity)
 
 
 sem.add_lexicon_rule("OrderAdverb",
-                       ['secondly', 'fourthly', 'fifthly', 'seventh', 'second', 'fifth', 'sixthly', 'third', 'thirdly', 'fourth', 'sixth', 'firstly', 'first'],
+                       ["secondly", "fourthly", "fifthly", "seventh", "second", "fifth", "sixthly", "third", "thirdly", "fourth", "sixth", "firstly", "first"],
                        lambda word: wordMap(word))
 
 ## Noun - keywords
 
 # Sounds
-sem.add_lexicon_rule("Sounds", ['sounds'], identity)
-sem.add_lexicon_rule("Sound", ['sound'], identity)
-sem.add_lexicon_rule("Volume", ['volume'], identity)
-sem.add_lexicon_rule("Pitch", ['pitch'], identity)
-sem.add_lexicon_rule("Effect", ['effect'], identity)
-sem.add_lexicon_rule("Percent", ['percent'], identity)
-sem.add_lexicon_rule("Seconds", ['seconds'], identity)
+sem.add_lexicon_rule("Sounds", ["sounds"], identity)
+sem.add_lexicon_rule("Sound", ["sound"], identity)
+sem.add_lexicon_rule("Volume", ["volume"], identity)
+sem.add_lexicon_rule("Pitch", ["pitch"], identity)
+sem.add_lexicon_rule("Effect", ["effect"], identity)
+sem.add_lexicon_rule("Percent", ["percent"], identity)
+sem.add_lexicon_rule("Seconds", ["seconds"], identity)
 
 # Events
-sem.add_lexicon_rule("Arrow",['arrow'],identity)
+sem.add_lexicon_rule("Arrow",["arrow"],identity)
 sem.add_lexicon_rule("Green", ["green"], identity)
 sem.add_lexicon_rule("Flag", ["flag"], identity)
-sem.add_lexicon_rule("Message",['message'],identity)
-sem.add_lexicon_rule("Key",['key', 'button'],identity)
+sem.add_lexicon_rule("Message",["message"],identity)
+sem.add_lexicon_rule("Key",["key", "button"],identity)
 sem.add_lexicon_rule("Program", ["program"], identity)
 
 # Voice
-sem.add_lexicon_rule("Response",['response', 'reply'],identity)
-sem.add_lexicon_rule("Speech",['speech'],identity)
+sem.add_lexicon_rule("Response",["response", "reply"],identity)
+sem.add_lexicon_rule("Speech",["speech"],identity)
 
-sem.add_lexicon_rule("Voice",['voice'],identity)
-sem.add_lexicon_rule("Language",['language'],identity)
-sem.add_lexicon_rule("Accent",['accent'],identity)
+sem.add_lexicon_rule("Voice",["voice"],identity)
+sem.add_lexicon_rule("Language",["language"],identity)
+sem.add_lexicon_rule("Accent",["accent"],identity)
 
 # Music
-sem.add_lexicon_rule("Drum", ['drum', 'instrument'], identity)
-sem.add_lexicon_rule("Beats", ['beats', 'beat'], identity)
-sem.add_lexicon_rule("Note", ['note'], identity)
-sem.add_lexicon_rule("Instrument", ['instrument'], identity)
-sem.add_lexicon_rule("Tempo", ['tempo'], identity)
+sem.add_lexicon_rule("Drum", ["drum", "instrument"], identity)
+sem.add_lexicon_rule("Beats", ["beats", "beat"], identity)
+sem.add_lexicon_rule("Note", ["note"], identity)
+sem.add_lexicon_rule("Instrument", ["instrument"], identity)
+sem.add_lexicon_rule("Tempo", ["tempo"], identity)
 
 # Scratch specific
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
-sem.add_lexicon_rule("Sprites",['sprites'],identity)
+sem.add_lexicon_rule("Sprites",["sprites"],identity)
 sem.add_lexicon_rule("Backdrop", ["backdrop"], identity)
-sem.add_lexicon_rule("Clone", ['clone'], identity)
+sem.add_lexicon_rule("Clone", ["clone"], identity)
 
 # data & variables
 sem.add_lexicon_rule("List", ["list"], identity)
-sem.add_lexicon_rule("Variable",['variable'],identity)
+sem.add_lexicon_rule("Variable",["variable"],identity)
 
 ## Verbs - Speech
-sem.add_lexicon_rule("Listen",['listen'],identity)
-sem.add_lexicon_rule("Hear",['hear'],identity)
-sem.add_lexicon_rule("Say",['say', 'voice', 'speak'],identity) # TODO: is it safe to do map 'Say' To 'tell me', which has two words in it?
-sem.add_lexicon_rule("Talk",['talk'],identity)
+sem.add_lexicon_rule("Listen",["listen"],identity)
+sem.add_lexicon_rule("Hear",["hear"],identity)
+sem.add_lexicon_rule("Say",["say", "voice", "speak"],identity) # TODO: is it safe to do map "Say" To "tell me", which has two words in it?
+sem.add_lexicon_rule("Talk",["talk"],identity)
 
 
 ## Keywords
 # Conditional Command Keywords
-sem.add_lexicon_rule("If", ['if'], identity)
-sem.add_lexicon_rule("Then", ['then'], identity)
-sem.add_lexicon_rule("Else", ['else', 'otherwise'], identity)
+sem.add_lexicon_rule("If", ["if"], identity)
+sem.add_lexicon_rule("Then", ["then"], identity)
+sem.add_lexicon_rule("Else", ["else", "otherwise"], identity)
 sem.add_lexicon_rule("Thats", ["thats"], identity)
-sem.add_lexicon_rule("Until", ['until', 'till'], identity)
+sem.add_lexicon_rule("Until", ["until", "till"], identity)
 
 ## Algebra Command Keywords
 sem.add_lexicon_rule("Equals", ["equals", "is"], identity)
@@ -821,22 +826,22 @@ sem.add_lexicon_rule("Equal", ["equal"], identity)
 sem.add_lexicon_rule("Greater", ["greater"], identity)
 sem.add_lexicon_rule("Less", ["less"], identity)
 
-sem.add_lexicon_rule("Divided",['divided'],identity)
-sem.add_lexicon_rule("Divide",['divide'],identity)
-sem.add_lexicon_rule("Multiply",['multiply'],identity)
-sem.add_lexicon_rule("Multiplied",['multiplied'],identity)
-sem.add_lexicon_rule("Times",['times'],identity)
-sem.add_lexicon_rule("Product",['product'],identity)
-sem.add_lexicon_rule("Minus",['minus'],identity)
-sem.add_lexicon_rule("Subtracted",['subtracted'],identity)
-sem.add_lexicon_rule("Difference",['difference'],identity)
-sem.add_lexicon_rule("Sum",['sum'],identity)
-sem.add_lexicon_rule("Added",['added'],identity)
-sem.add_lexicon_rule("Plus",['plus'],identity)
-sem.add_lexicon_rule("Negative",['negative'],identity)
+sem.add_lexicon_rule("Divided",["divided"],identity)
+sem.add_lexicon_rule("Divide",["divide"],identity)
+sem.add_lexicon_rule("Multiply",["multiply"],identity)
+sem.add_lexicon_rule("Multiplied",["multiplied"],identity)
+sem.add_lexicon_rule("Times",["times"],identity)
+sem.add_lexicon_rule("Product",["product"],identity)
+sem.add_lexicon_rule("Minus",["minus"],identity)
+sem.add_lexicon_rule("Subtracted",["subtracted"],identity)
+sem.add_lexicon_rule("Difference",["difference"],identity)
+sem.add_lexicon_rule("Sum",["sum"],identity)
+sem.add_lexicon_rule("Added",["added"],identity)
+sem.add_lexicon_rule("Plus",["plus"],identity)
+sem.add_lexicon_rule("Negative",["negative"],identity)
 
-sem.add_lexicon_rule("Random",['random'],identity)
-sem.add_lexicon_rule("Number",['number'],identity)
+sem.add_lexicon_rule("Random",["random", "a"],identity)
+sem.add_lexicon_rule("Number",["number"],identity)
 
 # Data Command Keywords
 sem.add_lexicon_rule("Log", ["log"], identity)
@@ -844,32 +849,32 @@ sem.add_lexicon_rule("Add", ["add", "append"], identity)
 sem.add_lexicon_rule("Increment", ["increment", "increase"], identity)
 sem.add_lexicon_rule("Decrement", ["decrement", "decrease"], identity)
 sem.add_lexicon_rule("Subtract", ["subtract"], identity)
-sem.add_lexicon_rule("Contains",['contains', 'has'],identity)
-sem.add_lexicon_rule("Called",['called', 'named'],identity)
-sem.add_lexicon_rule("Use", ['use'], identity)
-sem.add_lexicon_rule("Set", ['set'], identity)
-sem.add_lexicon_rule("Replace", ['replace'], identity)
-sem.add_lexicon_rule("Change", ['change'], identity)
-sem.add_lexicon_rule("Delete", ['delete'], identity)
-sem.add_lexicon_rule("Ele",['element', 'item'],identity)
-sem.add_lexicon_rule("Make",['make', 'create'],identity)
+sem.add_lexicon_rule("Contains",["contains", "has"],identity)
+sem.add_lexicon_rule("Called",["called", "named"],identity)
+sem.add_lexicon_rule("Use", ["use"], identity)
+sem.add_lexicon_rule("Set", ["set"], identity)
+sem.add_lexicon_rule("Replace", ["replace"], identity)
+sem.add_lexicon_rule("Change", ["change"], identity)
+sem.add_lexicon_rule("Delete", ["delete"], identity)
+sem.add_lexicon_rule("Ele",["element", "item"],identity)
+sem.add_lexicon_rule("Make",["make", "create"],identity)
 
 # Loop Command Keywords
-sem.add_lexicon_rule("Repeat", ['repeat', 'do'], identity)
-sem.add_lexicon_rule("Repeated", ['repeated', 'done'], identity)
-sem.add_lexicon_rule("Forever",['forever'],identity)
-sem.add_lexicon_rule("Duration", ['forever'],identity)
-sem.add_lexicon_rule("Steps", ['steps'], identity)
-sem.add_lexicon_rule("Times", ['times'], identity)
+sem.add_lexicon_rule("Repeat", ["repeat", "do"], identity)
+sem.add_lexicon_rule("Repeated", ["repeated", "done"], identity)
+sem.add_lexicon_rule("Forever",["forever"],identity)
+sem.add_lexicon_rule("Duration", ["forever"],identity)
+sem.add_lexicon_rule("Steps", ["steps"], identity)
+sem.add_lexicon_rule("Times", ["times"], identity)
 
 # Sound Command Keywords
-sem.add_lexicon_rule("Softer",['softer', 'quieter'],identity)
-sem.add_lexicon_rule("Louder",['louder'],identity)
-sem.add_lexicon_rule("Slower",['slower'],identity)
-sem.add_lexicon_rule("Faster",['faster'],identity)
-sem.add_lexicon_rule("Play", ['play'], identity)
-sem.add_lexicon_rule("Stop", ['stop', 'terminate'], identity)
-sem.add_lexicon_rule("Wait", ['wait'], identity)
+sem.add_lexicon_rule("Softer",["softer", "quieter"],identity)
+sem.add_lexicon_rule("Louder",["louder"],identity)
+sem.add_lexicon_rule("Slower",["slower"],identity)
+sem.add_lexicon_rule("Faster",["faster"],identity)
+sem.add_lexicon_rule("Play", ["play"], identity)
+sem.add_lexicon_rule("Stop", ["stop", "terminate"], identity)
+sem.add_lexicon_rule("Wait", ["wait"], identity)
 
 # Logic Keywords
 sem.add_lexicon_rule("Or", ["or"], identity)
@@ -883,45 +888,45 @@ sem.add_rule("NEG -> Is NEG", lambda x, y: y)
 
 # Event Keywords
 sem.add_lexicon_rule("When", ["when"], identity)
-sem.add_lexicon_rule("Whenever",['whenever'],identity)
+sem.add_lexicon_rule("Whenever",["whenever"],identity)
 sem.add_lexicon_rule("Clicked", ["pressed", "clicked"], identity)
 sem.add_lexicon_rule("Starts", ["starts"], identity)
 sem.add_lexicon_rule("Switches", ["switches"], identity)
 sem.add_lexicon_rule("Receive", ["receive"], identity)
-sem.add_lexicon_rule("Broadcast",['broadcast'],identity)
+sem.add_lexicon_rule("Broadcast",["broadcast"],identity)
 
 # Timer Keywords
 sem.add_lexicon_rule("Timer", ["timer"], identity)
 sem.add_lexicon_rule("Reset", ["reset", "zero", "restart", "initialize"], identity)
 
 ## Adj
-sem.add_lexicon_rule("All",['all'],identity)
-sem.add_lexicon_rule("Following",['following'],identity)
+sem.add_lexicon_rule("All",["all"],identity)
+sem.add_lexicon_rule("Following",["following"],identity)
 sem.add_lexicon_rule("Same", ["same"], identity)
-sem.add_lexicon_rule("New",['new'],identity)
-sem.add_lexicon_rule("Every",['every', 'each'],identity)
-sem.add_lexicon_rule("Single",['single'],identity)
+sem.add_lexicon_rule("New",["new"],identity)
+sem.add_lexicon_rule("Every",["every", "each"],identity)
+sem.add_lexicon_rule("Single",["single"],identity)
 sem.add_lexicon_rule("Time", ["time"], identity)
 
 ## Other random words
-sem.add_lexicon_rule("Should", ['should'], identity)
+sem.add_lexicon_rule("Should", ["should"], identity)
 sem.add_lexicon_rule("Too", ["too", "simultaneously"], identity)
-sem.add_lexicon_rule("Between",['between'],identity)
-sem.add_lexicon_rule("From",['from'],identity)
-sem.add_lexicon_rule("With",['with'],identity)
+sem.add_lexicon_rule("Between",["between"],identity)
+sem.add_lexicon_rule("From",["from"],identity)
+sem.add_lexicon_rule("With",["with"],identity)
 sem.add_lexicon_rule("Than", ["than"], identity)
 sem.add_lexicon_rule("Is", ["is"], identity)
 sem.add_lexicon_rule("At", ["at"], identity)
 sem.add_lexicon_rule("In", ["in"], identity)
-sem.add_lexicon_rule("For", ['for'],identity)
-sem.add_lexicon_rule("Of", ['of', 'from'],identity)
+sem.add_lexicon_rule("For", ["for"],identity)
+sem.add_lexicon_rule("Of", ["of", "from"],identity)
 sem.add_lexicon_rule("That", ["that"], identity)
 sem.add_lexicon_rule("Be", ["be"], identity)
 sem.add_lexicon_rule("The", ["the"], identity)
 sem.add_lexicon_rule("This", ["this"], identity)
-sem.add_lexicon_rule("To",['to'],identity)
-sem.add_lexicon_rule("By",['by'],identity)
-sem.add_lexicon_rule("As",['as'],identity)
+sem.add_lexicon_rule("To",["to"],identity)
+sem.add_lexicon_rule("By",["by"],identity)
+sem.add_lexicon_rule("As",["as"],identity)
 
 ## Synonyms
 def processSynonyms(synonyms):
