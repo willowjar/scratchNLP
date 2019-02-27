@@ -5,3 +5,4 @@ scripts/*~
 server/venv/*
 server/*.db
 *.pyc
+server/database.db

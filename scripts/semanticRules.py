@@ -104,6 +104,11 @@ def playSound(name):
     global_sounds.add(name.title())
     return ["doPlaySoundAndWait", name.title()]
 
+def startSound(name):
+    # Add the sound to the project.
+    global_sounds.add(name.title())
+    return ["playSound:", name.title()]
+
 def ifCommand(if_cond, if_body):
     return ["doIf", if_cond, if_body]
 
@@ -489,6 +494,7 @@ sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(sound
 
 # Sound Command
 # Use the halting version of the play sound block
+sem.add_rule("SoundCommand -> SStart NAME_OF_SOUND", lambda start, name: startSound(name))
 sem.add_rule("SoundCommand -> Play NAME_OF_SOUND", lambda play, name: playSound(name))
 
 # TODO(quacht): instead of just using name.title(), use a helper method to select the sound that might match best?
@@ -770,7 +776,7 @@ sem.add_lexicon_rule("Volume", ["volume"], identity)
 sem.add_lexicon_rule("Pitch", ["pitch"], identity)
 sem.add_lexicon_rule("Effect", ["effect"], identity)
 sem.add_lexicon_rule("Percent", ["percent"], identity)
-sem.add_lexicon_rule("Seconds", ["seconds"], identity)
+sem.add_lexicon_rule("Seconds", ["seconds","second"], identity)
 
 # Events
 sem.add_lexicon_rule("Arrow",["arrow"],identity)
@@ -875,6 +881,7 @@ sem.add_lexicon_rule("Faster",["faster"],identity)
 sem.add_lexicon_rule("Play", ["play"], identity)
 sem.add_lexicon_rule("Stop", ["stop", "terminate"], identity)
 sem.add_lexicon_rule("Wait", ["wait"], identity)
+sem.add_lexicon_rule("SStart", ["start"], identity)
 
 # Logic Keywords
 sem.add_lexicon_rule("Or", ["or"], identity)
