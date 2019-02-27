@@ -776,7 +776,7 @@ sem.add_lexicon_rule("Volume", ["volume"], identity)
 sem.add_lexicon_rule("Pitch", ["pitch"], identity)
 sem.add_lexicon_rule("Effect", ["effect"], identity)
 sem.add_lexicon_rule("Percent", ["percent"], identity)
-sem.add_lexicon_rule("Seconds", ["seconds"], identity)
+sem.add_lexicon_rule("Seconds", ["seconds","second"], identity)
 
 # Events
 sem.add_lexicon_rule("Arrow",["arrow"],identity)
