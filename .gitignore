@@ -2,7 +2,6 @@ example_sentences_files*
 node_js_files*
 test_fixtures/*~
 scripts/*~
-server/venv/*
 server/*.db
 *.pyc
 server/database.db
