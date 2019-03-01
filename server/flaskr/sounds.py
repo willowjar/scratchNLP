@@ -3740,5 +3740,8 @@ def get_sounds_in_set(soundNames):
 	filteredList = []
 	soundmap = get_sound_map()
 	for name in soundNames:
-		filteredList.append(soundmap[name])
+		if name in soundmap:
+			filteredList.append(soundmap[name])
+		else:
+			print('WARNING: no sound called ' + name)
 	return filteredList
