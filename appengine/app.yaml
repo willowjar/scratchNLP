@@ -8,3 +8,4 @@ handlers:
 
 skip_files:
 - lib/cv2/cv2.so
+- lib/numpy/.libs/libopenblasp-r0-39a31c03.2.18.so
