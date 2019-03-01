@@ -23,35 +23,35 @@ import sys
 import db
 import time
 
-sys.path.insert(0,'../../scripts/')
-from semantic import process_single_instruction
-from scratch_project import ScratchProject
+# sys.path.insert(0,'../../scripts/')
+# from semantic import process_single_instruction
+# from scratch_project import ScratchProject
 
-# Create and configure the app
-app = Flask(__name__, instance_relative_config=True)
-# Enable Cross-Origin Resource Sharing (CORS), meaning other domains
-# can make requests that will be handled by our API.
-CORS(app)
-app.config.from_mapping(
-    SECRET_KEY='dev',
-    DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-)
+# # Create and configure the app
+# app = Flask(__name__, instance_relative_config=True)
+# # Enable Cross-Origin Resource Sharing (CORS), meaning other domains
+# # can make requests that will be handled by our API.
+# CORS(app)
+# app.config.from_mapping(
+#     SECRET_KEY='dev',
+#     DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+# )
 
-if test_config is None:
-    # load the instance config, if it exists, when not testing
-    app.config.from_pyfile('config.py', silent=True)
-else:
-    # load the test config if passed in
-    app.config.from_mapping(test_config)
+# if test_config is None:
+#     # load the instance config, if it exists, when not testing
+#     app.config.from_pyfile('config.py', silent=True)
+# else:
+#     # load the test config if passed in
+#     app.config.from_mapping(test_config)
 
-# ensure the instance folder exists
-try:
-    os.makedirs(app.instance_path)
-except OSError:
-    pass
+# # ensure the instance folder exists
+# try:
+#     os.makedirs(app.instance_path)
+# except OSError:
+#     pass
 
-# initialize the database
-db.init_db(app)
+# # initialize the database
+# db.init_db(app)
 
 # # This corresponds to a POST if it's the first instruction. If it's not, it
 # # is a PUT. However, in actual use of the system, the client makes a get
