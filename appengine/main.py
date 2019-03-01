@@ -31,11 +31,11 @@ import time
 app = Flask(__name__, instance_relative_config=True)
 # # Enable Cross-Origin Resource Sharing (CORS), meaning other domains
 # # can make requests that will be handled by our API.
-# CORS(app)
-# app.config.from_mapping(
-#     SECRET_KEY='dev',
-#     DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-# )
+CORS(app)
+app.config.from_mapping(
+    SECRET_KEY='dev',
+    DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+)
 
 # if test_config is None:
 #     # load the instance config, if it exists, when not testing
