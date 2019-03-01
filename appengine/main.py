@@ -28,7 +28,7 @@ import time
 # from scratch_project import ScratchProject
 
 # # Create and configure the app
-# app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__, instance_relative_config=True)
 # # Enable Cross-Origin Resource Sharing (CORS), meaning other domains
 # # can make requests that will be handled by our API.
 # CORS(app)
@@ -185,7 +185,7 @@ import time
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    return 'Hi tina hello World!'
 
 
 @app.errorhandler(500)
