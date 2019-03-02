@@ -3,5 +3,6 @@ node_js_files*
 test_fixtures/*~
 scripts/*~
 server/*.db
+server/venv/*
 *.pyc
 server/database.db
