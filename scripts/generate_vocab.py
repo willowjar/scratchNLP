@@ -44,8 +44,11 @@ speech_command_map = {
   r'the speech (?:is|equals|is equal to) ((?:\w|\s)*)': ['WP'],
   r'((?:\w|\s)*) (?:is|equals|is equal to) the speech': ['WP'],
 }
+
 # global
 expression_map_list = [expression_map, speech_command_map]
+
+reserved_words = ['tempo', 'voice', 'accent', 'instrument', 'volume']
 
 def add_item_to_dict(key_value_tuple, dictionary):
 	key = key_value_tuple[0]
@@ -57,6 +60,7 @@ def add_item_to_dict(key_value_tuple, dictionary):
 	# print('add_item_to_dict')
 	# print('\tdictionary[key]: ' + str(dictionary[key]))
 
+# LOOK HERE!
 def extract_names_and_words(sentences):
 	""" Use the the global expression map list to extract variable, list, and
 	message names and also words contained in phrases.
@@ -92,7 +96,13 @@ def extract_names_and_words(sentences):
 							# TODO(quacht): handle conflicting names?
 							# match = match.strip().replace(' ', '_')
 							match = match.strip()
-							add_item_to_dict((this_variable, match), result)
+
+							if this_variable == "VARIABLE_NAME" and match in reserved_words:
+								# verify that the proposed variable name is not a reserved word.
+								print('ignore match because its in reserved words')
+								print('match: ', match)
+							else:
+								add_item_to_dict((this_variable, match), result)
 				else:
 					#assume results grouped by tuple if there are atleast 1 result
 					for i in range(0, len(variables)):
@@ -107,6 +117,7 @@ def extract_names_and_words(sentences):
 									add_item_to_dict((this_variable, match.strip()), result)
 	return result
 
+# deprecated
 def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 	"""
 	Given a vocab dictionary and vocabulary file, generate the vocab and put it
@@ -128,6 +139,7 @@ def add_to_vocabulary_file(vocab, vocabulary_file, opt_append=None):
 				myfile.write("1\t" + key + "\t" + instance + "\n")
 	myfile.close()
 
+# LOOK HERE!
 def add_to_lexicon(vocab, semantic_rule_set):
 	"""
 	Given a vocab dictionary and vocabulary file, generate the vocab and put it
@@ -140,7 +152,7 @@ def add_to_lexicon(vocab, semantic_rule_set):
 	for key in vocab:
 		semantic_rule_set.add_lexicon_rule(key, vocab[key], lambda word: word)
 
-
+# LOOK HERE!
 def get_core_vocab():
 	new_vocab = {}
 
@@ -161,10 +173,12 @@ def get_core_vocab():
 
 	return new_vocab
 
+# LOOK HERE!
 def generate_vocab_list(semantic_rule_set):
 	new_vocab = get_core_vocab()
 	add_to_lexicon(new_vocab, semantic_rule_set)
 
+# deprecated
 def generate_vocab_list_with_examples(example_sentences_file_path, vocabulary_file_path):
 	with open(example_sentences_file_path) as f:
 		content = f.readlines()
