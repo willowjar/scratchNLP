@@ -258,6 +258,7 @@ def get_unknowns_given_productions(utterance, semantic_rule_set):
 
 	return unk_list
 
+# LOOK HERE!
 def add_unknowns_to_grammar(utterance, semantic_rule_set, opt_scratch_project=None):
 	""" All words that do not yet exist in the grammar or vocabulary must be
 	added to the vocabulary.

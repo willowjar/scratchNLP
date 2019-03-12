@@ -137,7 +137,7 @@ def waitUntil(until_condition):
 
 def getNumber(unk):
 		try:
-			num = int(unk)
+			num = float(unk)
 		except:
 			num = text2int(unk)
 		return num
