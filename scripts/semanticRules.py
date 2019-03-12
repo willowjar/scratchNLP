@@ -51,10 +51,10 @@ global_sounds = set()
 ####################################################################
 # Music Actions
 def soundToNumber(string):
-    sounds = {"snare drum": 1, "base drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
+    sounds = {"snare drum": 1, "bass drum": 2, "side stick": 3, "crash cymbal": 4, "open hi hat": 5, "open highhat": 5, "closed hi hat": 6, "closed highhat": 6, "tambourine": 7, "hand clap": 8, "claves": 9, "wood block": 10, "cowbell": 11, "triangle": 12, "bongo": 13, "conga": 14, "cabasa": 15, "guiro": 16, "vibraslap": 17, "cuica": 18}
     if string in sounds:
         # Add the sound to the project.
-        global_sounds.add(string.title())
+        global_sounds.add(string)
         # Return the number corresponding to desired sound.
         return sounds[string]
     else:
@@ -63,8 +63,11 @@ def soundToNumber(string):
 
 def playInstrumentBeats(sound, beats):
     # Add the sound to the project.
-    global_sounds.add(string.title())
+    global_sounds.add(sound)
     return ["playDrum", sound, beats]
+
+def rest(numberOfBeats):
+    return ['rest:elapsed:from:', numberOfBeats]
 
 def InstrumentToNumber(string):
     sounds = {"piano": 1, "electric piano": 2, "organ": 3, "guitar": 4, "electric guitar": 5, "bass": 6, "pizzicato": 7, "cello": 8, "trombone": 9, "clarinet": 10, "saxophone": 11, "flute": 12, "wooden flute": 13, "bassoon": 14, "choir": 15, "vibraphone": 16, "music box": 17, "steel drum": 18, "marimba": 18, "synth lead": 20, "synth pad": 21}
@@ -473,6 +476,7 @@ sem.add_rule('DRUM -> Det DRUM', lambda d, i: i)
 
 sem.add_rule('INSTRUMENT -> Instrument1 Instrument2', lambda i, i2: i + ' ' + i2)
 sem.add_rule('INSTRUMENT -> Det INSTRUMENT', lambda d, i: i)
+sem.add_rule('INSTRUMENT -> Instrument INSTRUMENT', lambda i, instrument: instrument)
 sem.add_rule('Note -> Det Note', lambda d, i: i)
 
 sem.add_rule('MusicCommand -> Use INSTRUMENT', lambda u, i: setInstrument(InstrumentToNumber(i)))
@@ -482,6 +486,7 @@ sem.add_rule('MusicCommand -> Play INSTRUMENT', lambda p, i: setInstrument(Instr
 sem.add_rule('MusicCommand -> Play Note NP For NP Beats ', lambda p, n, note, f, beats, b: playNoteDuration(note, beats))
 
 sem.add_rule('Tempo -> Det Tempo', lambda d, t: t)
+# TODO(quacht): add support for beats per minute
 sem.add_rule('MusicCommand -> Set Tempo To NP ', lambda s, tempo, t, n: setTempo(n))
 sem.add_rule('MusicCommand -> Change Tempo By NP ', lambda s, tempo, t, n: changeTempo(n))
 sem.add_rule('MusicCommand -> Increment Tempo By NP ', lambda i, tempo, t, n: changeTempo(n))
@@ -489,8 +494,7 @@ sem.add_rule('MusicCommand -> Decrement Tempo By NP ', lambda d, tempo, t, n: ch
 
 sem.add_rule('MusicCommand -> Play DRUM For NP Beats' , lambda p, i, f, n, b: playInstrumentBeats(soundToNumber(i), n))
 sem.add_rule('MusicCommand -> Play DRUM NP Beats' , lambda p, i, n, b: playInstrumentBeats(soundToNumber(i), n))
-sem.add_rule('MusicCommand -> Use DRUM' , lambda u, i: playInstrumentBeats(soundToNumber(i), n))
-
+sem.add_rule('MusicCommand -> Rest For NP Beats' , lambda r, f, numberOfBeats, b: rest(numberOfBeats))
 
 
 # Sound Command
@@ -801,6 +805,7 @@ sem.add_lexicon_rule("Beats", ["beats", "beat"], identity)
 sem.add_lexicon_rule("Note", ["note"], identity)
 sem.add_lexicon_rule("Instrument", ["instrument"], identity)
 sem.add_lexicon_rule("Tempo", ["tempo"], identity)
+sem.add_lexicon_rule("Rest", ["rest"], identity)
 
 # Scratch specific
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
@@ -845,7 +850,7 @@ sem.add_lexicon_rule("Difference",["difference"],identity)
 sem.add_lexicon_rule("Sum",["sum"],identity)
 sem.add_lexicon_rule("Added",["added"],identity)
 sem.add_lexicon_rule("Plus",["plus"],identity)
-sem.add_lexicon_rule("Negative",["negative"],identity)
+sem.add_lexicon_rule("Negative",["negative", "minus"],identity)
 
 sem.add_lexicon_rule("Random",["random", "a"],identity)
 sem.add_lexicon_rule("Number",["number"],identity)
