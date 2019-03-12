@@ -4,3 +4,4 @@ python semantic.py --batch_mode ../test_fixtures/test/speech --validate_output .
 python semantic.py --batch_mode ../test_fixtures/test/complex_speech --validate_output ../test_fixtures/sol/complex_speech
 python semantic.py --batch_mode ../test_fixtures/test/log --validate_output ../test_fixtures/sol/log
 python semantic.py --batch_mode ../test_fixtures/test/multiword --validate_output ../test_fixtures/sol/multiword
+python semantic.py --batch_mode ../test_fixtures/test/music --validate_output ../test_fixtures/sol/music

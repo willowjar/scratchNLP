@@ -1,0 +1,18 @@
+{'variables': {}, 'sounds': set(['Electric Piano']), 'lists': {}, 'scripts': [['instrument:', 2]]}
+{'variables': {}, 'sounds': set(['Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['instrument:', 3]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['instrument:', 1]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['noteOn:duration:elapsed:from:', 5, 3]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['noteOn:duration:elapsed:from:', 3, 3]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['setTempoTo:', 500]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', 100]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', ['*', -1, 100]]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', ['*', -1, 100]]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['setTempoTo:', 5]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', ['*', ['*', -1, 5], -1]]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', ['*', 5, -1]]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', 5]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', 5]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['playDrum', 7, 5]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['playDrum', 7, 1]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['rest:elapsed:from:', 0.25]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['rest:elapsed:from:', 1]]}
