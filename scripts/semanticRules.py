@@ -486,11 +486,13 @@ sem.add_rule('MusicCommand -> Play INSTRUMENT', lambda p, i: setInstrument(Instr
 sem.add_rule('MusicCommand -> Play Note NP For NP Beats ', lambda p, n, note, f, beats, b: playNoteDuration(note, beats))
 
 sem.add_rule('Tempo -> Det Tempo', lambda d, t: t)
-# TODO(quacht): add support for beats per minute
-sem.add_rule('MusicCommand -> Set Tempo To NP ', lambda s, tempo, t, n: setTempo(n))
-sem.add_rule('MusicCommand -> Change Tempo By NP ', lambda s, tempo, t, n: changeTempo(n))
-sem.add_rule('MusicCommand -> Increment Tempo By NP ', lambda i, tempo, t, n: changeTempo(n))
-sem.add_rule('MusicCommand -> Decrement Tempo By NP ', lambda d, tempo, t, n: changeTempo(negate(n)))
+# It doesn't actually matter what BPM returns.
+sem.add_rule('BPM -> Beats Per Minute', lambda b, p, m: b)
+sem.add_rule('MusicCommand -> TempoCommand BPM', lambda tc, bpm: tc)
+sem.add_rule('TempoCommand -> Set Tempo To NP ', lambda s, tempo, t, n: setTempo(n))
+sem.add_rule('TempoCommand -> Change Tempo By NP ', lambda s, tempo, t, n: changeTempo(n))
+sem.add_rule('TempoCommand -> Increment Tempo By NP ', lambda i, tempo, t, n: changeTempo(n))
+sem.add_rule('TempoCommand -> Decrement Tempo By NP ', lambda d, tempo, t, n: changeTempo(negate(n)))
 
 sem.add_rule('MusicCommand -> Play DRUM For NP Beats' , lambda p, i, f, n, b: playInstrumentBeats(soundToNumber(i), n))
 sem.add_rule('MusicCommand -> Play DRUM NP Beats' , lambda p, i, n, b: playInstrumentBeats(soundToNumber(i), n))
@@ -806,6 +808,8 @@ sem.add_lexicon_rule("Note", ["note"], identity)
 sem.add_lexicon_rule("Instrument", ["instrument"], identity)
 sem.add_lexicon_rule("Tempo", ["tempo"], identity)
 sem.add_lexicon_rule("Rest", ["rest"], identity)
+sem.add_lexicon_rule("Per", ["per"], identity)
+sem.add_lexicon_rule("Minute", ["minute"], identity)
 
 # Scratch specific
 sem.add_lexicon_rule("Sprite", ["sprite"], identity)
