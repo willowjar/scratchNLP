@@ -14,5 +14,5 @@
 {'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'Organ']), 'lists': {}, 'scripts': [['changeTempoBy:', 5]]}
 {'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['playDrum', 7, 5]]}
 {'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['playDrum', 7, 1]]}
-{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['rest:elapsed:from:', .25]]}
+{'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['rest:elapsed:from:', 0.25]]}
 {'variables': {}, 'sounds': set(['Piano', 'Electric Piano', 'tambourine', 'Organ', 7]), 'lists': {}, 'scripts': [['rest:elapsed:from:', 1]]}
