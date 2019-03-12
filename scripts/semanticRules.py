@@ -489,6 +489,7 @@ sem.add_rule('Tempo -> Det Tempo', lambda d, t: t)
 # It doesn't actually matter what BPM returns.
 sem.add_rule('BPM -> Beats Per Minute', lambda b, p, m: b)
 sem.add_rule('MusicCommand -> TempoCommand BPM', lambda tc, bpm: tc)
+sem.add_rule('MusicCommand -> TempoCommand', lambda tc: tc)
 sem.add_rule('TempoCommand -> Set Tempo To NP ', lambda s, tempo, t, n: setTempo(n))
 sem.add_rule('TempoCommand -> Change Tempo By NP ', lambda s, tempo, t, n: changeTempo(n))
 sem.add_rule('TempoCommand -> Increment Tempo By NP ', lambda i, tempo, t, n: changeTempo(n))
