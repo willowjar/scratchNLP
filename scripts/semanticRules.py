@@ -483,6 +483,7 @@ sem.add_rule('INSTRUMENT -> Instrument INSTRUMENT', lambda i, instrument: instru
 sem.add_rule('Note -> Det Note', lambda d, i: i)
 
 sem.add_rule('MusicCommand -> Use INSTRUMENT', lambda u, i: setInstrument(InstrumentToNumber(i)))
+sem.add_rule('MusicCommand -> Set Instrument To INSTRUMENT', lambda s, i, t, ii: setInstrument(InstrumentToNumber(ii)))
 sem.add_rule('MusicCommand -> Set Det Instrument To INSTRUMENT', lambda s, d, i, t, ii: setInstrument(InstrumentToNumber(ii)))
 sem.add_rule('MusicCommand -> Use INSTRUMENT As Det Instrument', lambda u, ii, a, d, i: setInstrument(InstrumentToNumber(ii)))
 sem.add_rule('MusicCommand -> Play INSTRUMENT', lambda p, i: setInstrument(InstrumentToNumber(i)))
@@ -782,7 +783,7 @@ sem.add_lexicon_rule("OrderAdverb",
 
 # Sounds
 sem.add_lexicon_rule("Sounds", ["sounds"], identity)
-sem.add_lexicon_rule("Sound", ["sound"], identity)
+sem.add_lexicon_rule("Sound", ["sound", "recording"], identity)
 sem.add_lexicon_rule("Volume", ["volume"], identity)
 sem.add_lexicon_rule("Pitch", ["pitch"], identity)
 sem.add_lexicon_rule("Effect", ["effect"], identity)
@@ -795,7 +796,7 @@ sem.add_lexicon_rule("Green", ["green"], identity)
 sem.add_lexicon_rule("Flag", ["flag"], identity)
 sem.add_lexicon_rule("Message",["message"],identity)
 sem.add_lexicon_rule("Key",["key", "button"],identity)
-sem.add_lexicon_rule("Program", ["program"], identity)
+sem.add_lexicon_rule("Program", ["program", "project"], identity)
 
 # Voice
 sem.add_lexicon_rule("Response",["response", "reply"],identity)

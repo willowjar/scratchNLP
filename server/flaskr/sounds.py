@@ -3743,5 +3743,8 @@ def get_sounds_in_set(soundNames):
 		if name in soundmap:
 			filteredList.append(soundmap[name])
 		else:
-			print('WARNING: no sound called ' + name)
+			print("WARNING: no sound called " + str(name) + ". Maybe it's a recording.")
+			# TODO(quacht): maintain a set of unknown sounds too and return that
+			# in addition to the filtered list.
+			filteredList.append({"name": name, "isRecording": True})
 	return filteredList
