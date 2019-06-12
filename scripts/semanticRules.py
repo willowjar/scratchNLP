@@ -910,7 +910,7 @@ sem.add_rule("NEG -> Is NEG", lambda x, y: y)
 
 # Event Keywords
 sem.add_lexicon_rule("When", ["when"], identity)
-sem.add_lexicon_rule("Whenever",["whenever"],identity)
+sem.add_lexicon_rule("Whenever",["whenever", "when"],identity)
 sem.add_lexicon_rule("Clicked", ["pressed", "clicked"], identity)
 sem.add_lexicon_rule("Starts", ["starts"], identity)
 sem.add_lexicon_rule("Switches", ["switches"], identity)

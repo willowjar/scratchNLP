@@ -32,6 +32,7 @@ def message_received(client, server, message):
 		if message_json["type"] == "project":
 			handle_request_for_project(message_json)
 	else:
+		# TODO: server.send_message to specific client
 		server.send_message_to_all(json.dumps({"id":message_json["id"], "response":"echo"}));
 
 def handle_request_for_translation(message_json):
@@ -58,6 +59,7 @@ def handle_request_for_project(message_json):
 	else:
 		instructions = instruction_list
 
+	# TODO: determine whether this project is shared across multiple connections?
 	project = ScratchProject();
 	project.author = user_name
 	for instruction in instructions:
