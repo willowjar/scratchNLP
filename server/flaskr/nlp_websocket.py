@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# https://github.com/Pithikos/python-websocket-server
 from websocket_server import WebsocketServer
 import json
 
@@ -11,38 +12,43 @@ sys.path.insert(0,'../../scripts/')
 from semantic import process_single_instruction
 from scratch_project import ScratchProject
 
+# Each client should be treated differently?
+# What do we need to stoer about each client?
+clients = {}
+
 # Called for every client connecting (after handshake)
 def new_client(client, server):
 	print("New client connected and was given id %d" % client['id'])
 	server.send_message_to_all(json.dumps({"message":"Hey all, a new client has joined us"}))
 
-
 # Called for every client disconnecting
 def client_left(client, server):
 	print("Client(%d) disconnected" % client['id'])
 
-
 # Called when a client sends a message
 def message_received(client, server, message):
 	print("Client(%d) said: %s" % (client['id'], message))
+
+	# The message contains information about the request sent from scratch-vui
 	message_json = json.loads(message)
 	if "type" in message_json:
 		if message_json["type"] == "translation":
-			handle_request_for_translation(message_json)
+			handle_request_for_translation(client, message_json)
 		if message_json["type"] == "project":
-			handle_request_for_project(message_json)
+			handle_request_for_project(client, message_json)
 	else:
-		# TODO: server.send_message to specific client
-		server.send_message_to_all(json.dumps({"id":message_json["id"], "response":"echo"}));
+		server.send_message(client, json.dumps({"id":message_json["id"], "response":"echo"}));
 
-def handle_request_for_translation(message_json):
-
-	result = process_single_instruction(message_json["instruction"], False)
+def handle_request_for_translation(client, message_json):
+	translation = process_single_instruction(message_json["instruction"], False)
 	print('process single instruction result')
-	print(result)
-	server.send_message_to_all(json.dumps({"id":message_json["id"], "response": str(result)}));
+	print(translation)
 
-def handle_request_for_project(message_json):
+	# Send translation to client
+	message = json.dumps({"id":message_json["id"], "response": str(translation)})
+	server.send_message(client, message)
+
+def handle_request_for_project(client, message_json):
 	user_name = message_json["user"]
 	project_name = message_json["projectName"]
 
@@ -76,7 +82,10 @@ def handle_request_for_project(message_json):
 			# put into the project.
 			# TODO: consider also returing an array or sequence of invalid instructions and their locations.
 			pass
-	server.send_message_to_all(json.dumps({"id":message_json["id"], "response": project.to_json(use_green_flag)}));
+
+	print(client["id"], project)
+	message = json.dumps({"id":message_json["id"], "response": project.to_json(use_green_flag)})
+	server.send_message(client, message)
 
 PORT=8765
 server = WebsocketServer(PORT)
