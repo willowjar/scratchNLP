@@ -38,11 +38,10 @@ def message_received(client, server, message):
 			handle_request_for_project(client, message_json)
 	else:
 		server.send_message(client, json.dumps({"id":message_json["id"], "response":"echo"}));
+	print("")
 
 def handle_request_for_translation(client, message_json):
-	translation = process_single_instruction(message_json["instruction"], False)
-	print('process single instruction result')
-	print(translation)
+	translation = process_single_instruction(CodiSemanticRuleSet(), message_json["instruction"], False)
 
 	# Send translation to client
 	message = json.dumps({"id":message_json["id"], "response": str(translation)})
@@ -66,10 +65,11 @@ def handle_request_for_project(client, message_json):
 		instructions = instruction_list
 
 	# TODO: determine whether this project is shared across multiple connections?
-	project = ScratchProject();
+	project = ScratchProject()
 	project.author = user_name
+	semantic_rule_set = CodiSemanticRuleSet()
 	for instruction in instructions:
-		changes_to_add = process_single_instruction(instruction)
+		changes_to_add = process_single_instruction(semantic_rule_set, instruction)
 		print("changes_to_add when creating a new project:")
 		print(changes_to_add)
 		if changes_to_add != "I don't understand.":

@@ -13,7 +13,7 @@ import sys
 import json
 import os
 
-import semanticRules as lab_rules
+from semanticRules import CodiSemanticRuleSet
 import generate_vocab as gv
 sys.path.insert(0,'../server/flaskr')
 from scratch_project import ScratchProject
@@ -36,6 +36,9 @@ class MockArgs:
 		self.spm = None
 global args
 args = MockArgs()
+
+# set lab rules
+default_semantic_rules = CodiSemanticRuleSet()
 ##############################################################################
 
 def print_verbose(s):
@@ -67,8 +70,8 @@ def read_sentence(batch_mode_sentences=None):
 #  This metric could be doing it by simplest parse?
 def parse_input_str(input_str,opt_scratch_project=None):
 	# Before attempting to parse the sentence, update the grammar.
-	gv.add_unknowns_to_grammar(input_str, lab_rules.sem, opt_scratch_project)
-	trees = lab_rules.sem.parse_sentence(input_str)
+	gv.add_unknowns_to_grammar(input_str, default_semantic_rules, opt_scratch_project)
+	trees = default_semantic_rules.parse_sentence(input_str)
 	index_of_tree_to_pick = 0
 	if len(trees) > 1:
 		print("[WARNING] Obtained %d parses; selecting the parse with the largest height."%(len(trees)))
@@ -114,15 +117,15 @@ def display_trace_gui(GUI_decorated_tree, sem_rule_set):
 			traceback.print_exc()
 
 ##############################################################################
-def process_single_instruction(input_str, opt_scripts_only=False):
+def process_single_instruction(semantic_rule_set, input_str, opt_scripts_only=False):
 	"""
 	Given an input string process the string to generate the appropriate
 	Scratch scripts. The script gets added the the ScratchProject object
 	"""
 	# Ideally, we would only generate the vocabulary list once...
-	gv.generate_vocab_list(lab_rules.sem)
+	gv.generate_vocab_list(semantic_rule_set)
 
-	sem_rule_set = lab_rules.sem
+	# tina look here
 	batch_sentences=[]
 	valid_output=[]
 
@@ -131,24 +134,24 @@ def process_single_instruction(input_str, opt_scripts_only=False):
 	try:
 		tree = parse_input_str(input_str)
 		if args.spm:
-			handle_syntax_parser_mode(tree, sem_rule_set)
+			handle_syntax_parser_mode(tree, semantic_rule_set)
 			# continue
 		else:
 			# Evaluate the parse tree.
 			decorated_tree = decorate_parse_tree(tree,
-												 sem_rule_set,
+												 semantic_rule_set,
 												 set_productions_to_labels=False)
 			trace = eval_tree(decorated_tree,
-							  sem_rule_set,
+							  semantic_rule_set,
 							  args.verbose)
 
 			output = trace[-1]['expr']
 
 			if args.gui:
 				display_trace_gui(decorate_parse_tree(deepcopy(tree),
-													  sem_rule_set,
+													  semantic_rule_set,
 													  set_productions_to_labels=True),
-								  sem_rule_set)
+								  semantic_rule_set)
 
 	except Exception as e:
 		# The parser did not return any parse trees.
@@ -164,13 +167,13 @@ def process_single_instruction(input_str, opt_scripts_only=False):
 	# Project
 	return output
 
-def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
-	assert isinstance(sem_rule_set, SemanticRuleSet)
+def run_repl(semantic_rule_set, batch_sentences=[], valid_output=[]):
+	assert isinstance(semantic_rule_set, SemanticRuleSet)
 	batch_mode = len(batch_sentences) != 0
 	output_validation_mode = len(valid_output) != 0
 
 	scratch = ScratchProject()
-	gv.generate_vocab_list(lab_rules.sem)
+	gv.generate_vocab_list(semantic_rule_set)
 
 	evaluation_history = []
 	while True:
@@ -209,15 +212,15 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 			continue
 
 		# Parse the sentence.
-		changes = process_single_instruction(input_str)
+		changes = process_single_instruction(semantic_rule_set, input_str)
 		if changes != "I don't understand.":
 			scratch.update(changes)
 
 			if args.gui:
 				display_trace_gui(decorate_parse_tree(deepcopy(tree),
-													  sem_rule_set,
+													  semantic_rule_set,
 													  set_productions_to_labels=True),
-								  sem_rule_set)
+								  semantic_rule_set)
 		if changes == "I don't understand.":
 			# The parser did not return any parse trees.
 			print_verbose("[WARNING] Could not parse input.")
@@ -231,7 +234,7 @@ def run_repl(sem_rule_set, batch_sentences=[], valid_output=[]):
 			del valid_output[0]
 
 		if args.show_database:
-			lab_rules.sem.learned.print_knowledge()
+			semantic_rule_set.learned.print_knowledge()
 
 
 ##############################################################################
@@ -303,10 +306,10 @@ def main():
 			print "[ERROR] Could not open the file: %s"%(args.validation_file)
 
 	# import my_rules
-	# my_rules.add_my_rules(lab_rules.sem)
+	# my_rules.add_my_rules(default_semantic_rules)
 
 	# Start the Semantics REPL.
-	run_repl(lab_rules.sem,
+	run_repl(default_semantic_rules,
 			 batch_sentences=batch_sentences,
 			 valid_output=valid_output)
 
