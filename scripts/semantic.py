@@ -68,10 +68,10 @@ def read_sentence(batch_mode_sentences=None):
 
 # TODO: add some sort of metric for discriminating between parses
 #  This metric could be doing it by simplest parse?
-def parse_input_str(input_str,opt_scratch_project=None):
+def parse_input_str(semantic_rule_set, input_str,opt_scratch_project=None):
 	# Before attempting to parse the sentence, update the grammar.
-	gv.add_unknowns_to_grammar(input_str, default_semantic_rules, opt_scratch_project)
-	trees = default_semantic_rules.parse_sentence(input_str)
+	gv.add_unknowns_to_grammar(input_str, semantic_rule_set, opt_scratch_project)
+	trees = semantic_rule_set.parse_sentence(input_str)
 	index_of_tree_to_pick = 0
 	if len(trees) > 1:
 		print("[WARNING] Obtained %d parses; selecting the parse with the largest height."%(len(trees)))
@@ -132,11 +132,13 @@ def process_single_instruction(semantic_rule_set, input_str, opt_scripts_only=Fa
 	# Parse the sentence.
 	output = None
 	try:
-		tree = parse_input_str(input_str)
+		tree = parse_input_str(semantic_rule_set, input_str)
 		if args.spm:
 			handle_syntax_parser_mode(tree, semantic_rule_set)
 			# continue
 		else:
+			# print('PRODUCTIONS IN SEMANTIC BEFORE DECORATING')
+			# print(semantic_rule_set.productions)
 			# Evaluate the parse tree.
 			decorated_tree = decorate_parse_tree(tree,
 												 semantic_rule_set,

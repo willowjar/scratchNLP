@@ -103,17 +103,11 @@ def match_rule(node, production_rule):
     if not match_nonterminal(lhs_node.label(),
                              production_rule.lhs()):
         return False
-    #print 'match rule:'
-    #print 'lhs_node'
-    #print lhs_node
-    #print lhs_node.__class__.__name__
+
     # Match right hand side
     rhs_nodes = [c for c in node]
-    #print 'rhs_nodes'
-    #print rhs_nodes
     rhs_prods = production_rule.rhs()
-    #print 'rhs prods'
-    #print rhs_prods
+
     if len(rhs_nodes) != len(rhs_prods):
         return False
     return all([match_node(n, p)
@@ -121,8 +115,6 @@ def match_rule(node, production_rule):
 
 
 def find_matching_productions(node, sem_rule_set):
-    #print 'find matching productions:'
-    #print node
     matching_prods = [p for p in sem_rule_set.productions if match_rule(node, p)]
     for rule in matching_prods:
         assert rule in sem_rule_set.syn_sem_dict, rule
@@ -140,6 +132,7 @@ def decorate_parse_tree(tree, sem_rule_set, set_productions_to_labels=False):
         # tina look here
         if not is_leaf_node(node):
             matching_rules = find_matching_productions(node, sem_rule_set)
+
             assert 0 < len(matching_rules)
 
             if 1 < len(matching_rules):

@@ -9,12 +9,9 @@ import sys
 import time
 
 sys.path.insert(0,'../../scripts/')
+from semanticRules import CodiSemanticRuleSet
 from semantic import process_single_instruction
 from scratch_project import ScratchProject
-
-# Each client should be treated differently?
-# What do we need to stoer about each client?
-clients = {}
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
