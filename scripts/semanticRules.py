@@ -641,41 +641,41 @@ class CodiSemanticRuleSet(SemanticRuleSet):
 		## Data Command
 
 		# todo: fix
-		self.add_rule("DataCommand -> Log VARIABLE_NAME", lambda log, var_name: logVariable(var_name))
-		self.add_rule("DataCommand -> Delete VARIABLE_NAME", lambda delete, var_name: deleteVariable(var_name))
-		self.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp: setVariable(var_name, bp))
-		self.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np: setVariable(var_name, np))
-		self.add_rule("DataCommand -> Set VARIABLE_NAME To ITEM", lambda s, var_name, to, item: setVariable(var_name, item))
+		self.add_rule("DataCommand -> Log VARIABLE_NAME", lambda log, var_name:  self.logVariable(var_name))
+		self.add_rule("DataCommand -> Delete VARIABLE_NAME", lambda delete, var_name:  self.deleteVariable(var_name))
+		self.add_rule("DataCommand -> Set VARIABLE_NAME To BP", lambda s, var_name, to, bp:  self.setVariable(var_name, bp))
+		self.add_rule("DataCommand -> Set VARIABLE_NAME To NP", lambda s, var_name, to, np:  self.setVariable(var_name, np))
+		self.add_rule("DataCommand -> Set VARIABLE_NAME To ITEM", lambda s, var_name, to, item:  self.setVariable(var_name, item))
 
 		self.add_rule("DataCommand -> Add NP To VARIABLE_NAME", lambda a, num, t, var_name:
 		changeVarBy(var_name, num))
-		self.add_rule("DataCommand -> Increment VARIABLE_NAME By NP", lambda i, var_name, b, num: changeVarBy(var_name, num))
-		self.add_rule("DataCommand -> Add VARIABLE_NAME To VARIABLE_NAME", lambda i, var1, b, var2: changeVarByVar(var2, getValue(var1)))
+		self.add_rule("DataCommand -> Increment VARIABLE_NAME By NP", lambda i, var_name, b, num:  self.changeVarBy(var_name, num))
+		self.add_rule("DataCommand -> Add VARIABLE_NAME To VARIABLE_NAME", lambda i, var1, b, var2:  self.changeVarByVar(var2, getValue(var1)))
 
-		self.add_rule("DataCommand -> Subtract NP From VARIABLE_NAME", lambda a, np, t, var_name: changeVarBy(var_name, np, 'negate'))
-		self.add_rule("DataCommand -> Decrement VARIABLE_NAME By NP", lambda a, var_name, t, np: changeVarBy(var_name, np, 'negate'))
-		self.add_rule("DataCommand -> Subtract VARIABLE_NAME From VARIABLE_NAME", lambda a, var1, t, var2: changeVarByVar(getValue(var2), var1, 'negate'))
+		self.add_rule("DataCommand -> Subtract NP From VARIABLE_NAME", lambda a, np, t, var_name:  self.changeVarBy(var_name, np, 'negate'))
+		self.add_rule("DataCommand -> Decrement VARIABLE_NAME By NP", lambda a, var_name, t, np:  self.changeVarBy(var_name, np, 'negate'))
+		self.add_rule("DataCommand -> Subtract VARIABLE_NAME From VARIABLE_NAME", lambda a, var1, t, var2:  self.changeVarByVar( self.getValue(var2), var1, 'negate'))
 
-		self.add_rule("DataCommand -> Multiply VARIABLE_NAME By NP", lambda m, var_name, b, np: setVariable(var_name, getProduct(getValue(var_name), np)))
-		self.add_rule("DataCommand -> Multiply VARIABLE_NAME By VARIABLE_NAME", lambda m, var1, b, var2: setVariable(var1, getProduct(getValue(var1), getValue(var2))))
+		self.add_rule("DataCommand -> Multiply VARIABLE_NAME By NP", lambda m, var_name, b, np:  self.setVariable(var_name,  self.getProduct( self.getValue(var_name), np)))
+		self.add_rule("DataCommand -> Multiply VARIABLE_NAME By VARIABLE_NAME", lambda m, var1, b, var2:  self.setVariable(var1,  self.getProduct( self.getValue(var1),  self.getValue(var2))))
 
-		self.add_rule("DataCommand -> Divide VARIABLE_NAME By NP", lambda d, var_name, b, np: setVariable(var_name, getQuotient(getValue(var_name), np)))
-		self.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, var1, b, var2: setVariable(var1, getQuotient(getValue(var1), getValue(var2))))
-		self.add_rule("DataCommand -> Change VARIABLE_NAME By NP", lambda c, var1, b, np: changeVarBy(getValue(var1), np))
+		self.add_rule("DataCommand -> Divide VARIABLE_NAME By NP", lambda d, var_name, b, np:  self.setVariable(var_name,  self.getQuotient( self.getValue(var_name), np)))
+		self.add_rule("DataCommand -> Divide VARIABLE_NAME By VARIABLE_NAME", lambda d, var1, b, var2:  self.setVariable(var1,  self.getQuotient( self.getValue(var1),  self.getValue(var2))))
+		self.add_rule("DataCommand -> Change VARIABLE_NAME By NP", lambda c, var1, b, np:  self.changeVarBy( self.getValue(var1), np))
 
 
 		# todo: fix commands working w/ lists
 		self.add_rule("Ele -> Det Ele", lambda d, e: e)
-		self.add_rule("DataCommand -> Add ITEM To LIST_NAME", lambda a, item, t, list_name: addToList(list_name, item))
-		self.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name: deleteListItem(list_name,ind))
-		self.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o, list_name,w, item: setItemInList(ind, list_name, item))
-		self.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,item: setItemInList(ind, list_name, item))
+		self.add_rule("DataCommand -> Add ITEM To LIST_NAME", lambda a, item, t, list_name:  self.addToList(list_name, item))
+		self.add_rule("DataCommand -> Delete Ele NP Of LIST_NAME", lambda d, el, ind,o, list_name:  self.deleteListItem(list_name,ind))
+		self.add_rule("DataCommand -> Replace Ele NP Of LIST_NAME With ITEM", lambda r, e, ind, o, list_name,w, item:  self.setItemInList(ind, list_name, item))
+		self.add_rule("DataCommand -> Set Ele NP Of LIST_NAME To ITEM", lambda s, e, ind, o, list_name, t,item:  self.setItemInList(ind, list_name, item))
 
 		# Data Reporter
-		self.add_rule("DataReporter -> The OrderAdverb Item In LIST_NAME", lambda t, order_adverb, i, inn, list_name: getItem(wordMap(order_adverb), list_name))
+		self.add_rule("DataReporter -> The OrderAdverb Item In LIST_NAME", lambda t, order_adverb, i, inn, list_name:  self.getItem(wordMap(order_adverb), list_name))
 
 		# Number Phrase
-		self.add_rule("NP -> Unk", lambda unk: getNumber(unk))
+		self.add_rule("NP -> Unk", lambda unk: self.getNumber(unk))
 		self.add_rule("NP -> NPP", self.identity)
 		self.add_rule("NP -> Det NPP", lambda det, npp: npp)
 		self.add_rule("NP -> VARIABLE_NAME", lambda v: getValue(v))
@@ -870,7 +870,7 @@ class CodiSemanticRuleSet(SemanticRuleSet):
 
 		self.add_lexicon_rule("OrderAdverb",
 							   ["secondly", "fourthly", "fifthly", "seventh", "second", "fifth", "sixthly", "third", "thirdly", "fourth", "sixth", "firstly", "first"],
-							   lambda word: wordMap(word))
+							   lambda word:  self.wordMap(word))
 
 		## Noun - keywords
 
