@@ -7,7 +7,6 @@ import json
 import os
 import sys
 import time
-from threading import Thread, Lock
 
 sys.path.insert(0,'../../scripts/')
 from semanticRules import CodiSemanticRuleSet
@@ -15,8 +14,7 @@ from semantic import process_single_instruction
 from scratch_project import ScratchProject
 
 from multiprocessing import Process
-
-translation_lock = Lock()
+import cProfile
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -29,6 +27,9 @@ def client_left(client, server):
 
 # Called when a client sends a message
 def message_received(client, server, message):
+    print("CLIENT")
+    print(client)
+
     print("Client(%d) said: %s" % (client['id'], message))
 
     def handle_message(client, server, message):
@@ -48,6 +49,8 @@ def message_received(client, server, message):
     p.join()
 
 def handle_request_for_translation(client, message_json):
+    print("message_json")
+    print(message_json)
     translation = process_single_instruction(CodiSemanticRuleSet(), message_json["instruction"])
 
     # Send translation to client
@@ -55,6 +58,8 @@ def handle_request_for_translation(client, message_json):
     server.send_message(client, message)
 
 def handle_request_for_project(client, message_json):
+    print("message_json")
+    print(message_json)
     user_name = message_json["user"]
     project_name = message_json["projectName"]
 

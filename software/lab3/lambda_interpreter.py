@@ -40,7 +40,7 @@ def cell_deref(cell):
 def cells_by_name(f):
     if f.func_closure is None:
         return {}
-    
+
     cells = map(lambda x: cell_deref(x),
                 f.func_closure)
     return dict(zip(f.func_code.co_freevars,
@@ -160,15 +160,15 @@ class Decompiler:
 				stack.append('(%s %s %s)' % (tos1, syms[token], tos))
 			elif name == 'SLICE+0':
 				stack.append(stack.pop() + '[:]')
-			elif name == 'SLICE+1':	
+			elif name == 'SLICE+1':
 				tos = stack.pop()
 				tos1 = stack.pop()
 				stack.append('%s[%s:]' % (tos1, tos))
-			elif name == 'SLICE+2':	
+			elif name == 'SLICE+2':
 				tos = stack.pop()
 				tos1 = stack.pop()
 				stack.append('%s[:%s]' % (tos1, tos))
-			elif name == 'SLICE+3':	
+			elif name == 'SLICE+3':
 				tos = stack.pop()
 				tos1 = stack.pop()
 				tos2 = stack.pop()
@@ -243,7 +243,7 @@ class Decompiler:
 					stack.append('%s@(%s)' % (func, ", ".join(allargs)))
 				else:
 					stack.append('%s(%s)' % (func, ", ".join(allargs)))
-				
+
 			elif name == 'MAKE_FUNCTION':
 				pass
 			elif name == 'MAKE_CLOSURE':
@@ -315,14 +315,14 @@ def eval_tree(tree, sem_rule_set, verbose=True):
     assert isinstance(tree, Tree)
     assert isinstance(sem_rule_set, SemanticRuleSet)
     trace = []
-    tree = deepcopy(tree)
+    # tree = deepcopy(tree)
 
     def walk(node):
         if is_leaf_node(node):
             return None
 
         spanned_text = ' '.join([x for x, _ in node.pos()])
-        
+
         # Assign a lambda form.
         assert isinstance(node.matched_production, cfg.Production)
         node.lambda_form = assign_lambda_form(node, sem_rule_set)
@@ -334,12 +334,13 @@ def eval_tree(tree, sem_rule_set, verbose=True):
             print ""
         trace.append({'lambda_form': node.lambda_form,
                       'text': spanned_text,
-                      'tree': deepcopy(tree)})
+                      'tree': tree})
+                      # 'tree': deepcopy(tree)})
 
         # Visit children.
         for child in node:
             walk(child)
-        
+
         # Evaluate the lambda form to produce an expression.
         node.expr = evaluate_node(node, sem_rule_set)
         if verbose:
@@ -354,7 +355,8 @@ def eval_tree(tree, sem_rule_set, verbose=True):
             print ""
         trace.append({'expr': node.expr,
                       'text': spanned_text,
-                      'tree': deepcopy(tree)})
+                      'tree': tree})
+                      # 'tree': deepcopy(tree)})
 
     walk(tree)
     return trace
@@ -375,6 +377,6 @@ def decorate_tree_with_trace(evaluated_tree, pretty_print_lambdas=True):
                 node.set_label(node_str)
             else:
                 node.set_label(node.expr)
-    
+
     return walk_tree(deepcopy(evaluated_tree),
                      post_nonleaf_func=post_nonleaf_fn)
