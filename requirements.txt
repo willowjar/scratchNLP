@@ -12,7 +12,7 @@ jsonmerge==1.5.2
 jsonschema==2.6.0
 lockfile==0.12.2
 Logbook==1.4.1
-lxml==4.2.5
+lxml==4.6.2
 manifest-tool==1.4.6
 mbed-cloud-sdk==2.0.1
 mbed-flasher==0.9.2
