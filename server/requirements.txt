@@ -7,7 +7,7 @@ cycler==0.10.0
 Flask==1.0.2
 gdax==1.0.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.11.3
 kiwisolver==1.0.1
 markovify==0.6.0
 MarkupSafe==1.0
