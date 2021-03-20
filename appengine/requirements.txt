@@ -8,7 +8,7 @@ Flask==0.12.4
 Flask-Cors==3.0.7
 gdax==1.0.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.11.3
 kiwisolver==1.0.1
 markovify==0.6.0
 MarkupSafe==1.0
